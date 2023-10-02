@@ -24,20 +24,36 @@ public class Customer {
     private Long customerId;
     @Column(
             nullable = false,
-            length = 50)
+            length = 50
+    )
     private String firstName;
     @Column(
             nullable = false,
-            length = 50)
+            length = 50
+    )
     private String lastName;
     @Column(
             nullable = false,
             unique = true,
-            length = 150)
+            length = 150
+    )
     private String email;
     @Column(
+            nullable = false
+    )
+    private int age;
+    @Column(
+            nullable = false,
+            length = 7
+    )
+    @Enumerated(
+            EnumType.STRING
+    )
+    private Gender gender;
+    @Column(
             unique = true,
-            length = 10)
+            length = 10
+    )
     private String phoneNumber;
     @ManyToOne
     @JoinColumn(
