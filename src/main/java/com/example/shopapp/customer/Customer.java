@@ -55,7 +55,9 @@ public class Customer {
             length = 10
     )
     private String phoneNumber;
-    @ManyToOne
+    @OneToOne(
+            cascade = CascadeType.PERSIST
+    )
     @JoinColumn(
             nullable = false,
             name = "address_id",

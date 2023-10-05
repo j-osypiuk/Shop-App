@@ -50,8 +50,8 @@ public class Address {
             mappedBy = "address"
     )
     private Set<Order> orders;
-    @OneToMany(
+    @OneToOne(
             mappedBy = "address"
     )
-    private Set<Customer> customers;
+    private Customer customer;
 }
