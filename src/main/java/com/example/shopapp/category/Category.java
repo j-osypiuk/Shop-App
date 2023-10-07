@@ -22,8 +22,12 @@ public class Category {
     )
     private Long categoryId;
     @Column(
-            columnDefinition = "text",
-            nullable = false
+            nullable = false,
+            length = 50
+    )
+    private String name;
+    @Column(
+            columnDefinition = "text"
     )
     private String description;
     @ManyToMany(
