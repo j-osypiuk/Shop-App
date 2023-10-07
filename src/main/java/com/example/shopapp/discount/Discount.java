@@ -33,7 +33,7 @@ public class Discount {
     @Column(
             nullable = false
     )
-    private double discountPercent;
+    private int discountPercent;
     @OneToMany(
             mappedBy = "discount"
     )
