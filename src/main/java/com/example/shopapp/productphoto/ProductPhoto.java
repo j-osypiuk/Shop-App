@@ -17,10 +17,7 @@ import java.util.UUID;
 public class ProductPhoto {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.UUID
-    )
-    private UUID photoFileName;
+    private UUID photoName;
     @Column(
             nullable = false
     )
