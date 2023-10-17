@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Data
@@ -55,16 +55,16 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "order_id")
     )
-    private Set<Order> orders;
+    private List<Order> orders;
     @ManyToMany
     @JoinTable(
             name = "product_category",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
+            joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "productId"),
+            inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "categoryId")
     )
-    private Set<Category> categories;
+    private List<Category> categories;
     @OneToMany(
             mappedBy = "product"
     )
-    private Set<ProductPhoto> productPhotos;
+    private List<ProductPhoto> productPhotos;
 }

@@ -1,12 +1,14 @@
 package com.example.shopapp.category;
 
 import com.example.shopapp.product.Product;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -33,5 +35,6 @@ public class Category {
     @ManyToMany(
             mappedBy = "categories"
     )
-    private Set<Product> products;
+    @JsonIgnore
+    private List<Product> products;
 }
