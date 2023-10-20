@@ -1,5 +1,7 @@
 package com.example.shopapp.discount;
 
+import com.example.shopapp.discount.dto.DiscountDto;
+import com.example.shopapp.discount.dto.DiscountDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

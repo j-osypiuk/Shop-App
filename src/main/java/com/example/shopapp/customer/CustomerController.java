@@ -1,5 +1,6 @@
 package com.example.shopapp.customer;
 
+import com.example.shopapp.customer.dto.CustomerDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

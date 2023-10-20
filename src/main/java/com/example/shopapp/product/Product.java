@@ -4,16 +4,16 @@ import com.example.shopapp.category.Category;
 import com.example.shopapp.discount.Discount;
 import com.example.shopapp.order.Order;
 import com.example.shopapp.productphoto.ProductPhoto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Data
+@EqualsAndHashCode
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -49,12 +49,8 @@ public class Product {
             referencedColumnName = "discountId"
     )
     private Discount discount;
-    @ManyToMany
-    @JoinTable(
-            name = "product_order",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "order_id")
-    )
+    @JsonIgnore
+    @ManyToMany(mappedBy = "products")
     private List<Order> orders;
     @ManyToMany
     @JoinTable(

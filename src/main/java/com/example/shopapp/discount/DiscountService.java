@@ -1,5 +1,7 @@
 package com.example.shopapp.discount;
 
+import com.example.shopapp.discount.dto.DiscountDto;
+
 import java.util.List;
 
 public interface DiscountService {

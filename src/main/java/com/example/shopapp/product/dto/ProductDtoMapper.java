@@ -1,8 +1,8 @@
 package com.example.shopapp.product.dto;
 
 import com.example.shopapp.category.Category;
-import com.example.shopapp.category.CategoryDtoMapper;
-import com.example.shopapp.discount.DiscountDtoMapper;
+import com.example.shopapp.category.dto.CategoryDtoMapper;
+import com.example.shopapp.discount.dto.DiscountDtoMapper;
 import com.example.shopapp.product.Product;
 
 import java.util.List;
@@ -38,6 +38,14 @@ public class ProductDtoMapper {
                 product.getCategories().stream().
                         map(Category::getCategoryId)
                         .collect(Collectors.toList())
+        );
+    }
+
+    public static OrderProductDto mapProductToOrderProductDto(Product product) {
+        return new OrderProductDto(
+                product.getProductId(),
+                product.getName(),
+                product.getPrice()
         );
     }
 

@@ -1,5 +1,7 @@
 package com.example.shopapp.customer;
 
+import com.example.shopapp.customer.dto.CustomerDto;
+
 import java.util.List;
 
 public interface CustomerService {

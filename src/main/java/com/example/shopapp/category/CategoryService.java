@@ -1,5 +1,7 @@
 package com.example.shopapp.category;
 
+import com.example.shopapp.category.dto.CategoryDto;
+
 import java.util.List;
 
 public interface CategoryService {

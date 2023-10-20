@@ -1,5 +1,7 @@
 package com.example.shopapp.category;
 
+import com.example.shopapp.category.dto.CategoryDto;
+import com.example.shopapp.category.dto.CategoryDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
