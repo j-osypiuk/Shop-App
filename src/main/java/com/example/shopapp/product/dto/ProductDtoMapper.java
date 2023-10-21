@@ -19,7 +19,7 @@ public class ProductDtoMapper {
                 product.getPrice(),
                 DiscountDtoMapper.mapDiscountToDiscountDto(product.getDiscount()),
                 product.getCategories().stream().
-                        map(CategoryDtoMapper::mapCategoryToCategoryDto)
+                        map(CategoryDtoMapper::mapCategoryToResponseCategoryDto)
                         .collect(Collectors.toList()),
                 product.getProductPhotos().stream()
                         .map(productPhoto -> productPhoto.getPhotoName().toString() + ".png")

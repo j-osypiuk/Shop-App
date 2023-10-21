@@ -1,6 +1,8 @@
 package com.example.shopapp.category;
 
-import com.example.shopapp.category.dto.CategoryDto;
+import com.example.shopapp.category.dto.RequestCategoryDto;
+import com.example.shopapp.category.dto.ResponseCategoryDto;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,27 +16,27 @@ public class CategoryController {
     CategoryService categoryService;
 
     @PostMapping
-    public CategoryDto saveCategory(@RequestBody Category category) {
-        return categoryService.saveCategory(category);
+    public ResponseCategoryDto saveCategory(@Valid @RequestBody RequestCategoryDto requestCategoryDto) {
+        return categoryService.saveCategory(requestCategoryDto);
     }
 
     @GetMapping("/{id}")
-    public CategoryDto getCategoryById(@PathVariable("id") Long id) {
+    public ResponseCategoryDto getCategoryById(@PathVariable("id") Long id) {
         return categoryService.getCategoryById(id);
     }
 
     @GetMapping(params = "name")
-    public CategoryDto getCategoryByName(@RequestParam("name") String name) {
+    public ResponseCategoryDto getCategoryByName(@RequestParam("name") String name) {
         return categoryService.getCategoryByName(name);
     }
 
     @GetMapping
-    public List<CategoryDto> getAllCategories() {
+    public List<ResponseCategoryDto> getAllCategories() {
         return categoryService.getAllCategories();
     }
 
     @PutMapping("/{id}")
-    public CategoryDto updateCategoryById(@PathVariable Long id, @RequestBody Category category) {
+    public ResponseCategoryDto updateCategoryById(@PathVariable Long id, @Valid @RequestBody Category category) {
         return categoryService.updateCategoryById(id, category);
     }
 
