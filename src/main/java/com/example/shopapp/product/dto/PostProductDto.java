@@ -10,7 +10,7 @@ public record PostProductDto(
         String description,
         int amount,
         double price,
-        DiscountDto discount,
+        Long discountId,
         List<Long> categoryIds
 ) {
 }

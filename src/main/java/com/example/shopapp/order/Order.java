@@ -9,8 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -30,11 +30,15 @@ public class Order {
     @Column(
             nullable = false
     )
-    private Date orderDate;
+    private LocalDateTime orderDate;
     @Column(
             nullable = false
     )
     private double totalPrice;
+    @Column(
+            nullable = false
+    )
+    private double totalDiscount;
     @Column(
             name = "completed",
             nullable = false
@@ -54,6 +58,11 @@ public class Order {
             referencedColumnName = "addressId"
     )
     private Address address;
-    @ManyToMany(mappedBy = "orders")
-    private Set<Product> products;
+    @ManyToMany
+    @JoinTable(
+            name = "order_product",
+            joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "orderId"),
+            inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "productId")
+    )
+    private List<Product> products;
 }

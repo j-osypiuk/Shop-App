@@ -34,7 +34,9 @@ public class ProductDtoMapper {
                 product.getDescription(),
                 product.getAmount(),
                 product.getPrice(),
-                DiscountDtoMapper.mapDiscountToDiscountDto(product.getDiscount()),
+                product.getDiscount() != null ?
+                        product.getDiscount().getDiscountId() :
+                        -1,
                 product.getCategories().stream().
                         map(Category::getCategoryId)
                         .collect(Collectors.toList())
@@ -45,7 +47,10 @@ public class ProductDtoMapper {
         return new OrderProductDto(
                 product.getProductId(),
                 product.getName(),
-                product.getPrice()
+                product.getPrice(),
+                product.getDiscount() != null ?
+                        product.getPrice() * ((double) product.getDiscount().getDiscountPercent() / 100) :
+                        0
         );
     }
 

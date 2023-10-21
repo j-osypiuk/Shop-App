@@ -3,15 +3,13 @@ package com.example.shopapp.customer;
 import com.example.shopapp.address.Address;
 import com.example.shopapp.order.Order;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -65,6 +63,7 @@ public class Customer {
     )
     private Address address;
     @OneToMany(
+            fetch = FetchType.EAGER,
             mappedBy = "customer"
     )
     private Set<Order> orders;
