@@ -1,5 +1,6 @@
 package com.example.shopapp.customer.dto;
 
+import com.example.shopapp.address.dto.AddressDtoMapper;
 import com.example.shopapp.address.dto.ResponseAddressDto;
 import com.example.shopapp.customer.Customer;
 
@@ -8,8 +9,8 @@ import java.util.stream.Collectors;
 
 public class CustomerDtoMapper {
 
-    public static CustomerDto mapCustomerToCustomerDto(Customer customer) {
-        return new CustomerDto(
+    public static ResponseCustomerDto mapCustomerToResponseCustomerDto(Customer customer) {
+        return new ResponseCustomerDto(
                 customer.getCustomerId(),
                 customer.getFirstName(),
                 customer.getLastName(),
@@ -29,6 +30,18 @@ public class CustomerDtoMapper {
         );
     }
 
+    public static Customer mapRequestCustomerDtoToCustomer(RequestCustomerDto requestCustomerDto) {
+        return Customer.builder()
+                .firstName(requestCustomerDto.firstName())
+                .lastName(requestCustomerDto.lastName())
+                .email(requestCustomerDto.email())
+                .age(requestCustomerDto.age())
+                .gender(requestCustomerDto.gender())
+                .phoneNumber(requestCustomerDto.phoneNumber())
+                .address(AddressDtoMapper.mapRequestAddressDtoToAddress(requestCustomerDto.address()))
+                .build();
+    }
+
     public static OrderCustomerDto mapCustomerToOrderCustomerDto(Customer customer) {
         return new OrderCustomerDto(
                 customer.getCustomerId(),
@@ -39,8 +52,8 @@ public class CustomerDtoMapper {
         );
     }
 
-    public static List<CustomerDto> mapCustomersListToCustomerDtoList(List<Customer> customers) {
+    public static List<ResponseCustomerDto> mapCustomersListToCustomerDtoList(List<Customer> customers) {
         return customers.stream()
-                .map(CustomerDtoMapper::mapCustomerToCustomerDto).collect(Collectors.toList());
+                .map(CustomerDtoMapper::mapCustomerToResponseCustomerDto).collect(Collectors.toList());
     }
 }

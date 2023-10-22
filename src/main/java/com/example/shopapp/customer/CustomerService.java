@@ -1,15 +1,16 @@
 package com.example.shopapp.customer;
 
-import com.example.shopapp.customer.dto.CustomerDto;
+import com.example.shopapp.customer.dto.RequestCustomerDto;
+import com.example.shopapp.customer.dto.ResponseCustomerDto;
 
 import java.util.List;
 
 public interface CustomerService {
-    CustomerDto saveCustomer(Customer customer);
-    CustomerDto getCustomerById(Long id);
-    List<CustomerDto> getAllCustomers();
-    CustomerDto getCustomerByEmail(String email);
-    CustomerDto getCustomerByPhoneNumber(String phoneNumber);
-    CustomerDto updateCustomerById(Customer customer, Long id);
+    ResponseCustomerDto saveCustomer(RequestCustomerDto requestCustomerDto);
+    ResponseCustomerDto getCustomerById(Long id);
+    List<ResponseCustomerDto> getAllCustomers();
+    ResponseCustomerDto getCustomerByEmail(String email);
+    ResponseCustomerDto getCustomerByPhoneNumber(String phoneNumber);
+    ResponseCustomerDto updateCustomerById(RequestCustomerDto requestCustomerDto, Long id);
     void deleteCustomerById(Long id);
 }

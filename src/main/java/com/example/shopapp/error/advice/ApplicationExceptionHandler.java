@@ -2,6 +2,7 @@ package com.example.shopapp.error.advice;
 
 import com.example.shopapp.error.exception.ObjectNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -27,6 +28,17 @@ public class ApplicationExceptionHandler {
     public Map<String, String> handleObjectNotFound(ObjectNotFoundException e) {
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put("Error Message", e.getMessage());
+        return errorMap;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public Map<String, String> handleMessageNotReadable(HttpMessageNotReadableException e) {
+        Map<String, String> errorMap = new HashMap<>();
+        if (e.getMessage().contains("[FEMALE, MALE]"))
+            errorMap.put("Error Message", "Gender must match pattern: MALE|FEMALE");
+        else
+            errorMap.put("Error Message", "Json parse error occurred");
         return errorMap;
     }
 

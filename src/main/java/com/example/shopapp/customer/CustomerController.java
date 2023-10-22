@@ -1,6 +1,8 @@
 package com.example.shopapp.customer;
 
-import com.example.shopapp.customer.dto.CustomerDto;
+import com.example.shopapp.customer.dto.RequestCustomerDto;
+import com.example.shopapp.customer.dto.ResponseCustomerDto;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,33 +16,33 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PostMapping
-    public CustomerDto saveCustomer(@RequestBody Customer customer) {
-        return customerService.saveCustomer(customer);
+    public ResponseCustomerDto saveCustomer(@Valid @RequestBody RequestCustomerDto requestCustomerDto) {
+        return customerService.saveCustomer(requestCustomerDto);
     }
 
     @GetMapping("/{id}")
-    public CustomerDto getCustomerById(@PathVariable("id") Long id) {
+    public ResponseCustomerDto getCustomerById(@PathVariable("id") Long id) {
         return customerService.getCustomerById(id);
     }
 
     @GetMapping
-    public List<CustomerDto> getAllCustomers() {
+    public List<ResponseCustomerDto> getAllCustomers() {
         return customerService.getAllCustomers();
     }
 
     @GetMapping(params = "email")
-    public CustomerDto getCustomerByEmail(@RequestParam("email") String email) {
+    public ResponseCustomerDto getCustomerByEmail(@RequestParam("email") String email) {
         return customerService.getCustomerByEmail(email);
     }
 
     @GetMapping(params = "phone")
-    public CustomerDto getCustomerByPhoneNumber(@RequestParam("phone") String phoneNumber) {
+    public ResponseCustomerDto getCustomerByPhoneNumber(@RequestParam("phone") String phoneNumber) {
         return customerService.getCustomerByPhoneNumber(phoneNumber);
     }
 
     @PutMapping("/{id}")
-    public CustomerDto updateCustomerById(@RequestBody Customer customer, @PathVariable("id") Long id) {
-        return customerService.updateCustomerById(customer, id);
+    public ResponseCustomerDto updateCustomerById(@Valid @RequestBody RequestCustomerDto requestCustomerDto, @PathVariable("id") Long id) {
+        return customerService.updateCustomerById(requestCustomerDto, id);
     }
 
     @DeleteMapping("/{id}")

@@ -3,7 +3,7 @@ package com.example.shopapp.customer.dto;
 import com.example.shopapp.address.dto.ResponseAddressDto;
 import com.example.shopapp.customer.Gender;
 
-public record CustomerDto(
+public record ResponseCustomerDto(
         Long id,
         String firstName,
         String lastName,
@@ -12,6 +12,5 @@ public record CustomerDto(
         Gender gender,
         String phoneNumber,
         ResponseAddressDto address
-
 ) {
 }
