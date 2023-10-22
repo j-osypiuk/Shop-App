@@ -1,8 +1,8 @@
 package com.example.shopapp.address;
 
-import com.example.shopapp.address.dto.AddressDto;
+import com.example.shopapp.address.dto.ResponseAddressDto;
 
 public interface AddressService {
 
-    AddressDto updateAddressById(Long id, Address address);
+    ResponseAddressDto updateAddressById(Long id, Address address);
 }

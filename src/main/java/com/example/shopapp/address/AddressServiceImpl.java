@@ -1,6 +1,6 @@
 package com.example.shopapp.address;
 
-import com.example.shopapp.address.dto.AddressDto;
+import com.example.shopapp.address.dto.ResponseAddressDto;
 import com.example.shopapp.address.dto.AddressDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ public class AddressServiceImpl implements AddressService{
     @Autowired
     AddressRepository addressRepository;
 
-    public AddressDto updateAddressById(Long id, Address address) {
+    public ResponseAddressDto updateAddressById(Long id, Address address) {
         Address addressDB = addressRepository.findById(id).get();
 
         if (address.getCountry() != null && !address.getCountry().isEmpty()) addressDB.setCountry(address.getCountry());

@@ -1,6 +1,6 @@
 package com.example.shopapp.order.dto;
 
-import com.example.shopapp.address.dto.AddressDto;
+import com.example.shopapp.address.dto.ResponseAddressDto;
 import com.example.shopapp.customer.dto.OrderCustomerDto;
 import com.example.shopapp.product.dto.OrderProductDto;
 
@@ -14,7 +14,7 @@ public record OrderDto(
         double totalDiscount,
         boolean isCompleted,
         OrderCustomerDto customer,
-        AddressDto address,
+        ResponseAddressDto address,
         List<OrderProductDto> products
 ) {
 }

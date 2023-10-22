@@ -1,6 +1,6 @@
 package com.example.shopapp.customer.dto;
 
-import com.example.shopapp.address.dto.AddressDto;
+import com.example.shopapp.address.dto.ResponseAddressDto;
 import com.example.shopapp.customer.Gender;
 
 public record CustomerDto(
@@ -11,7 +11,7 @@ public record CustomerDto(
         int age,
         Gender gender,
         String phoneNumber,
-        AddressDto address
+        ResponseAddressDto address
 
 ) {
 }

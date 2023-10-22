@@ -1,6 +1,6 @@
 package com.example.shopapp.customer.dto;
 
-import com.example.shopapp.address.dto.AddressDto;
+import com.example.shopapp.address.dto.ResponseAddressDto;
 import com.example.shopapp.customer.Customer;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public class CustomerDtoMapper {
                 customer.getAge(),
                 customer.getGender(),
                 customer.getPhoneNumber(),
-                new AddressDto(
+                new ResponseAddressDto(
                         customer.getAddress().getAddressId(),
                         customer.getAddress().getCountry(),
                         customer.getAddress().getRegion(),

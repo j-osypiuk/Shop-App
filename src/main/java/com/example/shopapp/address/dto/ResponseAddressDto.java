@@ -1,6 +1,6 @@
 package com.example.shopapp.address.dto;
 
-public record AddressDto(
+public record ResponseAddressDto(
         Long id,
         String country,
         String region,
