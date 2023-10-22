@@ -23,6 +23,7 @@ public class DiscountDtoMapper {
         return Discount.builder()
                 .name(requestDiscountDto.name())
                 .description(requestDiscountDto.description())
+                .discountPercent(requestDiscountDto.discountPercent())
                 .build();
     }
 
