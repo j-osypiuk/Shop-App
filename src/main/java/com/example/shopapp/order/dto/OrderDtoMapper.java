@@ -19,7 +19,7 @@ public class OrderDtoMapper {
                 order.getTotalDiscount(),
                 order.isCompleted(),
                 CustomerDtoMapper.mapCustomerToOrderCustomerDto(order.getCustomer()),
-                AddressDtoMapper.mapAddressToAddressDto(order.getAddress()),
+                AddressDtoMapper.mapAddressToResponseAddressDto(order.getAddress()),
                 order.getProducts().stream()
                         .map(ProductDtoMapper::mapProductToOrderProductDto)
                         .collect(Collectors.toList())

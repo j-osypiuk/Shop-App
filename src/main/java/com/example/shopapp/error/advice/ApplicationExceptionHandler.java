@@ -26,7 +26,7 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler(ObjectNotFoundException.class)
     public Map<String, String> handleObjectNotFound(ObjectNotFoundException e) {
         Map<String, String> errorMap = new HashMap<>();
-        errorMap.put("ErrorMessage", e.getMessage());
+        errorMap.put("Error Message", e.getMessage());
         return errorMap;
     }
 

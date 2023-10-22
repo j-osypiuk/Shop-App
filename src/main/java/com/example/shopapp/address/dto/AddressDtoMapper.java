@@ -4,7 +4,7 @@ import com.example.shopapp.address.Address;
 
 public class AddressDtoMapper {
 
-    public static ResponseAddressDto mapAddressToAddressDto(Address address) {
+    public static ResponseAddressDto mapAddressToResponseAddressDto(Address address) {
         return new ResponseAddressDto(
                 address.getAddressId(),
                 address.getCountry(),
