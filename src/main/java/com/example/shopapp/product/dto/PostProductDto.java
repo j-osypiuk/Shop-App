@@ -1,7 +1,5 @@
 package com.example.shopapp.product.dto;
 
-import com.example.shopapp.discount.dto.DiscountDto;
-
 import java.util.List;
 
 public record PostProductDto(

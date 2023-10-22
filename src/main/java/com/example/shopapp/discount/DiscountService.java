@@ -1,14 +1,15 @@
 package com.example.shopapp.discount;
 
-import com.example.shopapp.discount.dto.DiscountDto;
+import com.example.shopapp.discount.dto.RequestDiscountDto;
+import com.example.shopapp.discount.dto.ResponseDiscountDto;
 
 import java.util.List;
 
 public interface DiscountService {
 
-    DiscountDto saveDiscount(Discount discount);
-    DiscountDto getDiscountById(Long id);
-    List<DiscountDto> getAllDiscounts();
-    DiscountDto updateDiscountById(Long id, Discount discount);
+    ResponseDiscountDto saveDiscount(RequestDiscountDto requestDiscountDto);
+    ResponseDiscountDto getDiscountById(Long id);
+    List<ResponseDiscountDto> getAllDiscounts();
+    ResponseDiscountDto updateDiscountById(Long id, RequestDiscountDto requestDiscountDto);
     void deleteDiscountById(Long id);
 }

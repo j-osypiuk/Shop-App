@@ -1,6 +1,7 @@
 package com.example.shopapp.discount;
 
-import com.example.shopapp.discount.dto.DiscountDto;
+import com.example.shopapp.discount.dto.RequestDiscountDto;
+import com.example.shopapp.discount.dto.ResponseDiscountDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,23 +15,23 @@ public class DiscountController {
     DiscountService discountService;
 
     @PostMapping
-    public DiscountDto saveDiscount(@RequestBody Discount discount) {
-        return discountService.saveDiscount(discount);
+    public ResponseDiscountDto saveDiscount(@RequestBody RequestDiscountDto requestDiscountDto) {
+        return discountService.saveDiscount(requestDiscountDto);
     }
 
     @GetMapping("/{id}")
-    public DiscountDto getDiscountById(@PathVariable("id") Long id) {
+    public ResponseDiscountDto getDiscountById(@PathVariable("id") Long id) {
         return discountService.getDiscountById(id);
     }
 
     @GetMapping()
-    public List<DiscountDto> getAllDiscounts() {
+    public List<ResponseDiscountDto> getAllDiscounts() {
         return discountService.getAllDiscounts();
     }
 
     @PutMapping("/{id}")
-    public DiscountDto updateDiscountById(@PathVariable("id") Long id, @RequestBody Discount discount) {
-        return discountService.updateDiscountById(id, discount);
+    public ResponseDiscountDto updateDiscountById(@PathVariable("id") Long id, @RequestBody RequestDiscountDto requestDiscountDto) {
+        return discountService.updateDiscountById(id, requestDiscountDto);
     }
 
     @DeleteMapping("/{id}")

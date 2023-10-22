@@ -1,6 +1,6 @@
 package com.example.shopapp.discount.dto;
 
-public record DiscountDto(
+public record ResponseDiscountDto(
         Long id,
         String name,
         String description,

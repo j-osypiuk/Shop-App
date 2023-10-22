@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 public class DiscountDtoMapper {
 
-    public static DiscountDto mapDiscountToDiscountDto(Discount discount) {
+    public static ResponseDiscountDto mapDiscountToResponseDiscountDto(Discount discount) {
         if (discount != null) {
-            return new DiscountDto(
+            return new ResponseDiscountDto(
                     discount.getDiscountId(),
                     discount.getName(),
                     discount.getDescription(),
@@ -19,9 +19,16 @@ public class DiscountDtoMapper {
         return null;
     }
 
-    public static List<DiscountDto> mapDiscountListToDiscountDtoList(List<Discount> discounts) {
+    public static Discount mapRequestDiscountDtoToDiscount(RequestDiscountDto requestDiscountDto) {
+        return Discount.builder()
+                .name(requestDiscountDto.name())
+                .description(requestDiscountDto.description())
+                .build();
+    }
+
+    public static List<ResponseDiscountDto> mapDiscountListToResponseDiscountDtoList(List<Discount> discounts) {
         return discounts.stream()
-                .map(discount -> new DiscountDto(
+                .map(discount -> new ResponseDiscountDto(
                         discount.getDiscountId(),
                         discount.getName(),
                         discount.getDescription(),

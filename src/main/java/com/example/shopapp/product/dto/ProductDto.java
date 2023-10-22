@@ -1,8 +1,7 @@
 package com.example.shopapp.product.dto;
 
-import com.example.shopapp.category.dto.RequestCategoryDto;
 import com.example.shopapp.category.dto.ResponseCategoryDto;
-import com.example.shopapp.discount.dto.DiscountDto;
+import com.example.shopapp.discount.dto.ResponseDiscountDto;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ public record ProductDto(
         String description,
         int amount,
         double price,
-        DiscountDto discount,
+        ResponseDiscountDto discount,
         List<ResponseCategoryDto> categories,
         List<String> productPhotos
 ) {

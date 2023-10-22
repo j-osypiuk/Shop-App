@@ -17,7 +17,7 @@ public class ProductDtoMapper {
                 product.getDescription(),
                 product.getAmount(),
                 product.getPrice(),
-                DiscountDtoMapper.mapDiscountToDiscountDto(product.getDiscount()),
+                DiscountDtoMapper.mapDiscountToResponseDiscountDto(product.getDiscount()),
                 product.getCategories().stream().
                         map(CategoryDtoMapper::mapCategoryToResponseCategoryDto)
                         .collect(Collectors.toList()),

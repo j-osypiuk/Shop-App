@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Data
@@ -37,5 +37,5 @@ public class Discount {
     @OneToMany(
             mappedBy = "discount"
     )
-    private Set<Product> products;
+    private List<Product> products;
 }
