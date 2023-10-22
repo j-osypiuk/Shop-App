@@ -2,8 +2,11 @@ package com.example.shopapp.customer;
 
 import com.example.shopapp.customer.dto.RequestCustomerDto;
 import com.example.shopapp.customer.dto.ResponseCustomerDto;
+import com.example.shopapp.error.exception.ObjectNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,38 +19,56 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PostMapping
-    public ResponseCustomerDto saveCustomer(@Valid @RequestBody RequestCustomerDto requestCustomerDto) {
-        return customerService.saveCustomer(requestCustomerDto);
+    public ResponseEntity<ResponseCustomerDto> saveCustomer(@Valid @RequestBody RequestCustomerDto requestCustomerDto) {
+        return new ResponseEntity<>(
+                customerService.saveCustomer(requestCustomerDto),
+                HttpStatus.CREATED
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseCustomerDto getCustomerById(@PathVariable("id") Long id) {
-        return customerService.getCustomerById(id);
+    public ResponseEntity<ResponseCustomerDto> getCustomerById(@PathVariable("id") Long id) throws ObjectNotFoundException {
+        return new ResponseEntity<>(
+                customerService.getCustomerById(id),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping
-    public List<ResponseCustomerDto> getAllCustomers() {
-        return customerService.getAllCustomers();
+    public ResponseEntity<List<ResponseCustomerDto>> getAllCustomers() throws ObjectNotFoundException {
+        return new ResponseEntity<>(
+                customerService.getAllCustomers(),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping(params = "email")
-    public ResponseCustomerDto getCustomerByEmail(@RequestParam("email") String email) {
-        return customerService.getCustomerByEmail(email);
+    public ResponseEntity<ResponseCustomerDto> getCustomerByEmail(@RequestParam("email") String email) throws ObjectNotFoundException {
+        return new ResponseEntity<>(
+                customerService.getCustomerByEmail(email),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping(params = "phone")
-    public ResponseCustomerDto getCustomerByPhoneNumber(@RequestParam("phone") String phoneNumber) {
-        return customerService.getCustomerByPhoneNumber(phoneNumber);
+    public ResponseEntity<ResponseCustomerDto> getCustomerByPhoneNumber(@RequestParam("phone") String phoneNumber) throws ObjectNotFoundException {
+        return new ResponseEntity<>(
+                customerService.getCustomerByPhoneNumber(phoneNumber),
+                HttpStatus.OK
+        );
     }
 
     @PutMapping("/{id}")
-    public ResponseCustomerDto updateCustomerById(@Valid @RequestBody RequestCustomerDto requestCustomerDto, @PathVariable("id") Long id) {
-        return customerService.updateCustomerById(requestCustomerDto, id);
+    public ResponseEntity<ResponseCustomerDto> updateCustomerById(@Valid @RequestBody RequestCustomerDto requestCustomerDto, @PathVariable("id") Long id) throws ObjectNotFoundException {
+        return new ResponseEntity<>(
+                customerService.updateCustomerById(requestCustomerDto, id),
+                HttpStatus.OK
+        );
     }
 
     @DeleteMapping("/{id}")
-    public String deleteCustomerById(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteCustomerById(@PathVariable("id") Long id) throws ObjectNotFoundException {
         customerService.deleteCustomerById(id);
-        return "Customer with id " + id + " deleted successfully";
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
