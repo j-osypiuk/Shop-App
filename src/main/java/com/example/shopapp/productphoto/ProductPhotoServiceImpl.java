@@ -1,6 +1,9 @@
 package com.example.shopapp.productphoto;
 
+import com.example.shopapp.error.exception.InvalidStateException;
+import com.example.shopapp.error.exception.ObjectNotFoundException;
 import com.example.shopapp.product.Product;
+import com.example.shopapp.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -17,43 +21,66 @@ public class ProductPhotoServiceImpl implements ProductPhotoService{
     @Autowired
     ProductPhotoRepository productPhotoRepository;
 
+    @Autowired
+    ProductRepository productRepository;
+
     private final String FOLDER_PATH = System.getProperty("user.dir")
             + "\\src\\main\\resources\\static\\images\\product_photos\\";
 
     @Override
-    public String savePhotos(Long id, MultipartFile[] files) throws IOException {
+    public void savePhotos(Long id, MultipartFile[] files) throws InvalidStateException, ObjectNotFoundException {
+        Optional<Product> productDB = productRepository.findById(id);
+
+        if (productDB.isEmpty()) throw new ObjectNotFoundException("Product with id = " + id + " not found");
+
         int number = 0;
         for (MultipartFile file : files) {
             UUID photoName = UUID.randomUUID();
-            String filePath = FOLDER_PATH+photoName.toString()+".png";
+            String filePath = FOLDER_PATH + photoName.toString() + ".png";
 
-            productPhotoRepository.save(ProductPhoto.builder()
-                        .photoName(photoName)
-                        .number(number)
-                        .product(Product.builder().productId(id).build())
-                        .build());
-
-            file.transferTo(new File(filePath));
+            try {
+                file.transferTo(new File(filePath));
+                productPhotoRepository.save(ProductPhoto.builder()
+                            .photoName(photoName)
+                            .number(number)
+                            .product(Product.builder().productId(id).build())
+                            .build());
+            } catch (IOException e) {
+                throw new InvalidStateException("Cannot save file number = " + number + 1);
+            }
             number++;
         }
-        return "Files saved successfully";
     }
 
     @Override
-    public String deleteAllPhotos(Long id) {
+    public void deleteAllPhotos(Long id) throws ObjectNotFoundException, InvalidStateException {
         List<ProductPhoto> productPhotos = productPhotoRepository.findAllPhotosByProductProductId(id);
-        productPhotoRepository.deletePhotoByProductProductId(id);
+
+        if (productPhotos.isEmpty()) throw new ObjectNotFoundException("Photos for product with id = " + id + " not found");
 
         for (ProductPhoto productPhoto : productPhotos) {
             File file = new File(FOLDER_PATH + productPhoto.getPhotoName() + ".png");
-            if(!file.delete()) return "Cannot delete photo: " + productPhoto.getPhotoName() + ".png";
+            if(file.delete()) {
+                Integer isDeleted = productPhotoRepository.deletePhotoByPhotoName(productPhoto.getPhotoName());
+                if (isDeleted == 0)
+                    throw new InvalidStateException("Cannot delete photo with name = " + productPhoto.getPhotoName() + ".png");
+            }
+            else
+                throw new InvalidStateException("Cannot delete photo with name = " + productPhoto.getPhotoName() + ".png");
         }
-        return "Photos deleted successfully";
     }
 
     @Override
-    public byte[] getPhotoByName(String fileName) throws IOException {
-        String filePath = FOLDER_PATH + fileName;
-        return Files.readAllBytes(new File(filePath).toPath());
+    public byte[] getPhotoByName(String photoName) throws ObjectNotFoundException, InvalidStateException {
+        String filePath = FOLDER_PATH + photoName;
+        File photoFile = new File(filePath);
+
+        if (!photoFile.exists()) throw new ObjectNotFoundException("Photo with name = " + photoName + " not found");
+
+        try {
+            return Files.readAllBytes(photoFile.toPath());
+        } catch (IOException e) {
+            throw new InvalidStateException("Cannot read file with name = " + photoName);
+        }
     }
 }

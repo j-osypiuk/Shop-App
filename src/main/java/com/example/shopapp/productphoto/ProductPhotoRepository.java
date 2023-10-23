@@ -12,5 +12,5 @@ public interface ProductPhotoRepository extends JpaRepository<ProductPhoto, UUID
 
     List<ProductPhoto> findAllPhotosByProductProductId(Long id);
     @Transactional
-    void deletePhotoByProductProductId(Long id);
+    Integer deletePhotoByPhotoName(UUID photoName);
 }

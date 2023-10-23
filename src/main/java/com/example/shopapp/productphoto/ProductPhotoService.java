@@ -1,12 +1,12 @@
 package com.example.shopapp.productphoto;
 
+import com.example.shopapp.error.exception.InvalidStateException;
+import com.example.shopapp.error.exception.ObjectNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 public interface ProductPhotoService {
 
-    String savePhotos(Long id, MultipartFile[] files) throws IOException;
-    String deleteAllPhotos(Long id);
-    byte[] getPhotoByName(String fileName) throws IOException;
+    void savePhotos(Long id, MultipartFile[] files) throws InvalidStateException, ObjectNotFoundException;
+    void deleteAllPhotos(Long id) throws ObjectNotFoundException, InvalidStateException;
+    byte[] getPhotoByName(String fileName) throws ObjectNotFoundException, InvalidStateException;
 }
