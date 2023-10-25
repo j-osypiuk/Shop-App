@@ -1,7 +1,8 @@
 package com.example.shopapp.order;
 
-import com.example.shopapp.order.dto.OrderDto;
-import com.example.shopapp.order.dto.PostOrderDto;
+import com.example.shopapp.order.dto.RequestOrderDto;
+import com.example.shopapp.order.dto.ResponseOrderDto;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,43 +17,43 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping
-    public PostOrderDto saveOrder(@RequestBody Order order) {
+    public ResponseOrderDto saveOrder(@Valid @RequestBody RequestOrderDto order) {
         return orderService.saveOrder(order);
     }
 
     @GetMapping("/{id}")
-    public OrderDto getOrderById(@PathVariable("id") Long id) {
+    public ResponseOrderDto getOrderById(@PathVariable("id") Long id) {
         return orderService.getOrderById(id);
     }
 
     @GetMapping
-    public List<OrderDto> getAllOrders() {
+    public List<ResponseOrderDto> getAllOrders() {
         return orderService.getAllOrders();
     }
 
     @GetMapping("/product/{id}")
-    public List<OrderDto> getAllOrdersByProductId(@PathVariable("id") Long id) {
+    public List<ResponseOrderDto> getAllOrdersByProductId(@PathVariable("id") Long id) {
         return orderService.getAllOrdersByProductId(id);
     }
 
     @GetMapping("/customer/{id}")
-    public List<OrderDto> getAllOrdersByCustomerId(@PathVariable("id") Long id) {
+    public List<ResponseOrderDto> getAllOrdersByCustomerId(@PathVariable("id") Long id) {
         return orderService.getAllOrdersByCustomerId(id);
     }
 
     @GetMapping(params = {"from","to"})
-    public List<OrderDto> getAllOrdersByTimePeriod(@RequestParam("from") LocalDateTime fromTime,
-                                                   @RequestParam("to") LocalDateTime toTime) {
+    public List<ResponseOrderDto> getAllOrdersByTimePeriod(@RequestParam("from") LocalDateTime fromTime,
+                                                           @RequestParam("to") LocalDateTime toTime) {
         return orderService.getAllOrdersByTimePeriod(fromTime, toTime);
     }
 
     @GetMapping(params = "completed")
-    public List<OrderDto> getAllOrdersByCustomerId(@RequestParam("completed") boolean isCompleted) {
+    public List<ResponseOrderDto> getAllOrdersByCustomerId(@RequestParam("completed") boolean isCompleted) {
         return orderService.getAllOrdersByCompletionStatus(isCompleted);
     }
 
     @PutMapping("/{id}")
-    public OrderDto completeOrderById(@PathVariable Long id) {
+    public ResponseOrderDto completeOrderById(@PathVariable Long id) {
         return orderService.completeOrderById(id);
     }
 

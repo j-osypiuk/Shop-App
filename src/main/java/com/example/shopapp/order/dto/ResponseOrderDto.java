@@ -7,7 +7,7 @@ import com.example.shopapp.product.dto.OrderProductDto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record OrderDto(
+public record ResponseOrderDto(
         Long id,
         LocalDateTime orderDate,
         double totalPrice,

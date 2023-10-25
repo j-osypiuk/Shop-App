@@ -2,9 +2,10 @@ package com.example.shopapp.order;
 
 import com.example.shopapp.address.Address;
 import com.example.shopapp.address.AddressRepository;
-import com.example.shopapp.order.dto.OrderDto;
+import com.example.shopapp.address.dto.AddressDtoMapper;
+import com.example.shopapp.order.dto.RequestOrderDto;
+import com.example.shopapp.order.dto.ResponseOrderDto;
 import com.example.shopapp.order.dto.OrderDtoMapper;
-import com.example.shopapp.order.dto.PostOrderDto;
 import com.example.shopapp.product.Product;
 import com.example.shopapp.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,68 +26,76 @@ public class OrderServiceImpl implements OrderService{
     private AddressRepository addressRepository;
 
     @Override
-    public PostOrderDto saveOrder(Order order) {
-        Optional<Address> addressDB = addressRepository.findById(order.getAddress().getAddressId());
+    public ResponseOrderDto saveOrder(RequestOrderDto requestOrderDto) {
+        Optional<Address> addressDB = addressRepository.findByCityAndStreetAndNumberAndPostalCode(
+                requestOrderDto.address().city(),
+                requestOrderDto.address().street(),
+                requestOrderDto.address().number(),
+                requestOrderDto.address().postalCode()
+        );
+
+        Order orderDB = OrderDtoMapper.mapRequestOrderDtoToOrder(requestOrderDto);
+        orderDB.setAddress(addressDB.get());
+        Address newAddress;
         if (addressDB.isEmpty()) {
-            addressRepository.save(order.getAddress());
+            newAddress = addressRepository.save(AddressDtoMapper.mapRequestAddressDtoToAddress(requestOrderDto.address()));
+            orderDB.setAddress(newAddress);
         }
 
-        for (Product product : order.getProducts()) {
-            Optional<Product> productDB = productRepository.findById(product.getProductId());
+        for (Long productId : requestOrderDto.productIds()) {
+            Optional<Product> productDB = productRepository.findById(productId);
             if (productDB.isPresent()) {
                 productDB.get().setAmount(productDB.get().getAmount() - 1);
             }
         }
 
-        order.setOrderDate(LocalDateTime.now());
+        orderDB = orderRepository.save(orderDB);
 
-        Order orderDB = orderRepository.save(order);
-
-        return OrderDtoMapper.mapOrderToPostOrderDto(orderDB);
+        return OrderDtoMapper.mapOrderToResponseOrderDto(orderDB);
     }
 
     @Override
-    public OrderDto getOrderById(Long id) {
+    public ResponseOrderDto getOrderById(Long id) {
         Order orderDB = orderRepository.findById(id).get();
-        return OrderDtoMapper.mapOrderToOrderDto(orderDB);
+        return OrderDtoMapper.mapOrderToResponseOrderDto(orderDB);
     }
 
     @Override
-    public List<OrderDto> getAllOrders() {
+    public List<ResponseOrderDto> getAllOrders() {
         List<Order> ordersDB =  orderRepository.findAll();
-        return OrderDtoMapper.mapOrderListToOrderDtoList(ordersDB);
+        return OrderDtoMapper.mapOrderListToResponseOrderDtoList(ordersDB);
     }
 
     @Override
-    public List<OrderDto> getAllOrdersByProductId(Long id) {
+    public List<ResponseOrderDto> getAllOrdersByProductId(Long id) {
         List<Order> ordersDB = orderRepository.findAllByProductsProductId(id);
-        return OrderDtoMapper.mapOrderListToOrderDtoList(ordersDB);
+        return OrderDtoMapper.mapOrderListToResponseOrderDtoList(ordersDB);
     }
 
     @Override
-    public List<OrderDto> getAllOrdersByCustomerId(Long id) {
+    public List<ResponseOrderDto> getAllOrdersByCustomerId(Long id) {
         List<Order> ordersDB = orderRepository.findAllByCustomerCustomerId(id);
-        return OrderDtoMapper.mapOrderListToOrderDtoList(ordersDB);
+        return OrderDtoMapper.mapOrderListToResponseOrderDtoList(ordersDB);
     }
 
     @Override
-    public List<OrderDto> getAllOrdersByCompletionStatus(boolean isCompleted) {
+    public List<ResponseOrderDto> getAllOrdersByCompletionStatus(boolean isCompleted) {
         List<Order> ordersDB = orderRepository.findAllByIsCompleted(isCompleted);
-        return OrderDtoMapper.mapOrderListToOrderDtoList(ordersDB);
+        return OrderDtoMapper.mapOrderListToResponseOrderDtoList(ordersDB);
     }
 
     @Override
-    public List<OrderDto> getAllOrdersByTimePeriod(LocalDateTime fromDate, LocalDateTime toDate) {
+    public List<ResponseOrderDto> getAllOrdersByTimePeriod(LocalDateTime fromDate, LocalDateTime toDate) {
         List<Order> ordersDB = orderRepository.findAllByOrderDateBetween(fromDate, toDate);
-        return OrderDtoMapper.mapOrderListToOrderDtoList(ordersDB);
+        return OrderDtoMapper.mapOrderListToResponseOrderDtoList(ordersDB);
     }
 
     @Override
-    public OrderDto completeOrderById(Long id) {
+    public ResponseOrderDto completeOrderById(Long id) {
         Order order = orderRepository.findById(id).get();
         order.setCompleted(true);
 
         Order updatedOrder = orderRepository.save(order);
-        return OrderDtoMapper.mapOrderToOrderDto(updatedOrder);
+        return OrderDtoMapper.mapOrderToResponseOrderDto(updatedOrder);
     }
 }

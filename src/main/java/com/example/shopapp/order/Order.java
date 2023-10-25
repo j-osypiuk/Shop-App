@@ -62,7 +62,7 @@ public class Order {
     @JoinTable(
             name = "order_product",
             joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "orderId"),
-            inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "productId")
+            inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "productId", nullable = false)
     )
     private List<Product> products;
 }
