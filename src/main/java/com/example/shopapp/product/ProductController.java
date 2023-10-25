@@ -1,7 +1,8 @@
 package com.example.shopapp.product;
 
-import com.example.shopapp.product.dto.PostProductDto;
-import com.example.shopapp.product.dto.ProductDto;
+import com.example.shopapp.product.dto.RequestProductDto;
+import com.example.shopapp.product.dto.ResponseProductDto;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,23 +16,23 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping
-    public PostProductDto saveProduct(@RequestBody Product product){
-        return productService.saveProduct(product);
+    public ResponseProductDto saveProduct(@Valid @RequestBody RequestProductDto requestProductDto){
+        return productService.saveProduct(requestProductDto);
     }
 
     @GetMapping("/{id}")
-    public ProductDto getProductById(@PathVariable("id") Long id) {
+    public ResponseProductDto getProductById(@PathVariable("id") Long id) {
         return productService.getProductById(id);
     }
 
     @GetMapping
-    public List<ProductDto> getAllProducts() {
+    public List<ResponseProductDto> getAllProducts() {
         return productService.getAllProducts();
     }
 
     @PutMapping("/{id}")
-    public ProductDto updateProductById(@PathVariable("id") Long id, @RequestBody Product product) {
-        return productService.updateProductById(product, id);
+    public ResponseProductDto updateProductById(@PathVariable("id") Long id,@Valid @RequestBody RequestProductDto requestProductDto) {
+        return productService.updateProductById(requestProductDto, id);
     }
 
     @DeleteMapping({"/{id}"})

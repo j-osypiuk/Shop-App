@@ -5,7 +5,7 @@ import com.example.shopapp.discount.dto.ResponseDiscountDto;
 
 import java.util.List;
 
-public record ProductDto(
+public record ResponseProductDto(
         Long id,
         String name,
         String description,

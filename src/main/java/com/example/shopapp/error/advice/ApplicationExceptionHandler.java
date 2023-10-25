@@ -39,7 +39,7 @@ public class ApplicationExceptionHandler {
         if (e.getMessage().contains("[FEMALE, MALE]"))
             errorMap.put("Error Message", "Gender must match pattern: MALE|FEMALE");
         else
-            errorMap.put("Error Message", "Json parse error occurred");
+            errorMap.put("Error Message", e.getMessage());
         return errorMap;
     }
 

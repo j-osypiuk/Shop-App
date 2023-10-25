@@ -2,16 +2,35 @@ package com.example.shopapp.product.dto;
 
 import com.example.shopapp.category.Category;
 import com.example.shopapp.category.dto.CategoryDtoMapper;
+import com.example.shopapp.discount.Discount;
 import com.example.shopapp.discount.dto.DiscountDtoMapper;
 import com.example.shopapp.product.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProductDtoMapper {
 
-    public static ProductDto mapProductToProductDto(Product product) {
-        return new ProductDto(
+    public static Product mapRequestProductDtoToProduct(RequestProductDto requestProductDto) {
+        return Product.builder()
+                .name(requestProductDto.name())
+                .description(requestProductDto.description())
+                .amount(requestProductDto.amount())
+                .price(requestProductDto.price())
+                .discount(requestProductDto.discountId() != null ?
+                        Discount.builder().discountId(requestProductDto.discountId()).build() :
+                        null)
+                .categories(!requestProductDto.categoryIds().isEmpty() ?
+                            requestProductDto.categoryIds().stream()
+                            .map(id -> Category.builder().categoryId(id).build())
+                            .collect(Collectors.toList()) :
+                            null)
+                .build();
+    }
+
+    public static ResponseProductDto mapProductToResponseProductDto(Product product) {
+        return new ResponseProductDto(
                 product.getProductId(),
                 product.getName(),
                 product.getDescription(),
@@ -21,25 +40,11 @@ public class ProductDtoMapper {
                 product.getCategories().stream().
                         map(CategoryDtoMapper::mapCategoryToResponseCategoryDto)
                         .collect(Collectors.toList()),
-                product.getProductPhotos().stream()
+                product.getProductPhotos() != null ?
+                        product.getProductPhotos().stream()
                         .map(productPhoto -> productPhoto.getPhotoName().toString() + ".png")
-                        .collect(Collectors.toList())
-        );
-    }
-
-    public static PostProductDto mapProductToPostProductDto(Product product) {
-        return new PostProductDto(
-                product.getProductId(),
-                product.getName(),
-                product.getDescription(),
-                product.getAmount(),
-                product.getPrice(),
-                product.getDiscount() != null ?
-                        product.getDiscount().getDiscountId() :
-                        -1,
-                product.getCategories().stream().
-                        map(Category::getCategoryId)
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()) :
+                        new ArrayList<>()
         );
     }
 
@@ -54,9 +59,9 @@ public class ProductDtoMapper {
         );
     }
 
-    public static List<ProductDto> mapProductListToProductDtoList(List<Product> products) {
+    public static List<ResponseProductDto> mapProductListToProductDtoList(List<Product> products) {
         return products.stream()
-                .map(ProductDtoMapper::mapProductToProductDto)
+                .map(ProductDtoMapper::mapProductToResponseProductDto)
                 .collect(Collectors.toList());
     }
 }
