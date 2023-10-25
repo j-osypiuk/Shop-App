@@ -4,6 +4,7 @@ import com.example.shopapp.category.Category;
 import com.example.shopapp.category.CategoryRepository;
 import com.example.shopapp.discount.Discount;
 import com.example.shopapp.discount.DiscountRepository;
+import com.example.shopapp.error.exception.ObjectNotFoundException;
 import com.example.shopapp.product.dto.ProductDtoMapper;
 import com.example.shopapp.product.dto.RequestProductDto;
 import com.example.shopapp.product.dto.ResponseProductDto;
@@ -20,25 +21,29 @@ public class ProductServiceImpl implements ProductService{
     @Autowired
     private ProductRepository productRepository;
     @Autowired
-    DiscountRepository discountRepository;
+    private DiscountRepository discountRepository;
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
     @Override
-    public ResponseProductDto saveProduct(RequestProductDto requestProductDto) {
-        Product productx = ProductDtoMapper.mapRequestProductDtoToProduct(requestProductDto);
-        Product productDB = productRepository.save(productx);
-
+    public ResponseProductDto saveProduct(RequestProductDto requestProductDto) throws ObjectNotFoundException {
+        Product productDB = productRepository.save(ProductDtoMapper.mapRequestProductDtoToProduct(requestProductDto));
 
         if (requestProductDto.discountId() != null){
             Optional<Discount> discountDB = discountRepository.findById(requestProductDto.discountId());
-            if (discountDB.isPresent()) productDB.setDiscount(discountDB.get());
+            if (discountDB.isPresent())
+                productDB.setDiscount(discountDB.get());
+            else
+                throw new ObjectNotFoundException("Discount with id = " + requestProductDto.discountId() + " not found");
         }
 
         List<Category> categories = new ArrayList<>();
         for (Long id : requestProductDto.categoryIds()) {
             Optional<Category> categoryDB = categoryRepository.findById(id);
-            if (categoryDB.isPresent()) categories.add(categoryDB.get());
+            if (categoryDB.isPresent())
+                categories.add(categoryDB.get());
+            else
+                throw new ObjectNotFoundException("Category with id = " + id + " not found");
         }
 
         productDB.setCategories(categories);
@@ -47,40 +52,59 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ResponseProductDto getProductById(Long id) {
-        Product productDB = productRepository.findById(id).get();
-        return ProductDtoMapper.mapProductToResponseProductDto(productDB);
+    public ResponseProductDto getProductById(Long id) throws ObjectNotFoundException {
+        Optional<Product> productDB = productRepository.findById(id);
+
+        if (productDB.isEmpty()) throw new ObjectNotFoundException("Product with id = " + id + " not found");
+
+        return ProductDtoMapper.mapProductToResponseProductDto(productDB.get());
     }
 
     @Override
-    public List<ResponseProductDto> getAllProducts() {
+    public List<ResponseProductDto> getAllProducts() throws ObjectNotFoundException {
         List<Product> products = productRepository.findAll();
+
+        if (products.isEmpty()) throw new ObjectNotFoundException("No products found");
+
         return ProductDtoMapper.mapProductListToProductDtoList(products);
     }
 
     @Override
-    public ResponseProductDto updateProductById(RequestProductDto requestProductDto, Long id) {
-//        Product productDB = productRepository.findById(id).get();
-//
-//        if (product.getName() != null && !product.getName().isEmpty()) productDB.setName(product.getName());
-//        if (product.getDescription() != null && !product.getDescription().isEmpty()) productDB.setDescription(product.getDescription());
-//        if (product.getAmount() >= 0) productDB.setAmount(product.getAmount());
-//        if (product.getPrice() > 0) productDB.setPrice(product.getPrice());
-//        if (product.getDiscount() != null) {
-//            if (product.getDiscount().getDiscountId() == null) productDB.setDiscount(null);
-//            else if (product.getDiscount().getDiscountId() > 0) productDB.setDiscount(Discount.builder().discountId(product.getDiscount().getDiscountId()).build());
-//        }
-//        if (product.getCategories() != null) {
-//            productDB.setCategories(product.getCategories());
-//        }
-//
-//        Product updatedProduct = productRepository.save(productDB);
-//        return ProductDtoMapper.mapProductToResponseProductDto(updatedProduct);
-        return null;
+    public ResponseProductDto updateProductById(RequestProductDto requestProductDto, Long id) throws ObjectNotFoundException {
+        Optional<Product> productDB = productRepository.findById(id);
+
+        if (productDB.isEmpty()) throw new ObjectNotFoundException("Product with id = " + id + " not found");
+
+        if (!requestProductDto.name().equals(productDB.get().getName())) productDB.get().setName(requestProductDto.name());
+        if (!requestProductDto.description().equals(productDB.get().getDescription())) productDB.get().setDescription(requestProductDto.description());
+        if (requestProductDto.amount() != productDB.get().getAmount()) productDB.get().setAmount(requestProductDto.amount());
+        if (requestProductDto.price() != productDB.get().getPrice()) productDB.get().setPrice(requestProductDto.price());
+        if (requestProductDto.discountId() == null) {
+            productDB.get().setDiscount(null);
+        } else {
+            Optional<Discount> discountDB = discountRepository.findById(requestProductDto.discountId());
+            if (discountDB.isEmpty()) throw new ObjectNotFoundException("Discount with id = " + requestProductDto.discountId() + " not found");
+            else productDB.get().setDiscount(discountDB.get());
+        }
+        List<Category> categories = new ArrayList<>();
+        for (Long categoryId : requestProductDto.categoryIds()) {
+            Optional<Category> categoryDB = categoryRepository.findById(categoryId);
+            if (categoryDB.isPresent())
+                categories.add(categoryDB.get());
+            else
+                throw new ObjectNotFoundException("Category with id = " + categoryId + " not found");
+        }
+
+        productDB.get().setCategories(categories);
+
+        Product updatedProduct = productRepository.save(productDB.get());
+        return ProductDtoMapper.mapProductToResponseProductDto(updatedProduct);
     }
 
     @Override
-    public void deleteProductById(Long id) {
-        productRepository.deleteById(id);
+    public void deleteProductById(Long id) throws ObjectNotFoundException {
+        Integer isDeleted = productRepository.deleteProductByProductId(id);
+
+        if (isDeleted == 0) throw new ObjectNotFoundException("Product with id = " + id + " not found");
     }
 }

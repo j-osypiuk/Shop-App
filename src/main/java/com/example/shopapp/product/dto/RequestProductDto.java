@@ -1,9 +1,6 @@
 package com.example.shopapp.product.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.util.List;
 
@@ -18,6 +15,7 @@ public record RequestProductDto(
         @Positive
         double price,
         Long discountId,
+        @NotEmpty(message = "Product must belongs to at least one category")
         List<Long> categoryIds
 ) {
 }

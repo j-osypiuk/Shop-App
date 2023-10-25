@@ -2,6 +2,7 @@ package com.example.shopapp.error.advice;
 
 import com.example.shopapp.error.exception.InvalidStateException;
 import com.example.shopapp.error.exception.ObjectNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -46,6 +47,14 @@ public class ApplicationExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidStateException.class)
     public Map<String, String> handleInvalidState(InvalidStateException e) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("Error Message", e.getMessage());
+        return errorMap;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public Map<String, String> handleDataIntegrityViolation(DataIntegrityViolationException e) {
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put("Error Message", e.getMessage());
         return errorMap;

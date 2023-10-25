@@ -21,11 +21,9 @@ public class ProductDtoMapper {
                 .discount(requestProductDto.discountId() != null ?
                         Discount.builder().discountId(requestProductDto.discountId()).build() :
                         null)
-                .categories(!requestProductDto.categoryIds().isEmpty() ?
-                            requestProductDto.categoryIds().stream()
+                .categories(requestProductDto.categoryIds().stream()
                             .map(id -> Category.builder().categoryId(id).build())
-                            .collect(Collectors.toList()) :
-                            null)
+                            .collect(Collectors.toList()))
                 .build();
     }
 
