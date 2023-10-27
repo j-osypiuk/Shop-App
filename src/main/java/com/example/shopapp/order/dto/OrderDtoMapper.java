@@ -31,8 +31,6 @@ public class OrderDtoMapper {
     public static Order mapRequestOrderDtoToOrder(RequestOrderDto requestOrderDto){
         return Order.builder()
                 .orderDate(LocalDateTime.now())
-                .totalPrice(requestOrderDto.totalPrice())
-                .totalDiscount(requestOrderDto.totalDiscount())
                 .isCompleted(requestOrderDto.isCompleted())
                 .customer(Customer.builder().customerId(requestOrderDto.customerId()).build())
                 .address(AddressDtoMapper.mapRequestAddressDtoToAddress(requestOrderDto.address()))
