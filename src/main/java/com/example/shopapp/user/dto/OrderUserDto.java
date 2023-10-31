@@ -1,6 +1,6 @@
-package com.example.shopapp.customer.dto;
+package com.example.shopapp.user.dto;
 
-public record OrderCustomerDto(
+public record OrderUserDto(
         Long id,
         String firstName,
         String lastName,

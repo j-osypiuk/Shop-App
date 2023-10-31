@@ -11,6 +11,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findAllByProductsProductId(Long id);
     List<Order> findAllByOrderDateBetween(LocalDateTime fromDate, LocalDateTime toDate);
-    List<Order> findAllByCustomerCustomerId(Long id);
+    List<Order> findAllByUserUserId(Long id);
     List<Order> findAllByIsCompleted(boolean isCompleted);
 }

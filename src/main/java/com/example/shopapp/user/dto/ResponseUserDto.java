@@ -1,9 +1,9 @@
-package com.example.shopapp.customer.dto;
+package com.example.shopapp.user.dto;
 
 import com.example.shopapp.address.dto.ResponseAddressDto;
-import com.example.shopapp.customer.Gender;
+import com.example.shopapp.user.Gender;
 
-public record ResponseCustomerDto(
+public record ResponseUserDto(
         Long id,
         String firstName,
         String lastName,

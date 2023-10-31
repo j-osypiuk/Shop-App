@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class DiscountController {
     DiscountService discountService;
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<ResponseDiscountDto> saveDiscount(@Valid @RequestBody RequestDiscountDto requestDiscountDto) {
         return new ResponseEntity<>(
                 discountService.saveDiscount(requestDiscountDto),
@@ -43,6 +45,7 @@ public class DiscountController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<ResponseDiscountDto> updateDiscountById(@PathVariable("id") Long id, @Valid @RequestBody RequestDiscountDto requestDiscountDto) throws ObjectNotFoundException {
         return new ResponseEntity<>(
                 discountService.updateDiscountById(id, requestDiscountDto),
@@ -51,6 +54,7 @@ public class DiscountController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<Void> deleteDiscountById(@PathVariable("id") Long id) throws ObjectNotFoundException {
         discountService.deleteDiscountById(id);
         return new ResponseEntity<>(

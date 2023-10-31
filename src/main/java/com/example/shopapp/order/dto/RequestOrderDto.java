@@ -9,8 +9,8 @@ import java.util.List;
 
 public record RequestOrderDto(
         boolean isCompleted,
-        @NotNull(message = "Order must contain customer")
-        Long customerId,
+        @NotNull(message = "Order must contain user")
+        Long userId,
         @NotNull(message = "Order must contain address")
         @Valid
         RequestAddressDto address,

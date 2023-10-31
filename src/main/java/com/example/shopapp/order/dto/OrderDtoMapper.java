@@ -1,8 +1,8 @@
 package com.example.shopapp.order.dto;
 
 import com.example.shopapp.address.dto.AddressDtoMapper;
-import com.example.shopapp.customer.Customer;
-import com.example.shopapp.customer.dto.CustomerDtoMapper;
+import com.example.shopapp.user.User;
+import com.example.shopapp.user.dto.UserDtoMapper;
 import com.example.shopapp.order.Order;
 import com.example.shopapp.product.Product;
 import com.example.shopapp.product.dto.ProductDtoMapper;
@@ -20,7 +20,7 @@ public class OrderDtoMapper {
                 order.getTotalPrice(),
                 order.getTotalDiscount(),
                 order.isCompleted(),
-                CustomerDtoMapper.mapCustomerToOrderCustomerDto(order.getCustomer()),
+                UserDtoMapper.mapUserToOrderUserDto(order.getUser()),
                 AddressDtoMapper.mapAddressToResponseAddressDto(order.getAddress()),
                 order.getProducts().stream()
                         .map(ProductDtoMapper::mapProductToOrderProductDto)
@@ -32,7 +32,7 @@ public class OrderDtoMapper {
         return Order.builder()
                 .orderDate(LocalDateTime.now())
                 .isCompleted(requestOrderDto.isCompleted())
-                .customer(Customer.builder().customerId(requestOrderDto.customerId()).build())
+                .user(User.builder().userId(requestOrderDto.userId()).build())
                 .address(AddressDtoMapper.mapRequestAddressDtoToAddress(requestOrderDto.address()))
                 .products(requestOrderDto.productIds().stream()
                         .map(productId -> Product.builder().productId(productId).build())

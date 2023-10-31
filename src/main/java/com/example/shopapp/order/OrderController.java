@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE','CUSTOMER')")
     public ResponseEntity<ResponseOrderDto> saveOrder(@Valid @RequestBody RequestOrderDto order) throws ObjectNotFoundException {
         return new ResponseEntity<>(
                 orderService.saveOrder(order),
@@ -28,6 +30,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<ResponseOrderDto> getOrderById(@PathVariable("id") Long id) throws ObjectNotFoundException {
         return new ResponseEntity<>(
                 orderService.getOrderById(id),
@@ -36,6 +39,7 @@ public class OrderController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<List<ResponseOrderDto>> getAllOrders() throws ObjectNotFoundException {
         return new ResponseEntity<>(
                 orderService.getAllOrders(),
@@ -44,6 +48,7 @@ public class OrderController {
     }
 
     @GetMapping("/product/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<List<ResponseOrderDto>> getAllOrdersByProductId(@PathVariable("id") Long id) throws ObjectNotFoundException {
         return new ResponseEntity<>(
                 orderService.getAllOrdersByProductId(id),
@@ -51,15 +56,17 @@ public class OrderController {
         );
     }
 
-    @GetMapping("/customer/{id}")
-    public ResponseEntity<List<ResponseOrderDto>> getAllOrdersByCustomerId(@PathVariable("id") Long id) throws ObjectNotFoundException {
+    @GetMapping("/user/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
+    public ResponseEntity<List<ResponseOrderDto>> getAllOrdersByUserId(@PathVariable("id") Long id) throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                orderService.getAllOrdersByCustomerId(id),
+                orderService.getAllOrdersByUserId(id),
                 HttpStatus.OK
         );
     }
 
     @GetMapping(params = {"from", "to"})
+    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<List<ResponseOrderDto>> getAllOrdersByTimePeriod(@RequestParam("from") LocalDateTime fromTime, @RequestParam("to") LocalDateTime toTime) throws ObjectNotFoundException {
         return new ResponseEntity<>(
                 orderService.getAllOrdersByTimePeriod(fromTime, toTime),
@@ -68,7 +75,8 @@ public class OrderController {
     }
 
     @GetMapping(params = "completed")
-    public ResponseEntity<List<ResponseOrderDto>> getAllOrdersByCustomerId(@RequestParam("completed") boolean isCompleted) throws ObjectNotFoundException {
+    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
+    public ResponseEntity<List<ResponseOrderDto>> getAllOrdersByCompletionStatus(@RequestParam("completed") boolean isCompleted) throws ObjectNotFoundException {
         return new ResponseEntity<>(
                 orderService.getAllOrdersByCompletionStatus(isCompleted),
                 HttpStatus.OK

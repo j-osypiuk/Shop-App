@@ -1,7 +1,7 @@
 package com.example.shopapp.order.dto;
 
 import com.example.shopapp.address.dto.ResponseAddressDto;
-import com.example.shopapp.customer.dto.OrderCustomerDto;
+import com.example.shopapp.user.dto.OrderUserDto;
 import com.example.shopapp.product.dto.OrderProductDto;
 
 import java.time.LocalDateTime;
@@ -13,7 +13,7 @@ public record ResponseOrderDto(
         double totalPrice,
         double totalDiscount,
         boolean isCompleted,
-        OrderCustomerDto customer,
+        OrderUserDto user,
         ResponseAddressDto address,
         List<OrderProductDto> products
 ) {

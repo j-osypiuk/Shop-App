@@ -1,7 +1,7 @@
 package com.example.shopapp.order;
 
 import com.example.shopapp.address.Address;
-import com.example.shopapp.customer.Customer;
+import com.example.shopapp.user.User;
 import com.example.shopapp.product.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -47,10 +47,10 @@ public class Order {
     @ManyToOne
     @JoinColumn(
             nullable = false,
-            name = "customer_id",
-            referencedColumnName = "customerId"
+            name = "user_id",
+            referencedColumnName = "userId"
     )
-    private Customer customer;
+    private User user;
     @ManyToOne
     @JoinColumn(
             nullable = false,

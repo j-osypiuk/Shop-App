@@ -1,6 +1,6 @@
 package com.example.shopapp.address;
 
-import com.example.shopapp.customer.Customer;
+import com.example.shopapp.user.User;
 import com.example.shopapp.order.Order;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -53,5 +53,5 @@ public class Address {
     @OneToOne(
             mappedBy = "address"
     )
-    private Customer customer;
+    private User user;
 }

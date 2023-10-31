@@ -3,8 +3,8 @@ package com.example.shopapp.order;
 import com.example.shopapp.address.Address;
 import com.example.shopapp.address.AddressRepository;
 import com.example.shopapp.address.dto.AddressDtoMapper;
-import com.example.shopapp.customer.Customer;
-import com.example.shopapp.customer.CustomerRepository;
+import com.example.shopapp.user.User;
+import com.example.shopapp.user.UserRepository;
 import com.example.shopapp.error.exception.ObjectNotFoundException;
 import com.example.shopapp.order.dto.OrderDtoMapper;
 import com.example.shopapp.order.dto.RequestOrderDto;
@@ -29,11 +29,11 @@ public class OrderServiceImpl implements OrderService{
     @Autowired
     private AddressRepository addressRepository;
     @Autowired
-    private CustomerRepository customerRepository;
+    private UserRepository userRepository;
 
     @Override
     public ResponseOrderDto saveOrder(RequestOrderDto requestOrderDto) throws ObjectNotFoundException {
-        Optional<Customer> customerDB = customerRepository.findById(requestOrderDto.customerId());
+        Optional<User> userDB = userRepository.findById(requestOrderDto.userId());
 
         Optional<Address> addressDB = addressRepository.findByCityAndStreetAndNumberAndPostalCode(
                 requestOrderDto.address().city(),
@@ -44,10 +44,10 @@ public class OrderServiceImpl implements OrderService{
 
         Order orderDB = OrderDtoMapper.mapRequestOrderDtoToOrder(requestOrderDto);
 
-        if (customerDB.isEmpty())
-            throw new ObjectNotFoundException("Customer with id = " + requestOrderDto.customerId() + " not found");
+        if (userDB.isEmpty())
+            throw new ObjectNotFoundException("User with id = " + requestOrderDto.userId() + " not found");
         else
-            orderDB.setCustomer(customerDB.get());
+            orderDB.setUser(userDB.get());
 
         if (addressDB.isPresent())
             orderDB.setAddress(addressDB.get());
@@ -108,10 +108,10 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public List<ResponseOrderDto> getAllOrdersByCustomerId(Long id) throws ObjectNotFoundException {
-        List<Order> ordersDB = orderRepository.findAllByCustomerCustomerId(id);
+    public List<ResponseOrderDto> getAllOrdersByUserId(Long id) throws ObjectNotFoundException {
+        List<Order> ordersDB = orderRepository.findAllByUserUserId(id);
 
-        if (ordersDB.isEmpty()) throw new ObjectNotFoundException("No orders for customer with id = " + id + " found");
+        if (ordersDB.isEmpty()) throw new ObjectNotFoundException("No orders for user with id = " + id + " found");
 
         return OrderDtoMapper.mapOrderListToResponseOrderDtoList(ordersDB);
     }
