@@ -1,5 +1,6 @@
 package com.example.shopapp.error.advice;
 
+import com.example.shopapp.error.exception.InvalidPasswordException;
 import com.example.shopapp.error.exception.InvalidStateException;
 import com.example.shopapp.error.exception.ObjectNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -47,6 +48,14 @@ public class ApplicationExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidStateException.class)
     public Map<String, String> handleInvalidState(InvalidStateException e) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("Error Message", e.getMessage());
+        return errorMap;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidPasswordException.class)
+    public Map<String, String> handleInvalidPassword(InvalidPasswordException e) {
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put("Error Message", e.getMessage());
         return errorMap;
