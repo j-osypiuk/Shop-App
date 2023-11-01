@@ -1,6 +1,6 @@
 package com.example.shopapp.user;
 
-import com.example.shopapp.user.dto.RequestUserDto;
+import com.example.shopapp.error.exception.InvalidPasswordException;
 import com.example.shopapp.error.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,67 +31,86 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User getUserById(Long id) throws ObjectNotFoundException {
-        Optional<User> customerDB = userRepository.findById(id);
+        Optional<User> userDB = userRepository.findById(id);
 
-        if (customerDB.isEmpty()) throw new ObjectNotFoundException("Customer with id = " + id + " not found");
+        if (userDB.isEmpty())
+            throw new ObjectNotFoundException("User with id = " + id + " not found");
 
-        return customerDB.get();
+        return userDB.get();
     }
 
     @Override
     public List<User> getAllUsers() throws ObjectNotFoundException {
-        List<User> customersDB = userRepository.findAll();
+        List<User> usersDB = userRepository.findAll();
 
-        if (customersDB.isEmpty()) throw new ObjectNotFoundException("No customers found");
+        if (usersDB.isEmpty())
+            throw new ObjectNotFoundException("No users found");
 
-        return customersDB;
+        return usersDB;
     }
 
     @Override
     public User getUserByEmail(String email) throws ObjectNotFoundException {
-        Optional<User> customerDB = userRepository.findUserByEmailIgnoreCase(email);
+        Optional<User> userDB = userRepository.findUserByEmailIgnoreCase(email);
 
-        if (customerDB.isEmpty()) throw new ObjectNotFoundException("Customer with email = " + email + " not found");
+        if (userDB.isEmpty())
+            throw new ObjectNotFoundException("User with email = " + email + " not found");
 
-        return customerDB.get();
+        return userDB.get();
     }
 
     @Override
     public User getUserByPhoneNumber(String phoneNumber) throws ObjectNotFoundException {
-        Optional<User> customerDB = userRepository.findUserByPhoneNumber(phoneNumber);
+        Optional<User> userDB = userRepository.findUserByPhoneNumber(phoneNumber);
 
-        if (customerDB.isEmpty()) throw new ObjectNotFoundException("Customer with phone number = " + phoneNumber + " not found");
+        if (userDB.isEmpty())
+            throw new ObjectNotFoundException("User with phone number = " + phoneNumber + " not found");
 
-        return customerDB.get();
+        return userDB.get();
     }
 
     @Override
-    public User updateUserById(RequestUserDto requestUserDto, Long id) throws ObjectNotFoundException {
-        Optional<User> customerDB = userRepository.findById(id);
+    public User updateUserById(User user, Long id) throws ObjectNotFoundException {
+        Optional<User> userDB = userRepository.findById(id);
 
-        if (customerDB.isEmpty()) throw new ObjectNotFoundException("Customer with id = " + id + " not found");
+        if (userDB.isEmpty())
+            throw new ObjectNotFoundException("User with id = " + id + " not found");
 
-        if (!requestUserDto.firstName().equals(customerDB.get().getFirstName()))
-            customerDB.get().setFirstName(requestUserDto.firstName());
-        if (!requestUserDto.lastName().equals(customerDB.get().getLastName()))
-            customerDB.get().setLastName(requestUserDto.lastName());
-        if (!requestUserDto.email().equals(customerDB.get().getEmail()))
-            customerDB.get().setEmail(requestUserDto.email());
-        if (requestUserDto.age() != customerDB.get().getAge())
-            customerDB.get().setAge(requestUserDto.age());
-        if (!requestUserDto.gender().equals(customerDB.get().getGender()))
-            customerDB.get().setGender(requestUserDto.gender());
-        if (!requestUserDto.phoneNumber().equals(customerDB.get().getPhoneNumber()))
-            customerDB.get().setPhoneNumber(requestUserDto.phoneNumber());
+        if (!user.getFirstName().equals(userDB.get().getFirstName()))
+            userDB.get().setFirstName(user.getFirstName());
+        if (!user.getLastName().equals(userDB.get().getLastName()))
+            userDB.get().setLastName(user.getLastName());
+        if (user.getBirthDate() != userDB.get().getBirthDate())
+            userDB.get().setBirthDate(user.getBirthDate());
+        if (!user.getGender().equals(userDB.get().getGender()))
+            userDB.get().setGender(user.getGender());
+        if (!user.getPhoneNumber().equals(userDB.get().getPhoneNumber()))
+            userDB.get().setPhoneNumber(user.getPhoneNumber());
 
-        return userRepository.save(customerDB.get());
+        return userRepository.save(userDB.get());
+    }
+
+    @Override
+    public void updatePasswordByUserId(Long id, String newPassword) throws InvalidPasswordException, ObjectNotFoundException {
+        Optional<User> userDB = userRepository.findById(id);
+
+        if (userDB.isEmpty())
+            throw new ObjectNotFoundException("User with id = " + id + " not found");
+        if (newPassword.isEmpty())
+            throw new InvalidPasswordException("User password cannot be blank");
+        if (newPassword.length() > 100)
+            throw new InvalidPasswordException("User password cannot contain more than 100 characters");
+
+        userDB.get().setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(userDB.get());
     }
 
     @Override
     public void deleteUserById(Long id) throws ObjectNotFoundException {
         Integer isDeleted = userRepository.deleteUserByUserId(id);
 
-        if (isDeleted == 0) throw new ObjectNotFoundException("Customer with id = " + id + " not found");
+        if (isDeleted == 0)
+            throw new ObjectNotFoundException("User with id = " + id + " not found");
     }
 
     @Override

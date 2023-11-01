@@ -15,7 +15,7 @@ public class UserDtoMapper {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
-                user.getAge(),
+                user.getBirthDate(),
                 user.getGender(),
                 user.getPhoneNumber(),
                 new ResponseAddressDto(
@@ -30,16 +30,26 @@ public class UserDtoMapper {
         );
     }
 
-    public static User mapRequestUserDtoToUser(RequestUserDto requestUserDto) {
+    public static User mapPostUserDtoToUser(PostUserDto postUserDto) {
         return User.builder()
-                .firstName(requestUserDto.firstName())
-                .lastName(requestUserDto.lastName())
-                .email(requestUserDto.email())
-                .password(requestUserDto.password())
-                .age(requestUserDto.age())
-                .gender(requestUserDto.gender())
-                .phoneNumber(requestUserDto.phoneNumber())
-                .address(AddressDtoMapper.mapRequestAddressDtoToAddress(requestUserDto.address()))
+                .firstName(postUserDto.firstName())
+                .lastName(postUserDto.lastName())
+                .email(postUserDto.email())
+                .password(postUserDto.password())
+                .birthDate(postUserDto.birthDate())
+                .gender(postUserDto.gender())
+                .phoneNumber(postUserDto.phoneNumber())
+                .address(AddressDtoMapper.mapRequestAddressDtoToAddress(postUserDto.address()))
+                .build();
+    }
+
+    public static User mapPutUserDtoToUser(PutUserDto putUserDto) {
+        return User.builder()
+                .firstName(putUserDto.firstName())
+                .lastName(putUserDto.lastName())
+                .birthDate(putUserDto.birthDate())
+                .gender(putUserDto.gender())
+                .phoneNumber(putUserDto.phoneNumber())
                 .build();
     }
 

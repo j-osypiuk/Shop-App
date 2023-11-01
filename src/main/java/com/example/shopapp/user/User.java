@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -50,7 +51,7 @@ public class User implements UserDetails {
     @Column(
             nullable = false
     )
-    private int age;
+    private LocalDateTime birthDate;
     @Column(
             nullable = false,
             length = 7

@@ -1,9 +1,8 @@
 package com.example.shopapp.user;
 
-import com.example.shopapp.user.dto.UserDtoMapper;
-import com.example.shopapp.user.dto.RequestUserDto;
-import com.example.shopapp.user.dto.ResponseUserDto;
+import com.example.shopapp.error.exception.InvalidPasswordException;
 import com.example.shopapp.error.exception.ObjectNotFoundException;
+import com.example.shopapp.user.dto.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,20 +20,20 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/customer")
-    public ResponseEntity<ResponseUserDto> saveCustomer(@Valid @RequestBody RequestUserDto requestUser) {
+    public ResponseEntity<ResponseUserDto> saveCustomer(@Valid @RequestBody PostUserDto postUser) {
         return new ResponseEntity<>(
                 UserDtoMapper.mapUserToResponseUserDto(
-                        userService.saveUser(UserDtoMapper.mapRequestUserDtoToUser(requestUser), Role.CUSTOMER)),
+                        userService.saveUser(UserDtoMapper.mapPostUserDtoToUser(postUser), Role.CUSTOMER)),
                 HttpStatus.CREATED
         );
     }
 
     @PostMapping("/employee")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseUserDto> saveEmployee(@Valid @RequestBody RequestUserDto requestUser) {
+    public ResponseEntity<ResponseUserDto> saveEmployee(@Valid @RequestBody PostUserDto postUser) {
         return new ResponseEntity<>(
                 UserDtoMapper.mapUserToResponseUserDto(
-                        userService.saveUser(UserDtoMapper.mapRequestUserDtoToUser(requestUser), Role.EMPLOYEE)),
+                        userService.saveUser(UserDtoMapper.mapPostUserDtoToUser(postUser), Role.EMPLOYEE)),
                 HttpStatus.CREATED
         );
     }
@@ -76,12 +75,20 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
-    public ResponseEntity<ResponseUserDto> updateUserById(@Valid @RequestBody RequestUserDto requestUserDto, @PathVariable("id") Long id) throws ObjectNotFoundException {
+    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE','CUSTOMER')")
+    public ResponseEntity<ResponseUserDto> updateUserById(@Valid @RequestBody PutUserDto putUser, @PathVariable("id") Long id) throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                UserDtoMapper.mapUserToResponseUserDto(userService.updateUserById(requestUserDto, id)),
+                UserDtoMapper.mapUserToResponseUserDto(
+                        userService.updateUserById(UserDtoMapper.mapPutUserDtoToUser(putUser), id)),
                 HttpStatus.OK
         );
+    }
+
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE','CUSTOMER')")
+    public ResponseEntity<Void> updatePasswordByUserId(@PathVariable("id") Long id, @RequestBody PasswordDto newPassword) throws ObjectNotFoundException, InvalidPasswordException {
+        userService.updatePasswordByUserId(id, newPassword.password());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{id}")
