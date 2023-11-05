@@ -4,7 +4,6 @@ import com.example.shopapp.address.dto.RequestAddressDto;
 import com.example.shopapp.address.dto.ResponseAddressDto;
 import com.example.shopapp.address.dto.AddressDtoMapper;
 import com.example.shopapp.error.exception.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,8 +11,11 @@ import java.util.Optional;
 @Service
 public class AddressServiceImpl implements AddressService{
 
-    @Autowired
-    AddressRepository addressRepository;
+    private final AddressRepository addressRepository;
+
+    public AddressServiceImpl(AddressRepository addressRepository) {
+        this.addressRepository = addressRepository;
+    }
 
     public ResponseAddressDto updateAddressById(Long id, RequestAddressDto requestAddressDto) throws ObjectNotFoundException {
         Optional<Address> addressDB = addressRepository.findById(id);

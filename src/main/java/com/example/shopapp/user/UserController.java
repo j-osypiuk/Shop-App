@@ -4,7 +4,6 @@ import com.example.shopapp.error.exception.InvalidPasswordException;
 import com.example.shopapp.error.exception.ObjectNotFoundException;
 import com.example.shopapp.user.dto.*;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,8 +15,11 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/customer")
     public ResponseEntity<ResponseUserDto> saveCustomer(@Valid @RequestBody PostUserDto postUser) {

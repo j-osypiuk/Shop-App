@@ -2,7 +2,6 @@ package com.example.shopapp.productphoto;
 
 import com.example.shopapp.error.exception.InvalidStateException;
 import com.example.shopapp.error.exception.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +13,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/photos")
 public class ProductPhotoController {
 
-    @Autowired
-    ProductPhotoService productPhotoService;
+    private final ProductPhotoService productPhotoService;
+
+    public ProductPhotoController(ProductPhotoService productPhotoService) {
+        this.productPhotoService = productPhotoService;
+    }
 
     @PostMapping("/product/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")

@@ -8,7 +8,6 @@ import com.example.shopapp.error.exception.ObjectNotFoundException;
 import com.example.shopapp.product.dto.ProductDtoMapper;
 import com.example.shopapp.product.dto.RequestProductDto;
 import com.example.shopapp.product.dto.ResponseProductDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,12 +17,17 @@ import java.util.Optional;
 @Service
 public class ProductServiceImpl implements ProductService{
 
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private DiscountRepository discountRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
+    private final DiscountRepository discountRepository;
+    private final CategoryRepository categoryRepository;
+
+    public ProductServiceImpl(ProductRepository productRepository,
+                              DiscountRepository discountRepository,
+                              CategoryRepository categoryRepository) {
+        this.productRepository = productRepository;
+        this.discountRepository = discountRepository;
+        this.categoryRepository = categoryRepository;
+    }
 
     @Override
     public ResponseProductDto saveProduct(RequestProductDto requestProductDto) throws ObjectNotFoundException {

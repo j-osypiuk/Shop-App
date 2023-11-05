@@ -4,7 +4,6 @@ import com.example.shopapp.error.exception.ObjectNotFoundException;
 import com.example.shopapp.product.dto.RequestProductDto;
 import com.example.shopapp.product.dto.ResponseProductDto;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,8 +15,11 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
 
-    @Autowired
-    ProductService productService;
+    private final ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")

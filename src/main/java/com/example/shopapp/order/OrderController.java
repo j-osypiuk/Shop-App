@@ -4,7 +4,6 @@ import com.example.shopapp.error.exception.ObjectNotFoundException;
 import com.example.shopapp.order.dto.RequestOrderDto;
 import com.example.shopapp.order.dto.ResponseOrderDto;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,8 +16,11 @@ import java.util.List;
 @RequestMapping("/orders")
 public class OrderController {
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
+
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE','CUSTOMER')")

@@ -4,7 +4,6 @@ import com.example.shopapp.category.dto.RequestCategoryDto;
 import com.example.shopapp.category.dto.ResponseCategoryDto;
 import com.example.shopapp.error.exception.ObjectNotFoundException;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,8 +15,11 @@ import java.util.List;
 @RequestMapping("/category")
 public class CategoryController {
 
-    @Autowired
-    CategoryService categoryService;
+    private final CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")

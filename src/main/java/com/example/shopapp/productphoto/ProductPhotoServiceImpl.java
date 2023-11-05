@@ -4,7 +4,6 @@ import com.example.shopapp.error.exception.InvalidStateException;
 import com.example.shopapp.error.exception.ObjectNotFoundException;
 import com.example.shopapp.product.Product;
 import com.example.shopapp.product.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,14 +17,15 @@ import java.util.UUID;
 @Service
 public class ProductPhotoServiceImpl implements ProductPhotoService{
 
-    @Autowired
-    ProductPhotoRepository productPhotoRepository;
-
-    @Autowired
-    ProductRepository productRepository;
-
+    private final ProductPhotoRepository productPhotoRepository;
+    private final ProductRepository productRepository;
     private final String FOLDER_PATH = System.getProperty("user.dir")
             + "\\src\\main\\resources\\static\\images\\product_photos\\";
+
+    public ProductPhotoServiceImpl(ProductPhotoRepository productPhotoRepository, ProductRepository productRepository) {
+        this.productPhotoRepository = productPhotoRepository;
+        this.productRepository = productRepository;
+    }
 
     @Override
     public void savePhotos(Long id, MultipartFile[] files) throws InvalidStateException, ObjectNotFoundException {

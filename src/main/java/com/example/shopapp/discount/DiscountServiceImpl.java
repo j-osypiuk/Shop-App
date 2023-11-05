@@ -1,10 +1,9 @@
 package com.example.shopapp.discount;
 
+import com.example.shopapp.discount.dto.DiscountDtoMapper;
 import com.example.shopapp.discount.dto.RequestDiscountDto;
 import com.example.shopapp.discount.dto.ResponseDiscountDto;
-import com.example.shopapp.discount.dto.DiscountDtoMapper;
 import com.example.shopapp.error.exception.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +12,11 @@ import java.util.Optional;
 @Service
 public class DiscountServiceImpl implements DiscountService{
 
-    @Autowired
-    DiscountRepository discountRepository;
+    private final DiscountRepository discountRepository;
+
+    public DiscountServiceImpl(DiscountRepository discountRepository) {
+        this.discountRepository = discountRepository;
+    }
 
     @Override
     public ResponseDiscountDto saveDiscount(RequestDiscountDto requestDiscountDto) {

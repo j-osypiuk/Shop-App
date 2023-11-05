@@ -3,15 +3,14 @@ package com.example.shopapp.order;
 import com.example.shopapp.address.Address;
 import com.example.shopapp.address.AddressRepository;
 import com.example.shopapp.address.dto.AddressDtoMapper;
-import com.example.shopapp.user.User;
-import com.example.shopapp.user.UserRepository;
 import com.example.shopapp.error.exception.ObjectNotFoundException;
 import com.example.shopapp.order.dto.OrderDtoMapper;
 import com.example.shopapp.order.dto.RequestOrderDto;
 import com.example.shopapp.order.dto.ResponseOrderDto;
 import com.example.shopapp.product.Product;
 import com.example.shopapp.product.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.shopapp.user.User;
+import com.example.shopapp.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,14 +21,20 @@ import java.util.Optional;
 @Service
 public class OrderServiceImpl implements OrderService{
 
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private AddressRepository addressRepository;
-    @Autowired
-    private UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
+    private final AddressRepository addressRepository;
+    private final UserRepository userRepository;
+
+    public OrderServiceImpl(OrderRepository orderRepository,
+                            ProductRepository productRepository,
+                            AddressRepository addressRepository,
+                            UserRepository userRepository) {
+        this.orderRepository = orderRepository;
+        this.productRepository = productRepository;
+        this.addressRepository = addressRepository;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public ResponseOrderDto saveOrder(RequestOrderDto requestOrderDto) throws ObjectNotFoundException {

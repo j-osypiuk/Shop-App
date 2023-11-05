@@ -4,7 +4,6 @@ import com.example.shopapp.discount.dto.RequestDiscountDto;
 import com.example.shopapp.discount.dto.ResponseDiscountDto;
 import com.example.shopapp.error.exception.ObjectNotFoundException;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,8 +15,11 @@ import java.util.List;
 @RequestMapping("/discounts")
 public class DiscountController {
 
-    @Autowired
-    DiscountService discountService;
+    private final DiscountService discountService;
+
+    public DiscountController(DiscountService discountService) {
+        this.discountService = discountService;
+    }
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
