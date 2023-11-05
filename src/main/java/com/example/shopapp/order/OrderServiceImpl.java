@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService{
@@ -38,60 +37,47 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public ResponseOrderDto saveOrder(RequestOrderDto requestOrderDto) throws ObjectNotFoundException {
-        Optional<User> userDB = userRepository.findById(requestOrderDto.userId());
+        User userDB = userRepository.findById(requestOrderDto.userId())
+                .orElseThrow(() -> new ObjectNotFoundException("User with id = " + requestOrderDto.userId() + " not found"));
 
-        Optional<Address> addressDB = addressRepository.findByCityAndStreetAndNumberAndPostalCode(
+        Address addressDB = addressRepository.findByCityAndStreetAndNumberAndPostalCode(
                 requestOrderDto.address().city(),
                 requestOrderDto.address().street(),
                 requestOrderDto.address().number(),
                 requestOrderDto.address().postalCode()
-        );
+        ).orElse(addressRepository.save(AddressDtoMapper.mapRequestAddressDtoToAddress(requestOrderDto.address())));
 
         Order orderDB = OrderDtoMapper.mapRequestOrderDtoToOrder(requestOrderDto);
-
-        if (userDB.isEmpty())
-            throw new ObjectNotFoundException("User with id = " + requestOrderDto.userId() + " not found");
-        else
-            orderDB.setUser(userDB.get());
-
-        if (addressDB.isPresent())
-            orderDB.setAddress(addressDB.get());
-        else
-            orderDB.setAddress(addressRepository.save(AddressDtoMapper.mapRequestAddressDtoToAddress(requestOrderDto.address())));
-
+        orderDB.setUser(userDB);
+        orderDB.setAddress(addressDB);
 
         List<Product> products = new ArrayList<>();
         double price = 0;
         double totalDiscount = 0;
         for (Long productId : requestOrderDto.productIds()) {
-            Optional<Product> productDB = productRepository.findById(productId);
-            if (productDB.isEmpty()) {
-                throw new ObjectNotFoundException("Product with id = " + productId + " not found");
-            }
-            else {
-                productDB.get().setAmount(productDB.get().getAmount() - 1);
-                price += productDB.get().getPrice();
-                totalDiscount += productDB.get().getPrice() * productDB.get().getDiscount().getDiscountPercent() / 100;
-                products.add(productDB.get());
-            }
+            Product productDB = productRepository.findById(productId)
+                    .orElseThrow(() -> new ObjectNotFoundException("Product with id = " + productId + " not found"));
+
+            productDB.setAmount(productDB.getAmount() - 1);
+            price += productDB.getPrice();
+            totalDiscount += productDB.getPrice() * productDB.getDiscount().getDiscountPercent() / 100;
+            products.add(productDB);
         }
 
         orderDB.setProducts(products);
         orderDB.setTotalPrice(price - totalDiscount);
         orderDB.setTotalDiscount(totalDiscount);
 
-        orderDB = orderRepository.save(orderDB);
-
+        orderRepository.save(orderDB);
         return OrderDtoMapper.mapOrderToResponseOrderDto(orderDB);
     }
 
     @Override
     public ResponseOrderDto getOrderById(Long id) throws ObjectNotFoundException {
-        Optional<Order> orderDB = orderRepository.findById(id);
+        Order orderDB = orderRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Order with id = " + id + " not found"));
 
-        if (orderDB.isEmpty()) throw new ObjectNotFoundException("Order with id = " + id + " not found");
-
-        return OrderDtoMapper.mapOrderToResponseOrderDto(orderDB.get());
+        return OrderDtoMapper.mapOrderToResponseOrderDto(orderDB);
     }
 
     @Override
@@ -141,14 +127,12 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public ResponseOrderDto completeOrderById(Long id) throws ObjectNotFoundException {
-        Optional<Order> orderDB = orderRepository.findById(id);
+        Order orderDB = orderRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Order with id = " + id + " not found"));
 
-        if (orderDB.isEmpty()) throw new ObjectNotFoundException("Order with id = " + id + " not found");
+        orderDB.setCompleted(true);
 
-        orderDB.get().setCompleted(true);
-
-        Order updatedOrder = orderRepository.save(orderDB.get());
-
-        return OrderDtoMapper.mapOrderToResponseOrderDto(updatedOrder);
+        orderRepository.save(orderDB);
+        return OrderDtoMapper.mapOrderToResponseOrderDto(orderDB);
     }
 }

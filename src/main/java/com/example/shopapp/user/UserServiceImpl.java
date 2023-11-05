@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -26,92 +25,80 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public User saveUser(User user, Role userRole) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(userRole);
-        return userRepository
-                .save(user);
+        return userRepository.save(user);
     }
 
     @Override
     public User getUserById(Long id) throws ObjectNotFoundException {
-        Optional<User> userDB = userRepository.findById(id);
+        User userDB = userRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("User with id = " + id + " not found"));
 
-        if (userDB.isEmpty())
-            throw new ObjectNotFoundException("User with id = " + id + " not found");
-
-        return userDB.get();
+        return userDB;
     }
 
     @Override
     public List<User> getAllUsers() throws ObjectNotFoundException {
         List<User> usersDB = userRepository.findAll();
 
-        if (usersDB.isEmpty())
-            throw new ObjectNotFoundException("No users found");
+        if (usersDB.isEmpty()) throw new ObjectNotFoundException("No users found");
 
         return usersDB;
     }
 
     @Override
     public User getUserByEmail(String email) throws ObjectNotFoundException {
-        Optional<User> userDB = userRepository.findUserByEmailIgnoreCase(email);
+        User userDB = userRepository.findUserByEmailIgnoreCase(email)
+                .orElseThrow(() -> new ObjectNotFoundException("User with email = " + email + " not found"));
 
-        if (userDB.isEmpty())
-            throw new ObjectNotFoundException("User with email = " + email + " not found");
-
-        return userDB.get();
+        return userDB;
     }
 
     @Override
     public User getUserByPhoneNumber(String phoneNumber) throws ObjectNotFoundException {
-        Optional<User> userDB = userRepository.findUserByPhoneNumber(phoneNumber);
+        User userDB = userRepository.findUserByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new ObjectNotFoundException("User with phone number = " + phoneNumber + " not found"));
 
-        if (userDB.isEmpty())
-            throw new ObjectNotFoundException("User with phone number = " + phoneNumber + " not found");
-
-        return userDB.get();
+        return userDB;
     }
 
     @Override
     public User updateUserById(User user, Long id) throws ObjectNotFoundException {
-        Optional<User> userDB = userRepository.findById(id);
+        User userDB = userRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("User with id = " + id + " not found"));
 
-        if (userDB.isEmpty())
-            throw new ObjectNotFoundException("User with id = " + id + " not found");
+        if (!user.getFirstName().equals(userDB.getFirstName()))
+            userDB.setFirstName(user.getFirstName());
+        if (!user.getLastName().equals(userDB.getLastName()))
+            userDB.setLastName(user.getLastName());
+        if (user.getBirthDate() != userDB.getBirthDate())
+            userDB.setBirthDate(user.getBirthDate());
+        if (!user.getGender().equals(userDB.getGender()))
+            userDB.setGender(user.getGender());
+        if (!user.getPhoneNumber().equals(userDB.getPhoneNumber()))
+            userDB.setPhoneNumber(user.getPhoneNumber());
 
-        if (!user.getFirstName().equals(userDB.get().getFirstName()))
-            userDB.get().setFirstName(user.getFirstName());
-        if (!user.getLastName().equals(userDB.get().getLastName()))
-            userDB.get().setLastName(user.getLastName());
-        if (user.getBirthDate() != userDB.get().getBirthDate())
-            userDB.get().setBirthDate(user.getBirthDate());
-        if (!user.getGender().equals(userDB.get().getGender()))
-            userDB.get().setGender(user.getGender());
-        if (!user.getPhoneNumber().equals(userDB.get().getPhoneNumber()))
-            userDB.get().setPhoneNumber(user.getPhoneNumber());
-
-        return userRepository.save(userDB.get());
+        return userRepository.save(userDB);
     }
 
     @Override
     public void updatePasswordByUserId(Long id, String newPassword) throws InvalidPasswordException, ObjectNotFoundException {
-        Optional<User> userDB = userRepository.findById(id);
+        User userDB = userRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("User with id = " + id + " not found"));
 
-        if (userDB.isEmpty())
-            throw new ObjectNotFoundException("User with id = " + id + " not found");
         if (newPassword.isEmpty())
             throw new InvalidPasswordException("User password cannot be blank");
         if (newPassword.length() > 100)
             throw new InvalidPasswordException("User password cannot contain more than 100 characters");
 
-        userDB.get().setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(userDB.get());
+        userDB.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(userDB);
     }
 
     @Override
     public void deleteUserById(Long id) throws ObjectNotFoundException {
         Integer isDeleted = userRepository.deleteUserByUserId(id);
 
-        if (isDeleted == 0)
-            throw new ObjectNotFoundException("User with id = " + id + " not found");
+        if (isDeleted == 0) throw new ObjectNotFoundException("User with id = " + id + " not found");
     }
 
     @Override

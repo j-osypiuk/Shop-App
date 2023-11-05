@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -29,9 +28,8 @@ public class ProductPhotoServiceImpl implements ProductPhotoService{
 
     @Override
     public void savePhotos(Long id, MultipartFile[] files) throws InvalidStateException, ObjectNotFoundException {
-        Optional<Product> productDB = productRepository.findById(id);
-
-        if (productDB.isEmpty()) throw new ObjectNotFoundException("Product with id = " + id + " not found");
+        Product productDB = productRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Product with id = " + id + " not found"));
 
         int number = 0;
         for (MultipartFile file : files) {

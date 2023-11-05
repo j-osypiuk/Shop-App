@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -31,37 +30,35 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ResponseProductDto saveProduct(RequestProductDto requestProductDto) throws ObjectNotFoundException {
-        Product productDB = productRepository.save(ProductDtoMapper.mapRequestProductDtoToProduct(requestProductDto));
+        Product productDB = new Product();
 
         if (requestProductDto.discountId() != null){
-            Optional<Discount> discountDB = discountRepository.findById(requestProductDto.discountId());
-            if (discountDB.isPresent())
-                productDB.setDiscount(discountDB.get());
-            else
-                throw new ObjectNotFoundException("Discount with id = " + requestProductDto.discountId() + " not found");
+            Discount discountDB = discountRepository.findById(requestProductDto.discountId())
+                    .orElseThrow(() -> new ObjectNotFoundException("Discount with id = " + requestProductDto.discountId() + " not found"));
+            
+            productDB.setDiscount(discountDB);
         }
 
         List<Category> categories = new ArrayList<>();
         for (Long id : requestProductDto.categoryIds()) {
-            Optional<Category> categoryDB = categoryRepository.findById(id);
-            if (categoryDB.isPresent())
-                categories.add(categoryDB.get());
-            else
-                throw new ObjectNotFoundException("Category with id = " + id + " not found");
+            Category categoryDB = categoryRepository.findById(id)
+                    .orElseThrow(() -> new ObjectNotFoundException("Category with id = " + id + " not found"));
+            
+            categories.add(categoryDB);
         }
-
+        
         productDB.setCategories(categories);
 
+        productRepository.save(ProductDtoMapper.mapRequestProductDtoToProduct(requestProductDto));
         return ProductDtoMapper.mapProductToResponseProductDto(productDB);
     }
 
     @Override
     public ResponseProductDto getProductById(Long id) throws ObjectNotFoundException {
-        Optional<Product> productDB = productRepository.findById(id);
+        Product productDB = productRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Product with id = " + id + " not found"));
 
-        if (productDB.isEmpty()) throw new ObjectNotFoundException("Product with id = " + id + " not found");
-
-        return ProductDtoMapper.mapProductToResponseProductDto(productDB.get());
+        return ProductDtoMapper.mapProductToResponseProductDto(productDB);
     }
 
     @Override
@@ -75,34 +72,37 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ResponseProductDto updateProductById(RequestProductDto requestProductDto, Long id) throws ObjectNotFoundException {
-        Optional<Product> productDB = productRepository.findById(id);
+        Product productDB = productRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Product with id = " + id + " not found"));
 
-        if (productDB.isEmpty()) throw new ObjectNotFoundException("Product with id = " + id + " not found");
-
-        if (!requestProductDto.name().equals(productDB.get().getName())) productDB.get().setName(requestProductDto.name());
-        if (!requestProductDto.description().equals(productDB.get().getDescription())) productDB.get().setDescription(requestProductDto.description());
-        if (requestProductDto.amount() != productDB.get().getAmount()) productDB.get().setAmount(requestProductDto.amount());
-        if (requestProductDto.price() != productDB.get().getPrice()) productDB.get().setPrice(requestProductDto.price());
+        if (!requestProductDto.name().equals(productDB.getName()))
+            productDB.setName(requestProductDto.name());
+        if (!requestProductDto.description().equals(productDB.getDescription()))
+            productDB.setDescription(requestProductDto.description());
+        if (requestProductDto.amount() != productDB.getAmount())
+            productDB.setAmount(requestProductDto.amount());
+        if (requestProductDto.price() != productDB.getPrice())
+            productDB.setPrice(requestProductDto.price());
         if (requestProductDto.discountId() == null) {
-            productDB.get().setDiscount(null);
+            productDB.setDiscount(null);
         } else {
-            Optional<Discount> discountDB = discountRepository.findById(requestProductDto.discountId());
-            if (discountDB.isEmpty()) throw new ObjectNotFoundException("Discount with id = " + requestProductDto.discountId() + " not found");
-            else productDB.get().setDiscount(discountDB.get());
+            Discount discountDB = discountRepository.findById(requestProductDto.discountId())
+                    .orElseThrow(() -> new ObjectNotFoundException("Discount with id = " + requestProductDto.discountId() + " not found"));
+
+            productDB.setDiscount(discountDB);
         }
         List<Category> categories = new ArrayList<>();
         for (Long categoryId : requestProductDto.categoryIds()) {
-            Optional<Category> categoryDB = categoryRepository.findById(categoryId);
-            if (categoryDB.isPresent())
-                categories.add(categoryDB.get());
-            else
-                throw new ObjectNotFoundException("Category with id = " + categoryId + " not found");
+            Category categoryDB = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new ObjectNotFoundException("Category with id = " + categoryId + " not found"));
+
+            categories.add(categoryDB);
         }
 
-        productDB.get().setCategories(categories);
+        productDB.setCategories(categories);
 
-        Product updatedProduct = productRepository.save(productDB.get());
-        return ProductDtoMapper.mapProductToResponseProductDto(updatedProduct);
+        productRepository.save(productDB);
+        return ProductDtoMapper.mapProductToResponseProductDto(productDB);
     }
 
     @Override

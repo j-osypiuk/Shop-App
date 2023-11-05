@@ -7,7 +7,6 @@ import com.example.shopapp.error.exception.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DiscountServiceImpl implements DiscountService{
@@ -27,11 +26,10 @@ public class DiscountServiceImpl implements DiscountService{
 
     @Override
     public ResponseDiscountDto getDiscountById(Long id) throws ObjectNotFoundException {
-        Optional<Discount> discountDB = discountRepository.findById(id);
+        Discount discountDB = discountRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Discount with id = " + id + " not found"));
 
-        if (discountDB.isEmpty()) throw new ObjectNotFoundException("Discount with id = " + id + " not found");
-
-        return DiscountDtoMapper.mapDiscountToResponseDiscountDto(discountDB.get());
+        return DiscountDtoMapper.mapDiscountToResponseDiscountDto(discountDB);
     }
 
     @Override
@@ -45,19 +43,18 @@ public class DiscountServiceImpl implements DiscountService{
 
     @Override
     public ResponseDiscountDto updateDiscountById(Long id, RequestDiscountDto requestDiscountDto) throws ObjectNotFoundException {
-        Optional<Discount> discountDB = discountRepository.findById(id);
+        Discount discountDB = discountRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Discount with id = " + id + " not found"));
 
-        if (discountDB.isEmpty()) throw new ObjectNotFoundException("Discount with id = " + id + " not found");
+        if (!requestDiscountDto.name().equals(discountDB.getName()))
+            discountDB.setName(requestDiscountDto.name());
+        if (!requestDiscountDto.description().equals(discountDB.getDescription()))
+            discountDB.setDescription(requestDiscountDto.description());
+        if (requestDiscountDto.discountPercent() != discountDB.getDiscountPercent())
+            discountDB.setDiscountPercent(requestDiscountDto.discountPercent());
 
-        if (!requestDiscountDto.name().equals(discountDB.get().getName()))
-            discountDB.get().setName(requestDiscountDto.name());
-        if (!requestDiscountDto.description().equals(discountDB.get().getDescription()))
-            discountDB.get().setDescription(requestDiscountDto.description());
-        if (requestDiscountDto.discountPercent() != discountDB.get().getDiscountPercent())
-            discountDB.get().setDiscountPercent(requestDiscountDto.discountPercent());
-
-        Discount updatedDiscount = discountRepository.save(discountDB.get());
-        return DiscountDtoMapper.mapDiscountToResponseDiscountDto(updatedDiscount);
+        discountRepository.save(discountDB);
+        return DiscountDtoMapper.mapDiscountToResponseDiscountDto(discountDB);
     }
 
     @Override

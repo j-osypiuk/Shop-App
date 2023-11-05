@@ -1,10 +1,9 @@
 package com.example.shopapp.security;
 
-import com.example.shopapp.user.Role;
+import com.example.shopapp.user.UserRepository;
 import com.example.shopapp.user.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -22,20 +21,24 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    private final UserRepository userRepository;
+
+    public SecurityConfig(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Bean
     public UserDetailsService userDetailsService() {
-        return new UserServiceImpl();
+        return new UserServiceImpl(
+                userRepository,
+                passwordEncoder()
+        );
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
-                        auth
-//                                .requestMatchers(HttpMethod.POST).hasAnyRole(Role.ADMIN.name(), Role.EMPLOYEE.name())
-//                                .requestMatchers(HttpMethod.PUT).hasAnyRole(Role.ADMIN.name(), Role.EMPLOYEE.name())
-//                                .requestMatchers(HttpMethod.DELETE).hasAnyRole(Role.ADMIN.name(), Role.EMPLOYEE.name())
-//                                .requestMatchers(HttpMethod.POST, "/users/customer", "/order").permitAll()
-                                .requestMatchers("/**").permitAll()
+                        auth.requestMatchers("/**").permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .build();
