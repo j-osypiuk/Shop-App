@@ -2,6 +2,10 @@ package com.example.shopapp.user;
 
 import com.example.shopapp.error.exception.InvalidPasswordException;
 import com.example.shopapp.error.exception.ObjectNotFoundException;
+import com.example.shopapp.user.dto.PostUserDto;
+import com.example.shopapp.user.dto.PutUserDto;
+import com.example.shopapp.user.dto.ResponseUserDto;
+import com.example.shopapp.user.dto.UserDtoMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,62 +26,66 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User saveUser(User user, Role userRole) {
+    public ResponseUserDto saveUser(PostUserDto postUserDto, Role userRole) {
+        User user = UserDtoMapper.mapPostUserDtoToUser(postUserDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(userRole);
-        return userRepository.save(user);
+
+        userRepository.save(user);
+        return UserDtoMapper.mapUserToResponseUserDto(user);
     }
 
     @Override
-    public User getUserById(Long id) throws ObjectNotFoundException {
+    public ResponseUserDto getUserById(Long id) throws ObjectNotFoundException {
         User userDB = userRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("User with id = " + id + " not found"));
 
-        return userDB;
+        return UserDtoMapper.mapUserToResponseUserDto(userDB);
     }
 
     @Override
-    public List<User> getAllUsers() throws ObjectNotFoundException {
+    public List<ResponseUserDto> getAllUsers() throws ObjectNotFoundException {
         List<User> usersDB = userRepository.findAll();
 
         if (usersDB.isEmpty()) throw new ObjectNotFoundException("No users found");
 
-        return usersDB;
+        return UserDtoMapper.mapUserListToUserDtoList(usersDB);
     }
 
     @Override
-    public User getUserByEmail(String email) throws ObjectNotFoundException {
+    public ResponseUserDto getUserByEmail(String email) throws ObjectNotFoundException {
         User userDB = userRepository.findUserByEmailIgnoreCase(email)
                 .orElseThrow(() -> new ObjectNotFoundException("User with email = " + email + " not found"));
 
-        return userDB;
+        return UserDtoMapper.mapUserToResponseUserDto(userDB);
     }
 
     @Override
-    public User getUserByPhoneNumber(String phoneNumber) throws ObjectNotFoundException {
+    public ResponseUserDto getUserByPhoneNumber(String phoneNumber) throws ObjectNotFoundException {
         User userDB = userRepository.findUserByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new ObjectNotFoundException("User with phone number = " + phoneNumber + " not found"));
 
-        return userDB;
+        return UserDtoMapper.mapUserToResponseUserDto(userDB);
     }
 
     @Override
-    public User updateUserById(User user, Long id) throws ObjectNotFoundException {
+    public ResponseUserDto updateUserById(PutUserDto putUserDto, Long id) throws ObjectNotFoundException {
         User userDB = userRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("User with id = " + id + " not found"));
 
-        if (!user.getFirstName().equals(userDB.getFirstName()))
-            userDB.setFirstName(user.getFirstName());
-        if (!user.getLastName().equals(userDB.getLastName()))
-            userDB.setLastName(user.getLastName());
-        if (user.getBirthDate() != userDB.getBirthDate())
-            userDB.setBirthDate(user.getBirthDate());
-        if (!user.getGender().equals(userDB.getGender()))
-            userDB.setGender(user.getGender());
-        if (!user.getPhoneNumber().equals(userDB.getPhoneNumber()))
-            userDB.setPhoneNumber(user.getPhoneNumber());
+        if (!putUserDto.firstName().equals(userDB.getFirstName()))
+            userDB.setFirstName(putUserDto.firstName());
+        if (!putUserDto.lastName().equals(userDB.getLastName()))
+            userDB.setLastName(putUserDto.lastName());
+        if (putUserDto.birthDate() != userDB.getBirthDate())
+            userDB.setBirthDate(putUserDto.birthDate());
+        if (!putUserDto.gender().equals(userDB.getGender()))
+            userDB.setGender(putUserDto.gender());
+        if (!putUserDto.phoneNumber().equals(userDB.getPhoneNumber()))
+            userDB.setPhoneNumber(putUserDto.phoneNumber());
 
-        return userRepository.save(userDB);
+        userRepository.save(userDB);
+        return UserDtoMapper.mapUserToResponseUserDto(userDB);
     }
 
     @Override
@@ -104,7 +112,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         try {
-            return getUserByEmail(username);
+            return userRepository.findUserByUsername(username)
+                    .orElseThrow(() -> new ObjectNotFoundException("User with email = " + username + " not found"));
         } catch (ObjectNotFoundException e) {
             throw new UsernameNotFoundException(e.getMessage());
         }

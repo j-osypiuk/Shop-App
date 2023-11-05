@@ -2,6 +2,7 @@ package com.example.shopapp.user;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -13,4 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByPhoneNumber(String phoneNumber);
     @Transactional
     Integer deleteUserByUserId(Long id);
+    @Query(value = "SELECT u FROM User u WHERE u.email = ?1")
+    Optional<User> findUserByUsername(String username);
 }

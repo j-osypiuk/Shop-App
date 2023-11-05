@@ -24,8 +24,7 @@ public class UserController {
     @PostMapping("/customer")
     public ResponseEntity<ResponseUserDto> saveCustomer(@Valid @RequestBody PostUserDto postUser) {
         return new ResponseEntity<>(
-                UserDtoMapper.mapUserToResponseUserDto(
-                        userService.saveUser(UserDtoMapper.mapPostUserDtoToUser(postUser), Role.CUSTOMER)),
+                userService.saveUser(postUser, Role.CUSTOMER),
                 HttpStatus.CREATED
         );
     }
@@ -34,8 +33,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseUserDto> saveEmployee(@Valid @RequestBody PostUserDto postUser) {
         return new ResponseEntity<>(
-                UserDtoMapper.mapUserToResponseUserDto(
-                        userService.saveUser(UserDtoMapper.mapPostUserDtoToUser(postUser), Role.EMPLOYEE)),
+                userService.saveUser(postUser, Role.EMPLOYEE),
                 HttpStatus.CREATED
         );
     }
@@ -44,7 +42,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<ResponseUserDto> getUserById(@PathVariable("id") Long id) throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                UserDtoMapper.mapUserToResponseUserDto(userService.getUserById(id)),
+                userService.getUserById(id),
                 HttpStatus.OK
         );
     }
@@ -53,7 +51,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<List<ResponseUserDto>> getAllUsers() throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                UserDtoMapper.mapUserListToUserDtoList(userService.getAllUsers()),
+                userService.getAllUsers(),
                 HttpStatus.OK
         );
     }
@@ -62,7 +60,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<ResponseUserDto> getUserByEmail(@RequestParam("email") String email) throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                UserDtoMapper.mapUserToResponseUserDto(userService.getUserByEmail(email)),
+                userService.getUserByEmail(email),
                 HttpStatus.OK
         );
     }
@@ -71,7 +69,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<ResponseUserDto> getUserByPhoneNumber(@RequestParam("phone") String phoneNumber) throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                UserDtoMapper.mapUserToResponseUserDto(userService.getUserByPhoneNumber(phoneNumber)),
+                userService.getUserByPhoneNumber(phoneNumber),
                 HttpStatus.OK
         );
     }
@@ -80,8 +78,7 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE','CUSTOMER')")
     public ResponseEntity<ResponseUserDto> updateUserById(@Valid @RequestBody PutUserDto putUser, @PathVariable("id") Long id) throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                UserDtoMapper.mapUserToResponseUserDto(
-                        userService.updateUserById(UserDtoMapper.mapPutUserDtoToUser(putUser), id)),
+                userService.updateUserById(putUser, id),
                 HttpStatus.OK
         );
     }
