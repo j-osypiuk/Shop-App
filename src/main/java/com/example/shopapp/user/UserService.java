@@ -1,13 +1,12 @@
 package com.example.shopapp.user;
 
-import com.example.shopapp.error.exception.InvalidPasswordException;
-import com.example.shopapp.error.exception.ObjectNotFoundException;
+import com.example.shopapp.exception.InvalidPasswordException;
+import com.example.shopapp.exception.ObjectNotFoundException;
 import com.example.shopapp.user.dto.PostUserDto;
 import com.example.shopapp.user.dto.PutUserDto;
 import com.example.shopapp.user.dto.ResponseUserDto;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
     ResponseUserDto saveUser(PostUserDto user, Role userRole);

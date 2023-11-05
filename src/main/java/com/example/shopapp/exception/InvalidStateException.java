@@ -1,4 +1,4 @@
-package com.example.shopapp.error.exception;
+package com.example.shopapp.exception;
 
 public class InvalidStateException extends Exception{
 

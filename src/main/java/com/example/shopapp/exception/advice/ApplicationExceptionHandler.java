@@ -1,8 +1,8 @@
-package com.example.shopapp.error.advice;
+package com.example.shopapp.exception.advice;
 
-import com.example.shopapp.error.exception.InvalidPasswordException;
-import com.example.shopapp.error.exception.InvalidStateException;
-import com.example.shopapp.error.exception.ObjectNotFoundException;
+import com.example.shopapp.exception.InvalidPasswordException;
+import com.example.shopapp.exception.InvalidStateException;
+import com.example.shopapp.exception.ObjectNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;

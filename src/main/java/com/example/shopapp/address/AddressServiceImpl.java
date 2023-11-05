@@ -3,7 +3,7 @@ package com.example.shopapp.address;
 import com.example.shopapp.address.dto.AddressDtoMapper;
 import com.example.shopapp.address.dto.RequestAddressDto;
 import com.example.shopapp.address.dto.ResponseAddressDto;
-import com.example.shopapp.error.exception.ObjectNotFoundException;
+import com.example.shopapp.exception.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service

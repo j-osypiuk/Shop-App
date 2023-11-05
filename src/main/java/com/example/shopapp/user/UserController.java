@@ -1,7 +1,7 @@
 package com.example.shopapp.user;
 
-import com.example.shopapp.error.exception.InvalidPasswordException;
-import com.example.shopapp.error.exception.ObjectNotFoundException;
+import com.example.shopapp.exception.InvalidPasswordException;
+import com.example.shopapp.exception.ObjectNotFoundException;
 import com.example.shopapp.user.dto.*;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

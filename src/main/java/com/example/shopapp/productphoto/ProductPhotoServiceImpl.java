@@ -1,7 +1,7 @@
 package com.example.shopapp.productphoto;
 
-import com.example.shopapp.error.exception.InvalidStateException;
-import com.example.shopapp.error.exception.ObjectNotFoundException;
+import com.example.shopapp.exception.InvalidStateException;
+import com.example.shopapp.exception.ObjectNotFoundException;
 import com.example.shopapp.product.Product;
 import com.example.shopapp.product.ProductRepository;
 import org.springframework.stereotype.Service;

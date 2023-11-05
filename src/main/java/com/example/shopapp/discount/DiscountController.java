@@ -2,7 +2,7 @@ package com.example.shopapp.discount;
 
 import com.example.shopapp.discount.dto.RequestDiscountDto;
 import com.example.shopapp.discount.dto.ResponseDiscountDto;
-import com.example.shopapp.error.exception.ObjectNotFoundException;
+import com.example.shopapp.exception.ObjectNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

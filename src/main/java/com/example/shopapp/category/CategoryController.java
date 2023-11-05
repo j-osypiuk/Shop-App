@@ -2,7 +2,7 @@ package com.example.shopapp.category;
 
 import com.example.shopapp.category.dto.RequestCategoryDto;
 import com.example.shopapp.category.dto.ResponseCategoryDto;
-import com.example.shopapp.error.exception.ObjectNotFoundException;
+import com.example.shopapp.exception.ObjectNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

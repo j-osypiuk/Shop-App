@@ -4,7 +4,7 @@ import com.example.shopapp.category.Category;
 import com.example.shopapp.category.CategoryRepository;
 import com.example.shopapp.discount.Discount;
 import com.example.shopapp.discount.DiscountRepository;
-import com.example.shopapp.error.exception.ObjectNotFoundException;
+import com.example.shopapp.exception.ObjectNotFoundException;
 import com.example.shopapp.product.dto.ProductDtoMapper;
 import com.example.shopapp.product.dto.RequestProductDto;
 import com.example.shopapp.product.dto.ResponseProductDto;

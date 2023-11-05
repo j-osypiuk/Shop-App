@@ -3,7 +3,7 @@ package com.example.shopapp.order;
 import com.example.shopapp.address.Address;
 import com.example.shopapp.address.AddressRepository;
 import com.example.shopapp.address.dto.AddressDtoMapper;
-import com.example.shopapp.error.exception.ObjectNotFoundException;
+import com.example.shopapp.exception.ObjectNotFoundException;
 import com.example.shopapp.order.dto.OrderDtoMapper;
 import com.example.shopapp.order.dto.RequestOrderDto;
 import com.example.shopapp.order.dto.ResponseOrderDto;

@@ -1,7 +1,7 @@
 package com.example.shopapp.productphoto;
 
-import com.example.shopapp.error.exception.InvalidStateException;
-import com.example.shopapp.error.exception.ObjectNotFoundException;
+import com.example.shopapp.exception.InvalidStateException;
+import com.example.shopapp.exception.ObjectNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

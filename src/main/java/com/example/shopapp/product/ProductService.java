@@ -1,6 +1,6 @@
 package com.example.shopapp.product;
 
-import com.example.shopapp.error.exception.ObjectNotFoundException;
+import com.example.shopapp.exception.ObjectNotFoundException;
 import com.example.shopapp.product.dto.RequestProductDto;
 import com.example.shopapp.product.dto.ResponseProductDto;
 
