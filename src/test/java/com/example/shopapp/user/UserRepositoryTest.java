@@ -58,7 +58,7 @@ class UserRepositoryTest {
     void findUserByEmailReturnsProperUser() {
         userRepository.save(testUser);
 
-        Optional<User> userDB = userRepository.findUserByEmailIgnoreCase(testUser.getEmail());
+        Optional<User> userDB = userRepository.findUserByEmail(testUser.getEmail());
 
         assertDoesNotThrow(userDB::get);
         assertEquals(userDB.get().getEmail(), testUser.getEmail());
@@ -68,7 +68,7 @@ class UserRepositoryTest {
     void findUserByEmailThrowsNoSuchElementException() {
         userRepository.save(testUser);
 
-        Optional<User> userDB = userRepository.findUserByEmailIgnoreCase("other@mail.com");
+        Optional<User> userDB = userRepository.findUserByEmail("other@mail.com");
 
         assertThrows(NoSuchElementException.class, userDB::get);
     }
@@ -99,7 +99,7 @@ class UserRepositoryTest {
         List<User> users = userRepository.findAll();
         assertEquals(users.size(), 1);
 
-        Integer isDeleted = userRepository.deleteUserByUserId(testUser.getUserId());
+        Integer isDeleted = userRepository.deleteUserById(testUser.getUserId());
         assertEquals(isDeleted, 1);
 
         users = userRepository.findAll();
@@ -113,7 +113,7 @@ class UserRepositoryTest {
         List<User> users = userRepository.findAll();
         assertEquals(users.size(), 1);
 
-        Integer isDeleted = userRepository.deleteUserByUserId(999L);
+        Integer isDeleted = userRepository.deleteUserById(999L);
         assertEquals(isDeleted, 0);
 
         users = userRepository.findAll();

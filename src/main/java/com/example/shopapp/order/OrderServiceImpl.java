@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService{
         User userDB = userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("User with id = " + userId + " not found"));
 
-        Address addressDB = addressRepository.findByCityAndStreetAndNumberAndPostalCode(
+        Address addressDB = addressRepository.findAddressByCityAndStreetAndNumberAndPostalCode(
                 requestOrderDto.address().city(),
                 requestOrderDto.address().street(),
                 requestOrderDto.address().number(),
@@ -91,7 +91,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public List<ResponseOrderDto> getAllOrdersByProductId(Long id) throws ObjectNotFoundException {
-        List<Order> ordersDB = orderRepository.findAllByProductsProductId(id);
+        List<Order> ordersDB = orderRepository.findAllByProductId(id);
 
         if (ordersDB.isEmpty()) throw new ObjectNotFoundException("No orders for product with id = " + id + " found");
 
@@ -100,7 +100,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public List<ResponseOrderDto> getAllOrdersByUserId(Long id) throws ObjectNotFoundException {
-        List<Order> ordersDB = orderRepository.findAllByUserUserId(id);
+        List<Order> ordersDB = orderRepository.findAllByUserId(id);
 
         if (ordersDB.isEmpty()) throw new ObjectNotFoundException("No orders for user with id = " + id + " found");
 
@@ -109,7 +109,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public List<ResponseOrderDto> getAllOrdersByCompletionStatus(boolean isCompleted) throws ObjectNotFoundException {
-        List<Order> ordersDB = orderRepository.findAllByIsCompleted(isCompleted);
+        List<Order> ordersDB = orderRepository.findAllByCompletionStatus(isCompleted);
 
         if (ordersDB.isEmpty()) throw new ObjectNotFoundException("No orders with completion status = " + isCompleted + " found");
 
@@ -118,7 +118,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public List<ResponseOrderDto> getAllOrdersByTimePeriod(LocalDateTime fromDate, LocalDateTime toDate) throws ObjectNotFoundException {
-        List<Order> ordersDB = orderRepository.findAllByOrderDateBetween(fromDate, toDate);
+        List<Order> ordersDB = orderRepository.findAllByTimePeriod(fromDate, toDate);
 
         if (ordersDB.isEmpty()) throw new ObjectNotFoundException("No orders with given time period found");
 

@@ -59,7 +59,7 @@ public class DiscountServiceImpl implements DiscountService{
 
     @Override
     public void deleteDiscountById(Long id) throws ObjectNotFoundException {
-        Integer isDeleted = discountRepository.deleteDiscountByDiscountId(id);
+        Integer isDeleted = discountRepository.deleteDiscountById(id);
 
         if (isDeleted == 0) throw new ObjectNotFoundException("Discount with id = " + id + " not found");
     }

@@ -52,7 +52,7 @@ public class ProductPhotoServiceImpl implements ProductPhotoService{
 
     @Override
     public void deleteAllPhotos(Long id) throws ObjectNotFoundException, InvalidStateException {
-        List<ProductPhoto> productPhotos = productPhotoRepository.findAllPhotosByProductProductId(id);
+        List<ProductPhoto> productPhotos = productPhotoRepository.findAllByProductId(id);
 
         if (productPhotos.isEmpty()) throw new ObjectNotFoundException("Photos for product with id = " + id + " not found");
 

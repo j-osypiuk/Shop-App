@@ -65,7 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategoryById(Long id) throws ObjectNotFoundException {
-        Integer isDeleted = categoryRepository.deleteCategoryByCategoryId(id);
+        Integer isDeleted = categoryRepository.deleteCategoryById(id);
 
         if (isDeleted == 0) throw new ObjectNotFoundException("Category with id = " + id + " not found");
     }

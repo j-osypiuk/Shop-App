@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public ResponseUserDto getUserByEmail(String email) throws ObjectNotFoundException {
-        User userDB = userRepository.findUserByEmailIgnoreCase(email)
+        User userDB = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new ObjectNotFoundException("User with email = " + email + " not found"));
 
         return UserDtoMapper.mapUserToResponseUserDto(userDB);
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void deleteUserById(Long id) throws ObjectNotFoundException {
-        Integer isDeleted = userRepository.deleteUserByUserId(id);
+        Integer isDeleted = userRepository.deleteUserById(id);
 
         if (isDeleted == 0) throw new ObjectNotFoundException("User with id = " + id + " not found");
     }
@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         try {
-            return userRepository.findUserByEmailIgnoreCase(username)
+            return userRepository.findUserByEmail(username)
                     .orElseThrow(() -> new ObjectNotFoundException("User with email = " + username + " not found"));
         } catch (ObjectNotFoundException e) {
             throw new UsernameNotFoundException(e.getMessage());

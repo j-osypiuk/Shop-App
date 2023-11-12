@@ -169,19 +169,19 @@ class OrderRepositoryTest {
         List<Order> orders = orderRepository.findAll();
         assertEquals(orders.size(), testOrders.size());
 
-        List<Order> foundWaterOrders = orderRepository.findAllByProductsProductId(product1.getProductId());
+        List<Order> foundWaterOrders = orderRepository.findAllByProductId(product1.getProductId());
         assertEquals(foundWaterOrders.size(), 2);
         foundWaterOrders.forEach(order -> order.getProducts().forEach(
                 product -> assertEquals(product.getProductId(), product1.getProductId())
         ));
 
-        List<Order> foundFoodOrders = orderRepository.findAllByProductsProductId(product2.getProductId());
+        List<Order> foundFoodOrders = orderRepository.findAllByProductId(product2.getProductId());
         assertEquals(foundFoodOrders.size(), 1);
         foundFoodOrders.forEach(order -> order.getProducts().forEach(
                 product -> assertEquals(product.getProductId(), product2.getProductId())
         ));
 
-        List<Order> notFoundOrders = orderRepository.findAllByProductsProductId(999L);
+        List<Order> notFoundOrders = orderRepository.findAllByProductId(999L);
         assertEquals(notFoundOrders.size(), 0);
     }
 
@@ -192,43 +192,43 @@ class OrderRepositoryTest {
         List<Order> orders = orderRepository.findAll();
         assertEquals(orders.size(), testOrders.size());
 
-        List<Order> overlappedDateOrders = orderRepository.findAllByOrderDateBetween(
+        List<Order> overlappedDateOrders = orderRepository.findAllByTimePeriod(
                 LocalDateTime.of(2017, 10,15,1,0),
                 LocalDateTime.of(2020, 1,21,1,0)
         );
         assertEquals(overlappedDateOrders.size(), 3);
 
-        List<Order> fromDateBeforeToDateBeforeLastOrder = orderRepository.findAllByOrderDateBetween(
+        List<Order> fromDateBeforeToDateBeforeLastOrder = orderRepository.findAllByTimePeriod(
                 LocalDateTime.of(2017, 10,15,1,0),
                 LocalDateTime.of(2019, 1,21,1,0)
         );
         assertEquals(fromDateBeforeToDateBeforeLastOrder.size(), 2);
 
-        List<Order> fromDateAfterToDateAfterFirstOrder = orderRepository.findAllByOrderDateBetween(
+        List<Order> fromDateAfterToDateAfterFirstOrder = orderRepository.findAllByTimePeriod(
                 LocalDateTime.of(2019, 1,21,1,0),
                 LocalDateTime.of(2020, 1,21,1,0)
         );
         assertEquals(fromDateAfterToDateAfterFirstOrder.size(), 2);
 
-        List<Order> sameDateFoundOrders = orderRepository.findAllByOrderDateBetween(
+        List<Order> sameDateFoundOrders = orderRepository.findAllByTimePeriod(
                 LocalDateTime.of(2019, 1,21,1,0),
                 LocalDateTime.of(2019, 1,21,1,0)
         );
         assertEquals(sameDateFoundOrders.size(), 1);
 
-        List<Order> beforeEveryOrder = orderRepository.findAllByOrderDateBetween(
+        List<Order> beforeEveryOrder = orderRepository.findAllByTimePeriod(
                 LocalDateTime.of(2010, 1,21,1,0),
                 LocalDateTime.of(2017, 10,15,0,59)
         );
         assertEquals(beforeEveryOrder.size(), 0);
 
-        List<Order> afterEveryOrder = orderRepository.findAllByOrderDateBetween(
+        List<Order> afterEveryOrder = orderRepository.findAllByTimePeriod(
                 LocalDateTime.of(2020, 1,21,1,1),
                 LocalDateTime.of(2030, 10,15,0,59)
         );
         assertEquals(afterEveryOrder.size(), 0);
 
-        List<Order> fromDateAfterBeforeDate = orderRepository.findAllByOrderDateBetween(
+        List<Order> fromDateAfterBeforeDate = orderRepository.findAllByTimePeriod(
                 LocalDateTime.of(2020, 1,21,1,0),
                 LocalDateTime.of(2017, 10,15,1,0)
         );
@@ -242,15 +242,15 @@ class OrderRepositoryTest {
         List<Order> orders = orderRepository.findAll();
         assertEquals(orders.size(), testOrders.size());
 
-        List<Order> firstUserOrders = orderRepository.findAllByUserUserId(user1.getUserId());
+        List<Order> firstUserOrders = orderRepository.findAllByUserId(user1.getUserId());
         assertEquals(firstUserOrders.size(), 2);
         firstUserOrders.forEach(order -> assertEquals(order.getUser().getUserId(), user1.getUserId()));
 
-        List<Order> secondUserOrders = orderRepository.findAllByUserUserId(user2.getUserId());
+        List<Order> secondUserOrders = orderRepository.findAllByUserId(user2.getUserId());
         assertEquals(secondUserOrders.size(), 1);
         secondUserOrders.forEach(order -> assertEquals(order.getUser().getUserId(), user2.getUserId()));
 
-        List<Order> nonExistentUserOrders = orderRepository.findAllByUserUserId(999L);
+        List<Order> nonExistentUserOrders = orderRepository.findAllByUserId(999L);
         assertEquals(nonExistentUserOrders.size(), 0);
     }
 
@@ -261,11 +261,11 @@ class OrderRepositoryTest {
         List<Order> orders = orderRepository.findAll();
         assertEquals(orders.size(), testOrders.size());
 
-        List<Order> completedOrders = orderRepository.findAllByIsCompleted(true);
+        List<Order> completedOrders = orderRepository.findAllByCompletionStatus(true);
         assertEquals(completedOrders.size(), 2);
         completedOrders.forEach(order -> assertTrue(order.isCompleted()));
 
-        List<Order> uncompletedOrders = orderRepository.findAllByIsCompleted(false);
+        List<Order> uncompletedOrders = orderRepository.findAllByCompletionStatus(false);
         assertEquals(uncompletedOrders.size(), 1);
         uncompletedOrders.forEach(order -> assertFalse(order.isCompleted()));
     }

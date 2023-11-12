@@ -103,17 +103,17 @@ class ProductPhotoRepositoryTest {
         List<ProductPhoto> photos = productPhotoRepository.findAll();
         assertEquals(photos.size(), 3);
 
-        List<ProductPhoto> firstProductPhotos = productPhotoRepository.findAllPhotosByProductProductId(product1.getProductId());
+        List<ProductPhoto> firstProductPhotos = productPhotoRepository.findAllByProductId(product1.getProductId());
         assertEquals(firstProductPhotos.size(), 2);
         firstProductPhotos.forEach(productPhoto ->
                 assertEquals(productPhoto.getProduct().getProductId(), product1.getProductId()));
 
-        List<ProductPhoto> secondProductPhotos = productPhotoRepository.findAllPhotosByProductProductId(product2.getProductId());
+        List<ProductPhoto> secondProductPhotos = productPhotoRepository.findAllByProductId(product2.getProductId());
         assertEquals(secondProductPhotos.size(), 1);
         secondProductPhotos.forEach(productPhoto ->
                 assertEquals(productPhoto.getProduct().getProductId(), product2.getProductId()));
 
-        List<ProductPhoto> notFoundProductPhotos = productPhotoRepository.findAllPhotosByProductProductId(999L);
+        List<ProductPhoto> notFoundProductPhotos = productPhotoRepository.findAllByProductId(999L);
         assertEquals(notFoundProductPhotos.size(), 0);
     }
 

@@ -68,7 +68,7 @@ class ProductRepositoryTest {
         List<Product> products = productRepository.findAll();
         assertEquals(products.size(), 1);
 
-        Integer isDeleted = productRepository.deleteProductByProductId(products.get(0).getProductId());
+        Integer isDeleted = productRepository.deleteProductById(products.get(0).getProductId());
         assertEquals(isDeleted, 1);
 
         products = productRepository.findAll();
@@ -82,7 +82,7 @@ class ProductRepositoryTest {
         List<Product> products = productRepository.findAll();
         assertEquals(products.size(), 1);
 
-        Integer isDeleted = productRepository.deleteProductByProductId(999L);
+        Integer isDeleted = productRepository.deleteProductById(999L);
         assertEquals(isDeleted, 0);
 
         products = productRepository.findAll();

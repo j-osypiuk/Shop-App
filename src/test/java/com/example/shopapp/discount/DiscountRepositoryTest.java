@@ -44,7 +44,7 @@ class DiscountRepositoryTest {
         List<Discount> discounts = discountRepository.findAll();
         assertEquals(discounts.size(), 1);
 
-        Integer isDeleted = discountRepository.deleteDiscountByDiscountId(discounts.get(0).getDiscountId());
+        Integer isDeleted = discountRepository.deleteDiscountById(discounts.get(0).getDiscountId());
         assertEquals(isDeleted, 1);
 
         discounts = discountRepository.findAll();
@@ -58,7 +58,7 @@ class DiscountRepositoryTest {
         List<Discount> discounts = discountRepository.findAll();
         assertEquals(discounts.size(), 1);
 
-        Integer isDeleted = discountRepository.deleteDiscountByDiscountId(999L);
+        Integer isDeleted = discountRepository.deleteDiscountById(999L);
         assertEquals(isDeleted, 0);
 
         discounts = discountRepository.findAll();

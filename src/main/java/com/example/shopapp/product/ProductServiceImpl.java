@@ -107,7 +107,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public void deleteProductById(Long id) throws ObjectNotFoundException {
-        Integer isDeleted = productRepository.deleteProductByProductId(id);
+        Integer isDeleted = productRepository.deleteProductById(id);
 
         if (isDeleted == 0) throw new ObjectNotFoundException("Product with id = " + id + " not found");
     }

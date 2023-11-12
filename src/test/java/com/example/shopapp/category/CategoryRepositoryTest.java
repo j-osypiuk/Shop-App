@@ -64,7 +64,7 @@ class CategoryRepositoryTest {
         List<Category> categories = categoryRepository.findAll();
         assertEquals(categories.size(), 1);
 
-        Integer isDeleted = categoryRepository.deleteCategoryByCategoryId(categories.get(0).getCategoryId());
+        Integer isDeleted = categoryRepository.deleteCategoryById(categories.get(0).getCategoryId());
         assertEquals(isDeleted, 1);
 
         categories = categoryRepository.findAll();
@@ -78,7 +78,7 @@ class CategoryRepositoryTest {
         List<Category> categories = categoryRepository.findAll();
         assertEquals(categories.size(), 1);
 
-        Integer isDeleted = categoryRepository.deleteCategoryByCategoryId(999L);
+        Integer isDeleted = categoryRepository.deleteCategoryById(999L);
         assertEquals(isDeleted, 0);
 
         categories = categoryRepository.findAll();
