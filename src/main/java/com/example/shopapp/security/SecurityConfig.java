@@ -1,9 +1,11 @@
 package com.example.shopapp.security;
 
+import static com.example.shopapp.user.Role.*;
 import com.example.shopapp.user.UserRepository;
 import com.example.shopapp.user.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -35,10 +37,31 @@ public class SecurityConfig {
         );
     }
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, UserAccessDecisionManager decisionManager) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/**").permitAll()
+                        auth
+                                .requestMatchers(HttpMethod.POST, "/users/customer").permitAll()
+                                .requestMatchers(HttpMethod.GET,
+                                        "/photos",
+                                        "/products",
+                                        "/discounts",
+                                        "/category").permitAll()
+                                .requestMatchers(HttpMethod.GET,
+                                        "/users/{id}",
+                                        "/orders/user/{id}").access(decisionManager)
+                                .requestMatchers(HttpMethod.PUT, "/users/{id}").access(decisionManager)
+                                .requestMatchers(HttpMethod.PATCH, "/users/{id}").access(decisionManager)
+                                .requestMatchers(HttpMethod.POST, "/orders/{id}").access(decisionManager)
+                                .requestMatchers(
+                                        "/users/**",
+                                        "/photos/product/**",
+                                        "/products/**",
+                                        "/orders/**",
+                                        "/discounts/**",
+                                        "/category/**",
+                                        "/address")
+                                .hasAnyAuthority(ADMIN.name(), EMPLOYEE.name())
                 )
                 .httpBasic(Customizer.withDefaults())
                 .build();

@@ -5,7 +5,6 @@ import com.example.shopapp.exception.ObjectNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +19,6 @@ public class ProductPhotoController {
     }
 
     @PostMapping("/product/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<Void> savePhotos(@PathVariable("id") Long id, @RequestParam MultipartFile[] photos) throws InvalidStateException, ObjectNotFoundException {
         productPhotoService.savePhotos(id, photos);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -35,7 +33,6 @@ public class ProductPhotoController {
     }
 
     @DeleteMapping("/product/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<Void> deleteAllPhotos(@PathVariable("id") Long id) throws ObjectNotFoundException, InvalidStateException {
         productPhotoService.deleteAllPhotos(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -32,7 +32,6 @@ public class OrderDtoMapper {
         return Order.builder()
                 .orderDate(LocalDateTime.now())
                 .isCompleted(requestOrderDto.isCompleted())
-                .user(User.builder().userId(requestOrderDto.userId()).build())
                 .address(AddressDtoMapper.mapRequestAddressDtoToAddress(requestOrderDto.address()))
                 .products(requestOrderDto.productIds().stream()
                         .map(productId -> Product.builder().productId(productId).build())

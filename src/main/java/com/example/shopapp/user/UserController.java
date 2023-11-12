@@ -2,13 +2,16 @@ package com.example.shopapp.user;
 
 import com.example.shopapp.exception.InvalidPasswordException;
 import com.example.shopapp.exception.ObjectNotFoundException;
-import com.example.shopapp.user.dto.*;
+import com.example.shopapp.user.dto.PasswordDto;
+import com.example.shopapp.user.dto.PostUserDto;
+import com.example.shopapp.user.dto.PutUserDto;
+import com.example.shopapp.user.dto.ResponseUserDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -30,7 +33,6 @@ public class UserController {
     }
 
     @PostMapping("/employee")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseUserDto> saveEmployee(@Valid @RequestBody PostUserDto postUser) {
         return new ResponseEntity<>(
                 userService.saveUser(postUser, Role.EMPLOYEE),
@@ -39,8 +41,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
-    public ResponseEntity<ResponseUserDto> getUserById(@PathVariable("id") Long id) throws ObjectNotFoundException {
+    public ResponseEntity<ResponseUserDto> getUserById(@PathVariable("id") Long id, Principal principal) throws ObjectNotFoundException {
         return new ResponseEntity<>(
                 userService.getUserById(id),
                 HttpStatus.OK
@@ -48,7 +49,6 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<List<ResponseUserDto>> getAllUsers() throws ObjectNotFoundException {
         return new ResponseEntity<>(
                 userService.getAllUsers(),
@@ -57,7 +57,6 @@ public class UserController {
     }
 
     @GetMapping(params = "email")
-    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<ResponseUserDto> getUserByEmail(@RequestParam("email") String email) throws ObjectNotFoundException {
         return new ResponseEntity<>(
                 userService.getUserByEmail(email),
@@ -66,7 +65,6 @@ public class UserController {
     }
 
     @GetMapping(params = "phone")
-    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<ResponseUserDto> getUserByPhoneNumber(@RequestParam("phone") String phoneNumber) throws ObjectNotFoundException {
         return new ResponseEntity<>(
                 userService.getUserByPhoneNumber(phoneNumber),
@@ -75,7 +73,6 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE','CUSTOMER')")
     public ResponseEntity<ResponseUserDto> updateUserById(@Valid @RequestBody PutUserDto putUser, @PathVariable("id") Long id) throws ObjectNotFoundException {
         return new ResponseEntity<>(
                 userService.updateUserById(putUser, id),
@@ -84,14 +81,12 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE','CUSTOMER')")
     public ResponseEntity<Void> updatePasswordByUserId(@PathVariable("id") Long id, @RequestBody PasswordDto newPassword) throws ObjectNotFoundException, InvalidPasswordException {
         userService.updatePasswordByUserId(id, newPassword.password());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     public ResponseEntity<Void> deleteUserById(@PathVariable("id") Long id) throws ObjectNotFoundException {
         userService.deleteUserById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

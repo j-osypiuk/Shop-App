@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface OrderService {
 
-    ResponseOrderDto saveOrder(RequestOrderDto requestOrderDto) throws ObjectNotFoundException;
+    ResponseOrderDto saveOrder(RequestOrderDto requestOrderDto, Long userId) throws ObjectNotFoundException;
     ResponseOrderDto getOrderById(Long id) throws ObjectNotFoundException;
     List<ResponseOrderDto> getAllOrders() throws ObjectNotFoundException;
     List<ResponseOrderDto> getAllOrdersByProductId(Long id) throws ObjectNotFoundException;

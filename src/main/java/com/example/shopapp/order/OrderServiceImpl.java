@@ -36,9 +36,9 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public ResponseOrderDto saveOrder(RequestOrderDto requestOrderDto) throws ObjectNotFoundException {
-        User userDB = userRepository.findById(requestOrderDto.userId())
-                .orElseThrow(() -> new ObjectNotFoundException("User with id = " + requestOrderDto.userId() + " not found"));
+    public ResponseOrderDto saveOrder(RequestOrderDto requestOrderDto, Long userId) throws ObjectNotFoundException {
+        User userDB = userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException("User with id = " + userId + " not found"));
 
         Address addressDB = addressRepository.findByCityAndStreetAndNumberAndPostalCode(
                 requestOrderDto.address().city(),
