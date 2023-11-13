@@ -16,4 +16,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Transactional
     @Query(value = "DELETE FROM Category c WHERE c.categoryId = ?1")
     Integer deleteCategoryById(Long id);
+    boolean existsCategoryByName(String name);
 }

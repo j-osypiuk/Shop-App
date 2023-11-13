@@ -3,6 +3,7 @@ package com.example.shopapp.category;
 import com.example.shopapp.category.dto.CategoryDtoMapper;
 import com.example.shopapp.category.dto.RequestCategoryDto;
 import com.example.shopapp.category.dto.ResponseCategoryDto;
+import com.example.shopapp.exception.DuplicateUniqueValueException;
 import com.example.shopapp.exception.ObjectNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseCategoryDto> saveCategory(@Valid @RequestBody RequestCategoryDto requestCategoryDto) {
+    public ResponseEntity<ResponseCategoryDto> saveCategory(@Valid @RequestBody RequestCategoryDto requestCategoryDto) throws DuplicateUniqueValueException {
         Category category = categoryService.saveCategory(CategoryDtoMapper.mapRequestCategoryDtoToCategory(requestCategoryDto));
 
         return new ResponseEntity<>(
@@ -58,7 +59,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseCategoryDto> updateCategoryById(@PathVariable Long id, @Valid @RequestBody RequestCategoryDto requestCategoryDto) throws ObjectNotFoundException {
+    public ResponseEntity<ResponseCategoryDto> updateCategoryById(@PathVariable Long id, @Valid @RequestBody RequestCategoryDto requestCategoryDto) throws ObjectNotFoundException, DuplicateUniqueValueException {
         Category category = categoryService.updateCategoryById(
                 id,
                 CategoryDtoMapper.mapRequestCategoryDtoToCategory(requestCategoryDto)

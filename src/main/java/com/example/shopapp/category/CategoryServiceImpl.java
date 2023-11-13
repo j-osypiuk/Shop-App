@@ -1,5 +1,6 @@
 package com.example.shopapp.category;
 
+import com.example.shopapp.exception.DuplicateUniqueValueException;
 import com.example.shopapp.exception.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +16,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category saveCategory(Category category) {
-        return categoryRepository
-                .save(category);
+    public Category saveCategory(Category category) throws DuplicateUniqueValueException {
+        if (categoryRepository.existsCategoryByName(category.getName()))
+            throw new DuplicateUniqueValueException("Category with name = " + category.getName() + " already exists");
+
+        return categoryRepository.save(category);
     }
 
     @Override
@@ -42,9 +45,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category updateCategoryById(Long id, Category category) throws ObjectNotFoundException {
+    public Category updateCategoryById(Long id, Category category) throws ObjectNotFoundException, DuplicateUniqueValueException {
         Category categoryDB = categoryRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Category with id = " + id + " not found"));
+
+        if (categoryRepository.existsCategoryByName(category.getName()))
+            throw new DuplicateUniqueValueException("Category with name = " + category.getName() + " already exists");
 
         if (!category.getName().equals(categoryDB.getName()))
             categoryDB.setName(category.getName());
