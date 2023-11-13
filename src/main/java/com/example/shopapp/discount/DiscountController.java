@@ -3,6 +3,7 @@ package com.example.shopapp.discount;
 import com.example.shopapp.discount.dto.DiscountDtoMapper;
 import com.example.shopapp.discount.dto.RequestDiscountDto;
 import com.example.shopapp.discount.dto.ResponseDiscountDto;
+import com.example.shopapp.exception.DuplicateUniqueValueException;
 import com.example.shopapp.exception.ObjectNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class DiscountController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDiscountDto> saveDiscount(@Valid @RequestBody RequestDiscountDto requestDiscountDto) {
+    public ResponseEntity<ResponseDiscountDto> saveDiscount(@Valid @RequestBody RequestDiscountDto requestDiscountDto) throws DuplicateUniqueValueException {
         Discount discount = discountService.saveDiscount(DiscountDtoMapper.mapRequestDiscountDtoToDiscount(requestDiscountDto));
 
         return new ResponseEntity<>(
@@ -48,7 +49,7 @@ public class DiscountController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDiscountDto> updateDiscountById(@PathVariable("id") Long id, @Valid @RequestBody RequestDiscountDto requestDiscountDto) throws ObjectNotFoundException {
+    public ResponseEntity<ResponseDiscountDto> updateDiscountById(@PathVariable("id") Long id, @Valid @RequestBody RequestDiscountDto requestDiscountDto) throws ObjectNotFoundException, DuplicateUniqueValueException {
         Discount discount = discountService.updateDiscountById(
                 id,
                 DiscountDtoMapper.mapRequestDiscountDtoToDiscount(requestDiscountDto)

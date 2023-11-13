@@ -23,6 +23,7 @@ public class Discount {
     private Long discountId;
     @Column(
             nullable = false,
+            unique = true,
             length = 100
     )
     private String name;

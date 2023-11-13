@@ -13,4 +13,5 @@ public interface DiscountRepository extends JpaRepository<Discount, Long> {
     @Transactional
     @Query(value = "DELETE FROM Discount d WHERE d.discountId = ?1")
     Integer deleteDiscountById(Long id);
+    boolean existsDiscountByName(String name);
 }
