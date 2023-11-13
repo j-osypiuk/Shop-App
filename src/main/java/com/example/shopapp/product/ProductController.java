@@ -1,6 +1,7 @@
 package com.example.shopapp.product;
 
 import com.example.shopapp.exception.ObjectNotFoundException;
+import com.example.shopapp.product.dto.ProductDtoMapper;
 import com.example.shopapp.product.dto.RequestProductDto;
 import com.example.shopapp.product.dto.ResponseProductDto;
 import jakarta.validation.Valid;
@@ -22,8 +23,10 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ResponseProductDto> saveProduct(@Valid @RequestBody RequestProductDto requestProductDto) throws ObjectNotFoundException {
+        Product product = productService.saveProduct(ProductDtoMapper.mapRequestProductDtoToProduct(requestProductDto));
+
         return new ResponseEntity<>(
-                productService.saveProduct(requestProductDto),
+                ProductDtoMapper.mapProductToResponseProductDto(product),
                 HttpStatus.CREATED
         );
     }
@@ -31,7 +34,7 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ResponseProductDto> getProductById(@PathVariable("id") Long id) throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                productService.getProductById(id),
+                ProductDtoMapper.mapProductToResponseProductDto(productService.getProductById(id)),
                 HttpStatus.OK
         );
     }
@@ -39,15 +42,17 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<List<ResponseProductDto>> getAllProducts() throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                productService.getAllProducts(),
+                ProductDtoMapper.mapProductListToProductDtoList(productService.getAllProducts()),
                 HttpStatus.OK
         );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseProductDto> updateProductById(@PathVariable("id") Long id,@Valid @RequestBody RequestProductDto requestProductDto) throws ObjectNotFoundException {
+    public ResponseEntity<ResponseProductDto> updateProductById(@PathVariable("id") Long id, @Valid @RequestBody RequestProductDto requestProductDto) throws ObjectNotFoundException {
+        Product product = productService.updateProductById(id, ProductDtoMapper.mapRequestProductDtoToProduct(requestProductDto));
+
         return new ResponseEntity<>(
-                productService.updateProductById(requestProductDto, id),
+                ProductDtoMapper.mapProductToResponseProductDto(product),
                 HttpStatus.OK
         );
     }

@@ -1,8 +1,5 @@
 package com.example.shopapp.discount;
 
-import com.example.shopapp.discount.dto.DiscountDtoMapper;
-import com.example.shopapp.discount.dto.RequestDiscountDto;
-import com.example.shopapp.discount.dto.ResponseDiscountDto;
 import com.example.shopapp.exception.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -18,43 +15,39 @@ public class DiscountServiceImpl implements DiscountService{
     }
 
     @Override
-    public ResponseDiscountDto saveDiscount(RequestDiscountDto requestDiscountDto) {
-        Discount discountDB = discountRepository
-                .save(DiscountDtoMapper.mapRequestDiscountDtoToDiscount(requestDiscountDto));
-        return DiscountDtoMapper.mapDiscountToResponseDiscountDto(discountDB);
+    public Discount saveDiscount(Discount discount) {
+        return discountRepository
+                .save(discount);
     }
 
     @Override
-    public ResponseDiscountDto getDiscountById(Long id) throws ObjectNotFoundException {
-        Discount discountDB = discountRepository.findById(id)
+    public Discount getDiscountById(Long id) throws ObjectNotFoundException {
+        return discountRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Discount with id = " + id + " not found"));
-
-        return DiscountDtoMapper.mapDiscountToResponseDiscountDto(discountDB);
     }
 
     @Override
-    public List<ResponseDiscountDto> getAllDiscounts() throws ObjectNotFoundException {
+    public List<Discount> getAllDiscounts() throws ObjectNotFoundException {
         List<Discount> discountsDB = discountRepository.findAll();
 
         if (discountsDB.isEmpty()) throw new ObjectNotFoundException("No discounts found");
 
-        return DiscountDtoMapper.mapDiscountListToResponseDiscountDtoList(discountsDB);
+        return discountsDB;
     }
 
     @Override
-    public ResponseDiscountDto updateDiscountById(Long id, RequestDiscountDto requestDiscountDto) throws ObjectNotFoundException {
+    public Discount updateDiscountById(Long id, Discount discount) throws ObjectNotFoundException {
         Discount discountDB = discountRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Discount with id = " + id + " not found"));
 
-        if (!requestDiscountDto.name().equals(discountDB.getName()))
-            discountDB.setName(requestDiscountDto.name());
-        if (!requestDiscountDto.description().equals(discountDB.getDescription()))
-            discountDB.setDescription(requestDiscountDto.description());
-        if (requestDiscountDto.discountPercent() != discountDB.getDiscountPercent())
-            discountDB.setDiscountPercent(requestDiscountDto.discountPercent());
+        if (!discount.getName().equals(discountDB.getName()))
+            discountDB.setName(discount.getName());
+        if (!discount.getDescription().equals(discountDB.getDescription()))
+            discountDB.setDescription(discount.getDescription());
+        if (discount.getDiscountPercent() != discountDB.getDiscountPercent())
+            discountDB.setDiscountPercent(discount.getDiscountPercent());
 
-        discountRepository.save(discountDB);
-        return DiscountDtoMapper.mapDiscountToResponseDiscountDto(discountDB);
+        return discountRepository.save(discountDB);
     }
 
     @Override

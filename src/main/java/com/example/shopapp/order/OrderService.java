@@ -1,20 +1,18 @@
 package com.example.shopapp.order;
 
 import com.example.shopapp.exception.ObjectNotFoundException;
-import com.example.shopapp.order.dto.RequestOrderDto;
-import com.example.shopapp.order.dto.ResponseOrderDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrderService {
 
-    ResponseOrderDto saveOrder(RequestOrderDto requestOrderDto, Long userId) throws ObjectNotFoundException;
-    ResponseOrderDto getOrderById(Long id) throws ObjectNotFoundException;
-    List<ResponseOrderDto> getAllOrders() throws ObjectNotFoundException;
-    List<ResponseOrderDto> getAllOrdersByProductId(Long id) throws ObjectNotFoundException;
-    List<ResponseOrderDto> getAllOrdersByUserId(Long id) throws ObjectNotFoundException;
-    List<ResponseOrderDto> getAllOrdersByCompletionStatus(boolean isCompleted) throws ObjectNotFoundException;
-    List<ResponseOrderDto> getAllOrdersByTimePeriod(LocalDateTime fromDate, LocalDateTime toDate) throws ObjectNotFoundException;
-    ResponseOrderDto completeOrderById(Long id) throws ObjectNotFoundException;
+    Order saveOrder(Order order, Long userId) throws ObjectNotFoundException;
+    Order getOrderById(Long id) throws ObjectNotFoundException;
+    List<Order> getAllOrders() throws ObjectNotFoundException;
+    List<Order> getAllOrdersByProductId(Long id) throws ObjectNotFoundException;
+    List<Order> getAllOrdersByUserId(Long id) throws ObjectNotFoundException;
+    List<Order> getAllOrdersByCompletionStatus(boolean isCompleted) throws ObjectNotFoundException;
+    List<Order> getAllOrdersByTimePeriod(LocalDateTime fromDate, LocalDateTime toDate) throws ObjectNotFoundException;
+    Order completeOrderById(Long id) throws ObjectNotFoundException;
 }

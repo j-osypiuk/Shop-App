@@ -1,5 +1,6 @@
 package com.example.shopapp.category;
 
+import com.example.shopapp.category.dto.CategoryDtoMapper;
 import com.example.shopapp.category.dto.RequestCategoryDto;
 import com.example.shopapp.category.dto.ResponseCategoryDto;
 import com.example.shopapp.exception.ObjectNotFoundException;
@@ -23,8 +24,10 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<ResponseCategoryDto> saveCategory(@Valid @RequestBody RequestCategoryDto requestCategoryDto) {
+        Category category = categoryService.saveCategory(CategoryDtoMapper.mapRequestCategoryDtoToCategory(requestCategoryDto));
+
         return new ResponseEntity<>(
-                categoryService.saveCategory(requestCategoryDto),
+                CategoryDtoMapper.mapCategoryToResponseCategoryDto(category),
                 HttpStatus.CREATED
         );
     }
@@ -32,7 +35,7 @@ public class CategoryController {
     @GetMapping("/{id}")
     public ResponseEntity<ResponseCategoryDto> getCategoryById(@PathVariable("id") Long id) throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                categoryService.getCategoryById(id),
+                CategoryDtoMapper.mapCategoryToResponseCategoryDto(categoryService.getCategoryById(id)),
                 HttpStatus.OK
         );
     }
@@ -40,7 +43,7 @@ public class CategoryController {
     @GetMapping(params = "name")
     public ResponseEntity<ResponseCategoryDto> getCategoryByName(@RequestParam("name") String name) throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                categoryService.getCategoryByName(name),
+                CategoryDtoMapper.mapCategoryToResponseCategoryDto(categoryService.getCategoryByName(name)),
                 HttpStatus.OK
         );
     }
@@ -49,16 +52,20 @@ public class CategoryController {
     @PreAuthorize("permitAll()")
     public ResponseEntity<List<ResponseCategoryDto>> getAllCategories() throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                categoryService.getAllCategories(),
+                CategoryDtoMapper.mapCategoryListToResponseCategoryDtoList(categoryService.getAllCategories()),
                 HttpStatus.OK
         );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseCategoryDto> updateCategoryById(
-            @PathVariable Long id, @Valid @RequestBody RequestCategoryDto requestCategoryDto) throws ObjectNotFoundException {
+    public ResponseEntity<ResponseCategoryDto> updateCategoryById(@PathVariable Long id, @Valid @RequestBody RequestCategoryDto requestCategoryDto) throws ObjectNotFoundException {
+        Category category = categoryService.updateCategoryById(
+                id,
+                CategoryDtoMapper.mapRequestCategoryDtoToCategory(requestCategoryDto)
+        );
+
         return new ResponseEntity<>(
-                categoryService.updateCategoryById(id, requestCategoryDto),
+                CategoryDtoMapper.mapCategoryToResponseCategoryDto(category),
                 HttpStatus.OK
         );
     }

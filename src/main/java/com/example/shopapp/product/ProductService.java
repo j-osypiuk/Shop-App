@@ -1,16 +1,14 @@
 package com.example.shopapp.product;
 
 import com.example.shopapp.exception.ObjectNotFoundException;
-import com.example.shopapp.product.dto.RequestProductDto;
-import com.example.shopapp.product.dto.ResponseProductDto;
 
 import java.util.List;
 
 public interface ProductService {
 
-    ResponseProductDto saveProduct(RequestProductDto requestProductDto) throws ObjectNotFoundException;
-    ResponseProductDto getProductById(Long id) throws ObjectNotFoundException;
-    List<ResponseProductDto> getAllProducts() throws ObjectNotFoundException;
-    ResponseProductDto updateProductById(RequestProductDto requestProductDto, Long id) throws ObjectNotFoundException;
+    Product saveProduct(Product product) throws ObjectNotFoundException;
+    Product getProductById(Long id) throws ObjectNotFoundException;
+    List<Product> getAllProducts() throws ObjectNotFoundException;
+    Product updateProductById(Long id, Product product) throws ObjectNotFoundException;
     void deleteProductById(Long id) throws ObjectNotFoundException;
 }

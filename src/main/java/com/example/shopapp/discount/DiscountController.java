@@ -1,5 +1,6 @@
 package com.example.shopapp.discount;
 
+import com.example.shopapp.discount.dto.DiscountDtoMapper;
 import com.example.shopapp.discount.dto.RequestDiscountDto;
 import com.example.shopapp.discount.dto.ResponseDiscountDto;
 import com.example.shopapp.exception.ObjectNotFoundException;
@@ -22,8 +23,10 @@ public class DiscountController {
 
     @PostMapping
     public ResponseEntity<ResponseDiscountDto> saveDiscount(@Valid @RequestBody RequestDiscountDto requestDiscountDto) {
+        Discount discount = discountService.saveDiscount(DiscountDtoMapper.mapRequestDiscountDtoToDiscount(requestDiscountDto));
+
         return new ResponseEntity<>(
-                discountService.saveDiscount(requestDiscountDto),
+                DiscountDtoMapper.mapDiscountToResponseDiscountDto(discount),
                 HttpStatus.CREATED
         );
     }
@@ -31,7 +34,7 @@ public class DiscountController {
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDiscountDto> getDiscountById(@PathVariable("id") Long id) throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                discountService.getDiscountById(id),
+                DiscountDtoMapper.mapDiscountToResponseDiscountDto(discountService.getDiscountById(id)),
                 HttpStatus.OK
         );
     }
@@ -39,15 +42,20 @@ public class DiscountController {
     @GetMapping()
     public ResponseEntity<List<ResponseDiscountDto>> getAllDiscounts() throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                discountService.getAllDiscounts(),
+                DiscountDtoMapper.mapDiscountListToResponseDiscountDtoList(discountService.getAllDiscounts()),
                 HttpStatus.OK
         );
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseDiscountDto> updateDiscountById(@PathVariable("id") Long id, @Valid @RequestBody RequestDiscountDto requestDiscountDto) throws ObjectNotFoundException {
+        Discount discount = discountService.updateDiscountById(
+                id,
+                DiscountDtoMapper.mapRequestDiscountDtoToDiscount(requestDiscountDto)
+        );
+
         return new ResponseEntity<>(
-                discountService.updateDiscountById(id, requestDiscountDto),
+                DiscountDtoMapper.mapDiscountToResponseDiscountDto(discount),
                 HttpStatus.OK
         );
     }

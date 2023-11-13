@@ -2,10 +2,7 @@ package com.example.shopapp.user;
 
 import com.example.shopapp.exception.InvalidPasswordException;
 import com.example.shopapp.exception.ObjectNotFoundException;
-import com.example.shopapp.user.dto.PasswordDto;
-import com.example.shopapp.user.dto.PostUserDto;
-import com.example.shopapp.user.dto.PutUserDto;
-import com.example.shopapp.user.dto.ResponseUserDto;
+import com.example.shopapp.user.dto.*;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,16 +23,20 @@ public class UserController {
 
     @PostMapping("/customer")
     public ResponseEntity<ResponseUserDto> saveCustomer(@Valid @RequestBody PostUserDto postUser) {
+        User customer = userService.saveUser(UserDtoMapper.mapPostUserDtoToUser(postUser), Role.CUSTOMER);
+
         return new ResponseEntity<>(
-                userService.saveUser(postUser, Role.CUSTOMER),
+                UserDtoMapper.mapUserToResponseUserDto(customer),
                 HttpStatus.CREATED
         );
     }
 
     @PostMapping("/employee")
     public ResponseEntity<ResponseUserDto> saveEmployee(@Valid @RequestBody PostUserDto postUser) {
+        User employee = userService.saveUser(UserDtoMapper.mapPostUserDtoToUser(postUser), Role.EMPLOYEE);
+
         return new ResponseEntity<>(
-                userService.saveUser(postUser, Role.EMPLOYEE),
+                UserDtoMapper.mapUserToResponseUserDto(employee),
                 HttpStatus.CREATED
         );
     }
@@ -43,7 +44,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<ResponseUserDto> getUserById(@PathVariable("id") Long id, Principal principal) throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                userService.getUserById(id),
+                UserDtoMapper.mapUserToResponseUserDto(userService.getUserById(id)),
                 HttpStatus.OK
         );
     }
@@ -51,7 +52,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<ResponseUserDto>> getAllUsers() throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                userService.getAllUsers(),
+                UserDtoMapper.mapUserListToUserDtoList(userService.getAllUsers()),
                 HttpStatus.OK
         );
     }
@@ -59,7 +60,7 @@ public class UserController {
     @GetMapping(params = "email")
     public ResponseEntity<ResponseUserDto> getUserByEmail(@RequestParam("email") String email) throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                userService.getUserByEmail(email),
+                UserDtoMapper.mapUserToResponseUserDto(userService.getUserByEmail(email)),
                 HttpStatus.OK
         );
     }
@@ -67,15 +68,17 @@ public class UserController {
     @GetMapping(params = "phone")
     public ResponseEntity<ResponseUserDto> getUserByPhoneNumber(@RequestParam("phone") String phoneNumber) throws ObjectNotFoundException {
         return new ResponseEntity<>(
-                userService.getUserByPhoneNumber(phoneNumber),
+                UserDtoMapper.mapUserToResponseUserDto(userService.getUserByPhoneNumber(phoneNumber)),
                 HttpStatus.OK
         );
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResponseUserDto> updateUserById(@Valid @RequestBody PutUserDto putUser, @PathVariable("id") Long id) throws ObjectNotFoundException {
+        User user = userService.updateUserById(id, UserDtoMapper.mapPutUserDtoToUser(putUser));
+
         return new ResponseEntity<>(
-                userService.updateUserById(putUser, id),
+                UserDtoMapper.mapUserToResponseUserDto(user),
                 HttpStatus.OK
         );
     }

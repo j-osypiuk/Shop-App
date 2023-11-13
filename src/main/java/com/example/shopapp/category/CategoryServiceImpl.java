@@ -1,8 +1,5 @@
 package com.example.shopapp.category;
 
-import com.example.shopapp.category.dto.CategoryDtoMapper;
-import com.example.shopapp.category.dto.RequestCategoryDto;
-import com.example.shopapp.category.dto.ResponseCategoryDto;
 import com.example.shopapp.exception.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -18,49 +15,43 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseCategoryDto saveCategory(RequestCategoryDto requestCategoryDto) {
-        Category categoryDB = categoryRepository
-                .save(CategoryDtoMapper.mapRequestCategoryDtoToCategory(requestCategoryDto));
-        return CategoryDtoMapper.mapCategoryToResponseCategoryDto(categoryDB);
+    public Category saveCategory(Category category) {
+        return categoryRepository
+                .save(category);
     }
 
     @Override
-    public ResponseCategoryDto getCategoryById(Long id) throws ObjectNotFoundException {
-        Category categoryDB = categoryRepository.findById(id)
+    public Category getCategoryById(Long id) throws ObjectNotFoundException {
+        return categoryRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Category with id = " + id + " not found"));
-
-        return CategoryDtoMapper.mapCategoryToResponseCategoryDto(categoryDB);
     }
 
     @Override
-    public ResponseCategoryDto getCategoryByName(String name) throws ObjectNotFoundException {
-        Category categoryDB = categoryRepository.findCategoryByName(name)
+    public Category getCategoryByName(String name) throws ObjectNotFoundException {
+        return categoryRepository.findCategoryByName(name)
                 .orElseThrow(() -> new ObjectNotFoundException("Category with name = " + name + " not found"));
-
-        return CategoryDtoMapper.mapCategoryToResponseCategoryDto(categoryDB);
     }
 
     @Override
-    public List<ResponseCategoryDto> getAllCategories() throws ObjectNotFoundException {
+    public List<Category> getAllCategories() throws ObjectNotFoundException {
         List<Category> categoriesDB = categoryRepository.findAll();
 
        if (categoriesDB.isEmpty()) throw new ObjectNotFoundException("No categories found");
 
-       return CategoryDtoMapper.mapCategoryListToResponseCategoryDtoList(categoriesDB);
+       return categoriesDB;
     }
 
     @Override
-    public ResponseCategoryDto updateCategoryById(Long id, RequestCategoryDto requestCategoryDto) throws ObjectNotFoundException {
+    public Category updateCategoryById(Long id, Category category) throws ObjectNotFoundException {
         Category categoryDB = categoryRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Category with id = " + id + " not found"));
 
-        if (!requestCategoryDto.name().equals(categoryDB.getName()))
-            categoryDB.setName(requestCategoryDto.name());
-        if (!requestCategoryDto.description().equals(categoryDB.getDescription()))
-            categoryDB.setDescription(requestCategoryDto.description());
+        if (!category.getName().equals(categoryDB.getName()))
+            categoryDB.setName(category.getName());
+        if (!category.getDescription().equals(categoryDB.getDescription()))
+            categoryDB.setDescription(category.getDescription());
 
-        categoryRepository.save(categoryDB);
-        return CategoryDtoMapper.mapCategoryToResponseCategoryDto(categoryDB);
+        return categoryRepository.save(categoryDB);
     }
 
     @Override
