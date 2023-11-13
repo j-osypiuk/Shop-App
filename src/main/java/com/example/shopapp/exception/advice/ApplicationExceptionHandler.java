@@ -1,5 +1,6 @@
 package com.example.shopapp.exception.advice;
 
+import com.example.shopapp.exception.DuplicateUniqueValueException;
 import com.example.shopapp.exception.InvalidPasswordException;
 import com.example.shopapp.exception.InvalidStateException;
 import com.example.shopapp.exception.ObjectNotFoundException;
@@ -69,4 +70,11 @@ public class ApplicationExceptionHandler {
         return errorMap;
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DuplicateUniqueValueException.class)
+    public Map<String, String> handleDuplicateValueException(DuplicateUniqueValueException e) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("Error Message", e.getMessage());
+        return errorMap;
+    }
 }
