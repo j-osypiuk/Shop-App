@@ -1,5 +1,6 @@
 package com.example.shopapp.product;
 
+import com.example.shopapp.exception.DuplicateUniqueValueException;
 import com.example.shopapp.exception.ObjectNotFoundException;
 import com.example.shopapp.product.dto.ProductDtoMapper;
 import com.example.shopapp.product.dto.RequestProductDto;
@@ -22,7 +23,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseProductDto> saveProduct(@Valid @RequestBody RequestProductDto requestProductDto) throws ObjectNotFoundException {
+    public ResponseEntity<ResponseProductDto> saveProduct(@Valid @RequestBody RequestProductDto requestProductDto) throws ObjectNotFoundException, DuplicateUniqueValueException {
         Product product = productService.saveProduct(ProductDtoMapper.mapRequestProductDtoToProduct(requestProductDto));
 
         return new ResponseEntity<>(
@@ -48,7 +49,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseProductDto> updateProductById(@PathVariable("id") Long id, @Valid @RequestBody RequestProductDto requestProductDto) throws ObjectNotFoundException {
+    public ResponseEntity<ResponseProductDto> updateProductById(@PathVariable("id") Long id, @Valid @RequestBody RequestProductDto requestProductDto) throws ObjectNotFoundException, DuplicateUniqueValueException {
         Product product = productService.updateProductById(id, ProductDtoMapper.mapRequestProductDtoToProduct(requestProductDto));
 
         return new ResponseEntity<>(

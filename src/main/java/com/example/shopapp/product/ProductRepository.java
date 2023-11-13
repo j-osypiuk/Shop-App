@@ -13,4 +13,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Transactional
     @Query(value = "DELETE FROM Product p WHERE p.productId = ?1")
     Integer deleteProductById(Long id);
+    boolean existsProductByName(String name);
 }

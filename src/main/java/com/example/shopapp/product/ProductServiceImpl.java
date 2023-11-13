@@ -4,6 +4,7 @@ import com.example.shopapp.category.Category;
 import com.example.shopapp.category.CategoryRepository;
 import com.example.shopapp.discount.Discount;
 import com.example.shopapp.discount.DiscountRepository;
+import com.example.shopapp.exception.DuplicateUniqueValueException;
 import com.example.shopapp.exception.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,11 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product saveProduct(Product product) throws ObjectNotFoundException {
+    public Product saveProduct(Product product) throws ObjectNotFoundException, DuplicateUniqueValueException {
+        if (productRepository.existsProductByName(product.getName()))
+            throw new DuplicateUniqueValueException("Product with name = " + product.getName() + " already exists");
+
+
         Discount discountDB = discountRepository.findById(product.getDiscount().getDiscountId())
                 .orElseThrow(() -> new ObjectNotFoundException("Discount with id = " + product.getDiscount().getDiscountId() + " not found"));
 
@@ -61,9 +66,12 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product updateProductById(Long id, Product product) throws ObjectNotFoundException {
+    public Product updateProductById(Long id, Product product) throws ObjectNotFoundException, DuplicateUniqueValueException {
         Product productDB = productRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Product with id = " + id + " not found"));
+
+        if (productRepository.existsProductByName(product.getName()))
+            throw new DuplicateUniqueValueException("Product with name = " + product.getName() + " already exists");
 
         if (!product.getName().equals(productDB.getName()))
             productDB.setName(product.getName());
