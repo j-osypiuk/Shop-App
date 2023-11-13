@@ -1,5 +1,6 @@
 package com.example.shopapp.user;
 
+import com.example.shopapp.exception.DuplicateUniqueValueException;
 import com.example.shopapp.exception.InvalidPasswordException;
 import com.example.shopapp.exception.ObjectNotFoundException;
 import com.example.shopapp.user.dto.*;
@@ -22,7 +23,7 @@ public class UserController {
     }
 
     @PostMapping("/customer")
-    public ResponseEntity<ResponseUserDto> saveCustomer(@Valid @RequestBody PostUserDto postUser) {
+    public ResponseEntity<ResponseUserDto> saveCustomer(@Valid @RequestBody PostUserDto postUser) throws DuplicateUniqueValueException {
         User customer = userService.saveUser(UserDtoMapper.mapPostUserDtoToUser(postUser), Role.CUSTOMER);
 
         return new ResponseEntity<>(
@@ -32,7 +33,7 @@ public class UserController {
     }
 
     @PostMapping("/employee")
-    public ResponseEntity<ResponseUserDto> saveEmployee(@Valid @RequestBody PostUserDto postUser) {
+    public ResponseEntity<ResponseUserDto> saveEmployee(@Valid @RequestBody PostUserDto postUser) throws DuplicateUniqueValueException {
         User employee = userService.saveUser(UserDtoMapper.mapPostUserDtoToUser(postUser), Role.EMPLOYEE);
 
         return new ResponseEntity<>(
@@ -74,7 +75,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseUserDto> updateUserById(@Valid @RequestBody PutUserDto putUser, @PathVariable("id") Long id) throws ObjectNotFoundException {
+    public ResponseEntity<ResponseUserDto> updateUserById(@Valid @RequestBody PutUserDto putUser, @PathVariable("id") Long id) throws ObjectNotFoundException, DuplicateUniqueValueException {
         User user = userService.updateUserById(id, UserDtoMapper.mapPutUserDtoToUser(putUser));
 
         return new ResponseEntity<>(

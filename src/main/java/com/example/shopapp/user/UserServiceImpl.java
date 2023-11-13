@@ -1,5 +1,6 @@
 package com.example.shopapp.user;
 
+import com.example.shopapp.exception.DuplicateUniqueValueException;
 import com.example.shopapp.exception.InvalidPasswordException;
 import com.example.shopapp.exception.ObjectNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +23,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User saveUser(User user, Role userRole) {
+    public User saveUser(User user, Role userRole) throws DuplicateUniqueValueException {
+        if (userRepository.existsUserByEmail(user.getEmail()))
+            throw new DuplicateUniqueValueException("User with email = " + user.getEmail() + " already exists");
+        if (userRepository.existsUserByPhoneNumber(user.getPhoneNumber()))
+            throw new DuplicateUniqueValueException("User with phone = " + user.getPhoneNumber() + " already exists");
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(userRole);
 
@@ -57,9 +63,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User updateUserById(Long id, User user) throws ObjectNotFoundException {
+    public User updateUserById(Long id, User user) throws ObjectNotFoundException, DuplicateUniqueValueException {
         User userDB = userRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("User with id = " + id + " not found"));
+
+        if (userRepository.existsUserByEmail(user.getEmail()))
+            throw new DuplicateUniqueValueException("User with email = " + user.getEmail() + " already exists");
+        if (userRepository.existsUserByPhoneNumber(user.getPhoneNumber()))
+            throw new DuplicateUniqueValueException("User with phone = " + user.getPhoneNumber() + " already exists");
 
         if (!user.getFirstName().equals(userDB.getFirstName()))
             userDB.setFirstName(user.getFirstName());

@@ -19,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     @Query(value = "DELETE FROM User u WHERE u.userId = ?1")
     Integer deleteUserById(Long id);
+    boolean existsUserByEmail(String email);
+    boolean existsUserByPhoneNumber(String phoneNumber);
 }
