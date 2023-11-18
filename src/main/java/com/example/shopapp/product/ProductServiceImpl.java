@@ -31,11 +31,11 @@ public class ProductServiceImpl implements ProductService{
         if (productRepository.existsProductByName(product.getName()))
             throw new DuplicateUniqueValueException("Product with name = " + product.getName() + " already exists");
 
-
-        Discount discountDB = discountRepository.findById(product.getDiscount().getDiscountId())
-                .orElseThrow(() -> new ObjectNotFoundException("Discount with id = " + product.getDiscount().getDiscountId() + " not found"));
-
-        product.setDiscount(discountDB);
+        if (product.getDiscount() != null) {
+            Discount discountDB = discountRepository.findById(product.getDiscount().getDiscountId())
+                    .orElseThrow(() -> new ObjectNotFoundException("Discount with id = " + product.getDiscount().getDiscountId() + " not found"));
+            product.setDiscount(discountDB);
+        }
 
         List<Category> categories = new ArrayList<>();
         for (Category category : product.getCategories()) {
@@ -44,7 +44,6 @@ public class ProductServiceImpl implements ProductService{
             
             categories.add(categoryDB);
         }
-        
         product.setCategories(categories);
 
         return productRepository.save(product);
