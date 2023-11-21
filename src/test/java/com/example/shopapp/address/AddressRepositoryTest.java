@@ -45,7 +45,7 @@ class AddressRepositoryTest {
     void findByCityAndStreetAndNumberAndPostalCodeReturnsProperAddress() {
         addressRepository.save(testAddress);
 
-        Optional<Address> addressDB = addressRepository.findAddressByCityAndStreetAndNumberAndPostalCode(
+        Optional<Address> addressDB = addressRepository.findDistinctAddressByCityAndStreetAndNumberAndPostalCode(
                 testAddress.getCity(),
                 testAddress.getStreet(),
                 testAddress.getNumber(),
@@ -63,7 +63,7 @@ class AddressRepositoryTest {
     void findByCityAndStreetAndNumberAndPostalCodeThrowsNoSuchElementException() {
         addressRepository.save(testAddress);
 
-        Optional<Address> addressDB = addressRepository.findAddressByCityAndStreetAndNumberAndPostalCode(
+        Optional<Address> addressDB = addressRepository.findDistinctAddressByCityAndStreetAndNumberAndPostalCode(
                 "OtherCity",
                 testAddress.getStreet(),
                 testAddress.getNumber(),

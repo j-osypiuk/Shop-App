@@ -15,8 +15,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "_user")
-@Getter
-@Setter
+//@Getter
+//@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -83,7 +84,6 @@ public class User implements UserDetails {
     )
     private Address address;
     @OneToMany(
-            fetch = FetchType.EAGER,
             mappedBy = "user"
     )
     private Set<Order> orders;

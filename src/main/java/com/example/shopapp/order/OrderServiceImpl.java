@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService{
@@ -36,15 +37,20 @@ public class OrderServiceImpl implements OrderService{
         User userDB = userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("User with id = " + userId + " not found"));
 
-        Address addressDB = addressRepository.findAddressByCityAndStreetAndNumberAndPostalCode(
+        order.setUser(userDB);
+
+        Optional<Address> addressDB = addressRepository.findDistinctAddressByCityAndStreetAndNumberAndPostalCode(
                 order.getAddress().getCity(),
                 order.getAddress().getStreet(),
                 order.getAddress().getNumber(),
                 order.getAddress().getPostalCode()
-        ).orElse(addressRepository.save(order.getAddress()));
+        );
 
-        order.setUser(userDB);
-        order.setAddress(addressDB);
+        if (addressDB.isPresent())
+            order.setAddress(addressDB.get());
+        else
+            addressRepository.save(order.getAddress());
+
 
         List<Product> products = new ArrayList<>();
         double price = 0;
@@ -55,7 +61,8 @@ public class OrderServiceImpl implements OrderService{
 
             productDB.setAmount(productDB.getAmount() - 1);
             price += productDB.getPrice();
-            totalDiscount += productDB.getPrice() * productDB.getDiscount().getDiscountPercent() / 100;
+            if (productDB.getDiscount() != null)
+                totalDiscount += productDB.getPrice() * productDB.getDiscount().getDiscountPercent() / 100;
             products.add(productDB);
         }
 
