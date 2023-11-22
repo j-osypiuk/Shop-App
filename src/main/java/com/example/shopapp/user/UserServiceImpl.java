@@ -67,8 +67,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User userDB = userRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("User with id = " + id + " not found"));
 
-        if (userRepository.existsUserByEmail(user.getEmail()))
-            throw new DuplicateUniqueValueException("User with email = " + user.getEmail() + " already exists");
         if (userRepository.existsUserByPhoneNumber(user.getPhoneNumber()))
             throw new DuplicateUniqueValueException("User with phone = " + user.getPhoneNumber() + " already exists");
 
