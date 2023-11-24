@@ -56,21 +56,21 @@ public class OrderServiceImpl implements OrderService{
 
 
         List<Product> products = new ArrayList<>();
-        double price = 0;
+        double totalPrice = 0;
         double totalDiscount = 0;
         for (Product product : order.getProducts()) {
             Product productDB = productRepository.findById(product.getProductId())
                     .orElseThrow(() -> new ObjectNotFoundException("Product with id = " + product.getProductId() + " not found"));
 
             productDB.setAmount(productDB.getAmount() - 1);
-            price += productDB.getPrice();
+            totalPrice += productDB.getPrice();
             if (productDB.getDiscount() != null)
                 totalDiscount += productDB.getPrice() * productDB.getDiscount().getDiscountPercent() / 100;
             products.add(productDB);
         }
 
         order.setProducts(products);
-        order.setTotalPrice(price - totalDiscount);
+        order.setTotalPrice(totalPrice - totalDiscount);
         order.setTotalDiscount(totalDiscount);
 
         return orderRepository.save(order);
