@@ -260,6 +260,49 @@ class ProductServiceImplTest {
     @Test
     void getAllProductsReturnsListOfProducts() throws ObjectNotFoundException {
         // given
+        Category category = Category.builder()
+                .categoryId(1L)
+                .build();
+        Product product1 = Product.builder()
+                                .name("Orange juice")
+                                .description("Orange juice description")
+                                .categories(Arrays.asList(category))
+                                .build();
+        Product product2 = Product.builder()
+                                .name("Melons")
+                                .description("Melons description")
+                                .categories(Arrays.asList(category))
+                                .build();
+        given(productRepository.findAllByCategoryId(category.getCategoryId())).willReturn(Arrays.asList(product1, product2));
+        // when
+        List<Product> products = productService.getProductsByCategory(category.getCategoryId());
+        // then
+        ArgumentCaptor<Long> categoryIdCaptor = ArgumentCaptor.forClass(Long.class);
+        verify(productRepository).findAllByCategoryId(categoryIdCaptor.capture());
+        assertThat(categoryIdCaptor.getValue()).isEqualTo(category.getCategoryId());
+        assertEquals(products.size(), 2);
+        assertEquals(products.get(0), product1);
+        assertEquals(products.get(1), product2);
+    }
+
+    @Test
+    void getAllProductsThrowsExceptionIfNoProductsExists() {
+        // given
+        Long categoryId = 999L;
+        given(productRepository.findAllByCategoryId(categoryId)).willReturn(Collections.emptyList());
+        // when
+        // then
+        ArgumentCaptor<Long> categoryIdCaptor = ArgumentCaptor.forClass(Long.class);
+        assertThatThrownBy(() -> productService.getProductsByCategory(categoryId))
+                .isInstanceOf(ObjectNotFoundException.class)
+                .hasMessageContaining("No products found");
+        verify(productRepository).findAllByCategoryId(categoryIdCaptor.capture());
+        assertThat(categoryIdCaptor.getValue()).isEqualTo(categoryId);
+    }
+
+    @Test
+    void getProductsByCategoryReturnsListOfProducts() throws ObjectNotFoundException {
+        // given
         Product product1 = Product.builder().name("Orange juice").description("Orange juice description").build();
         Product product2 = Product.builder().name("Melons").description("Melons description").build();
         given(productRepository.findAll()).willReturn(Arrays.asList(product1, product2));
@@ -273,7 +316,7 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void getAllProductsThrowsExceptionIfNoProductsExists() {
+    void getProductsByCategoryExceptionIfNoProductsExists() {
         // given
         given(productRepository.findAll()).willReturn(Collections.emptyList());
         // when
@@ -356,12 +399,6 @@ class ProductServiceImplTest {
         Long productId = 1L;
         Discount discount = Discount.builder()
                 .discountId(1L)
-                .build();
-        Discount foundDiscount = Discount.builder()
-                .discountId(1L)
-                .name("Summer discount")
-                .description("Summer discount description")
-                .discountPercent(15)
                 .build();
         Category category = Category.builder()
                 .categoryId(1L)
@@ -453,19 +490,8 @@ class ProductServiceImplTest {
         Discount discount = Discount.builder()
                 .discountId(1L)
                 .build();
-        Discount foundDiscount = Discount.builder()
-                .discountId(1L)
-                .name("Summer discount")
-                .description("Summer discount description")
-                .discountPercent(15)
-                .build();
         Category category = Category.builder()
                 .categoryId(1L)
-                .build();
-        Category foundCategory = Category.builder()
-                .categoryId(1L)
-                .name("Drinks")
-                .description("Drink category description")
                 .build();
         Product product = Product.builder()
                 .name("Orange juice")
@@ -509,19 +535,8 @@ class ProductServiceImplTest {
         Discount discount = Discount.builder()
                 .discountId(1L)
                 .build();
-        Discount foundDiscount = Discount.builder()
-                .discountId(1L)
-                .name("Summer discount")
-                .description("Summer discount description")
-                .discountPercent(15)
-                .build();
         Category category = Category.builder()
                 .categoryId(1L)
-                .build();
-        Category foundCategory = Category.builder()
-                .categoryId(1L)
-                .name("Drinks")
-                .description("Drink category description")
                 .build();
         Product product = Product.builder()
                 .name("Orange juice")
@@ -576,11 +591,6 @@ class ProductServiceImplTest {
                 .build();
         Category category = Category.builder()
                 .categoryId(1L)
-                .build();
-        Category foundCategory = Category.builder()
-                .categoryId(1L)
-                .name("Drinks")
-                .description("Drink category description")
                 .build();
         Product product = Product.builder()
                 .name("Orange juice")

@@ -48,6 +48,14 @@ public class ProductController {
         );
     }
 
+    @GetMapping(params = "category_id")
+    public ResponseEntity<List<ResponseProductDto>> getAllByCategory(@RequestParam("category_id") Long id) throws ObjectNotFoundException {
+        return new ResponseEntity<>(
+                ProductDtoMapper.mapProductListToProductDtoList(productService.getProductsByCategory(id)),
+                HttpStatus.OK
+        );
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ResponseProductDto> updateProductById(@PathVariable("id") Long id, @Valid @RequestBody RequestProductDto requestProductDto) throws ObjectNotFoundException, DuplicateUniqueValueException {
         Product product = productService.updateProductById(id, ProductDtoMapper.mapRequestProductDtoToProduct(requestProductDto));

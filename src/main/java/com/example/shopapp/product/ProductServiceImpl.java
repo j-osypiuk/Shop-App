@@ -65,6 +65,15 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public List<Product> getProductsByCategory(Long id) throws ObjectNotFoundException {
+        List<Product> products = productRepository.findAllByCategoryId(id);
+
+        if (products.isEmpty()) throw new ObjectNotFoundException("No products found");
+
+        return products;
+    }
+
+    @Override
     public Product updateProductById(Long id, Product product) throws ObjectNotFoundException, DuplicateUniqueValueException {
         Product productDB = productRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Product with id = " + id + " not found"));
