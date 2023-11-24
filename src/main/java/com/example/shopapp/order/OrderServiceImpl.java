@@ -8,6 +8,8 @@ import com.example.shopapp.product.ProductRepository;
 import com.example.shopapp.user.User;
 import com.example.shopapp.user.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public Order saveOrder(Order order, Long userId) throws ObjectNotFoundException {
         User userDB = userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("User with id = " + userId + " not found"));

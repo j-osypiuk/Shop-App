@@ -7,6 +7,7 @@ import com.example.shopapp.order.dto.ResponseOrderDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
+@EnableTransactionManagement
 public class OrderController {
 
     private final OrderService orderService;
