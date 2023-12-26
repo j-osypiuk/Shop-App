@@ -1,6 +1,7 @@
 package com.example.shopapp.category;
 
 import com.example.shopapp.category.dto.CategoryDtoMapper;
+import com.example.shopapp.category.dto.CategoryIdDto;
 import com.example.shopapp.category.dto.RequestCategoryDto;
 import com.example.shopapp.category.dto.ResponseCategoryDto;
 import com.example.shopapp.exception.DuplicateUniqueValueException;
@@ -8,7 +9,6 @@ import com.example.shopapp.exception.ObjectNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,11 +24,11 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseCategoryDto> saveCategory(@Valid @RequestBody RequestCategoryDto requestCategoryDto) throws DuplicateUniqueValueException {
+    public ResponseEntity<CategoryIdDto> saveCategory(@Valid @RequestBody RequestCategoryDto requestCategoryDto) throws DuplicateUniqueValueException {
         Category category = categoryService.saveCategory(CategoryDtoMapper.mapRequestCategoryDtoToCategory(requestCategoryDto));
 
         return new ResponseEntity<>(
-                CategoryDtoMapper.mapCategoryToResponseCategoryDto(category),
+                new CategoryIdDto(category.getCategoryId()),
                 HttpStatus.CREATED
         );
     }
@@ -50,7 +50,6 @@ public class CategoryController {
     }
 
     @GetMapping
-    @PreAuthorize("permitAll()")
     public ResponseEntity<List<ResponseCategoryDto>> getAllCategories() throws ObjectNotFoundException {
         return new ResponseEntity<>(
                 CategoryDtoMapper.mapCategoryListToResponseCategoryDtoList(categoryService.getAllCategories()),
@@ -59,14 +58,14 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseCategoryDto> updateCategoryById(@PathVariable Long id, @Valid @RequestBody RequestCategoryDto requestCategoryDto) throws ObjectNotFoundException, DuplicateUniqueValueException {
+    public ResponseEntity<CategoryIdDto> updateCategoryById(@PathVariable Long id, @Valid @RequestBody RequestCategoryDto requestCategoryDto) throws ObjectNotFoundException, DuplicateUniqueValueException {
         Category category = categoryService.updateCategoryById(
                 id,
                 CategoryDtoMapper.mapRequestCategoryDtoToCategory(requestCategoryDto)
         );
 
         return new ResponseEntity<>(
-                CategoryDtoMapper.mapCategoryToResponseCategoryDto(category),
+                new CategoryIdDto(category.getCategoryId()),
                 HttpStatus.OK
         );
     }

@@ -1,6 +1,5 @@
 package com.example.shopapp.security;
 
-import static com.example.shopapp.user.Role.*;
 import com.example.shopapp.user.UserRepository;
 import com.example.shopapp.user.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +16,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import static com.example.shopapp.user.Role.ADMIN;
+import static com.example.shopapp.user.Role.EMPLOYEE;
 
 @Configuration
 @EnableWebSecurity
@@ -46,7 +48,8 @@ public class SecurityConfig {
                                         "/photos",
                                         "/products",
                                         "/discounts",
-                                        "/category").permitAll()
+                                        "/category",
+                                        "/category/{id}").permitAll()
                                 .requestMatchers(HttpMethod.GET,
                                         "/users/{id}",
                                         "/orders/user/{id}").access(decisionManager)
@@ -61,7 +64,7 @@ public class SecurityConfig {
                                         "/discounts/**",
                                         "/category/**",
                                         "/address")
-                                .hasAnyAuthority(ADMIN.name(), EMPLOYEE.name())
+                                .hasAnyRole(ADMIN.name(), EMPLOYEE.name())
                 )
                 .httpBasic(Customizer.withDefaults())
                 .build();
