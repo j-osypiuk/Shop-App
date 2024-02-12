@@ -1,11 +1,9 @@
 package com.example.shopapp.order.dto;
 
 import com.example.shopapp.address.dto.AddressDtoMapper;
-import com.example.shopapp.user.User;
-import com.example.shopapp.user.dto.UserDtoMapper;
 import com.example.shopapp.order.Order;
-import com.example.shopapp.product.Product;
-import com.example.shopapp.product.dto.ProductDtoMapper;
+import com.example.shopapp.orderproduct.dto.OrderProductDtoMapper;
+import com.example.shopapp.user.dto.UserDtoMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,8 +20,8 @@ public class OrderDtoMapper {
                 order.isCompleted(),
                 UserDtoMapper.mapUserToOrderUserDto(order.getUser()),
                 AddressDtoMapper.mapAddressToResponseAddressDto(order.getAddress()),
-                order.getProducts().stream()
-                        .map(ProductDtoMapper::mapProductToOrderProductDto)
+                order.getOrderProducts().stream()
+                        .map(OrderProductDtoMapper::mapOrderProductToOrderProductDto)
                         .collect(Collectors.toList())
         );
     }
@@ -33,8 +31,8 @@ public class OrderDtoMapper {
                 .orderDate(LocalDateTime.now())
                 .isCompleted(requestOrderDto.isCompleted())
                 .address(AddressDtoMapper.mapRequestAddressDtoToAddress(requestOrderDto.address()))
-                .products(requestOrderDto.productIds().stream()
-                        .map(productId -> Product.builder().productId(productId).build())
+                .orderProducts(requestOrderDto.orderProducts().stream()
+                        .map(OrderProductDtoMapper::mapOrderProductDtoToOrderProduct)
                         .collect(Collectors.toList()))
                 .build();
     }

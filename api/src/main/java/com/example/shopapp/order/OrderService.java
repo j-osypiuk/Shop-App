@@ -1,5 +1,6 @@
 package com.example.shopapp.order;
 
+import com.example.shopapp.exception.InvalidStateException;
 import com.example.shopapp.exception.ObjectNotFoundException;
 
 import java.time.LocalDateTime;
@@ -7,7 +8,7 @@ import java.util.List;
 
 public interface OrderService {
 
-    Order saveOrder(Order order, Long userId) throws ObjectNotFoundException;
+    Order saveOrder(Order order, Long userId) throws ObjectNotFoundException, InvalidStateException;
     Order getOrderById(Long id) throws ObjectNotFoundException;
     List<Order> getAllOrders() throws ObjectNotFoundException;
     List<Order> getAllOrdersByProductId(Long id) throws ObjectNotFoundException;

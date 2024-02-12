@@ -1,6 +1,7 @@
 package com.example.shopapp.order.dto;
 
 import com.example.shopapp.address.dto.RequestAddressDto;
+import com.example.shopapp.orderproduct.dto.OrderProductDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -13,6 +14,6 @@ public record RequestOrderDto(
         @Valid
         RequestAddressDto address,
         @NotEmpty(message = "Order must contain at least one product")
-        List<Long> productIds
+        List<OrderProductDto> orderProducts
 ) {
 }

@@ -89,7 +89,6 @@ public class User implements UserDetails {
     private Set<Order> orders;
 
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

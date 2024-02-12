@@ -1,5 +1,6 @@
 package com.example.shopapp.order;
 
+import com.example.shopapp.exception.InvalidStateException;
 import com.example.shopapp.exception.ObjectNotFoundException;
 import com.example.shopapp.order.dto.OrderDtoMapper;
 import com.example.shopapp.order.dto.RequestOrderDto;
@@ -25,7 +26,7 @@ public class OrderController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<ResponseOrderDto> saveOrder(@Valid @RequestBody RequestOrderDto requestOrderDto, @PathVariable("id") Long userId) throws ObjectNotFoundException {
+    public ResponseEntity<ResponseOrderDto> saveOrder(@Valid @RequestBody RequestOrderDto requestOrderDto, @PathVariable("id") Long userId) throws ObjectNotFoundException, InvalidStateException {
        Order order = OrderDtoMapper.mapRequestOrderDtoToOrder(requestOrderDto);
 
         return new ResponseEntity<>(

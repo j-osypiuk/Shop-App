@@ -4,7 +4,10 @@ import com.example.shopapp.address.Address;
 import com.example.shopapp.address.AddressRepository;
 import com.example.shopapp.category.Category;
 import com.example.shopapp.discount.Discount;
+import com.example.shopapp.exception.InvalidStateException;
 import com.example.shopapp.exception.ObjectNotFoundException;
+import com.example.shopapp.orderproduct.OrderProduct;
+import com.example.shopapp.orderproduct.OrderProductRepository;
 import com.example.shopapp.product.Product;
 import com.example.shopapp.product.ProductRepository;
 import com.example.shopapp.user.User;
@@ -39,6 +42,8 @@ class OrderServiceImplTest {
     private ProductRepository productRepository;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private OrderProductRepository orderProductRepository;
     private OrderServiceImpl orderService;
 
     @BeforeEach
@@ -47,16 +52,17 @@ class OrderServiceImplTest {
                 orderRepository,
                 productRepository,
                 addressRepository,
-                userRepository
+                userRepository,
+                orderProductRepository
         );
     }
 
     @Test
-    void saveOrderWithExistingAddressSavesOrder() throws ObjectNotFoundException {
+    void saveOrderWithExistingAddressSavesOrder() throws ObjectNotFoundException, InvalidStateException {
         // given
         Long userId = 1L;
-        int product1Amount = 10;
-        int product2Amount = 20;
+        int product1Amount = 20;
+        int product2Amount = 30;
         Category category = Category.builder()
                 .categoryId(1L)
                 .build();
@@ -93,19 +99,28 @@ class OrderServiceImplTest {
                 .email("stev@mail.com")
                 .phoneNumber("345543345")
                 .build();
+        OrderProduct orderProduct1 = OrderProduct.builder()
+                .product(foundProduct1)
+                .amount(10)
+                .build();
+        OrderProduct orderProduct2 = OrderProduct.builder()
+                .product(foundProduct2)
+                .amount(10)
+                .build();
+
         Order order = Order.builder()
                 .orderDate(LocalDateTime.now())
-                .products(Arrays.asList(foundProduct1, foundProduct2))
+                .orderProducts(Arrays.asList(orderProduct1, orderProduct2))
                 .address(foundAddress)
                 .isCompleted(false)
                 .user(user)
                 .build();
         double totalDiscount = 0;
         double totalPrice = 0;
-        for (Product product : order.getProducts()) {
-            totalPrice += product.getPrice();
-            if (product.getDiscount() != null)
-                totalDiscount += product.getPrice() * product.getDiscount().getDiscountPercent() / 100;
+        for (OrderProduct orderProduct : order.getOrderProducts()) {
+            totalPrice += orderProduct.getProduct().getPrice() * orderProduct.getAmount();
+            if (orderProduct.getProduct().getDiscount() != null)
+                totalDiscount += orderProduct.getProduct().getPrice() * orderProduct.getAmount() * orderProduct.getProduct().getDiscount().getDiscountPercent() / 100;
         }
         totalPrice = totalPrice - totalDiscount;
 
@@ -140,6 +155,7 @@ class OrderServiceImplTest {
         verify(productRepository, times(2)).findById(product1IdCaptor.capture());
         verify(productRepository, times(2)).findById(product2IdCaptor.capture());
         verify(orderRepository).save(orderCaptor.capture());
+        verify(orderProductRepository, times(order.getOrderProducts().size())).save(any());
         assertThat(userIdCaptor.getValue()).isEqualTo(userId);
         assertThat(addressCityCaptor.getValue()).isEqualTo(foundAddress.getCity());
         assertThat(addressStreetCaptor.getValue()).isEqualTo(foundAddress.getStreet());
@@ -151,13 +167,11 @@ class OrderServiceImplTest {
         assertEquals(savedOrder, order);
         assertEquals(savedOrder.getTotalPrice(), totalPrice);
         assertEquals(savedOrder.getTotalDiscount(), totalDiscount);
-        assertEquals(savedOrder.getProducts().get(0).getAmount(), product1Amount - 1);
-        assertEquals(savedOrder.getProducts().get(1).getAmount(), product2Amount - 1);
         assertFalse(savedOrder.isCompleted());
     }
 
     @Test
-    void saveOrderWithNonExistentAddressSavesOrderAndItsAddress() throws ObjectNotFoundException {
+    void saveOrderWithNonExistentAddressSavesOrderAndItsAddress() throws ObjectNotFoundException, InvalidStateException {
         // given
         Long userId = 1L;
         int product1Amount = 10;
@@ -198,19 +212,29 @@ class OrderServiceImplTest {
                 .email("stev@mail.com")
                 .phoneNumber("345543345")
                 .build();
+
+        OrderProduct orderProduct1 = OrderProduct.builder()
+                .product(foundProduct1)
+                .amount(10)
+                .build();
+        OrderProduct orderProduct2 = OrderProduct.builder()
+                .product(foundProduct2)
+                .amount(10)
+                .build();
+
         Order order = Order.builder()
                 .orderDate(LocalDateTime.now())
-                .products(Arrays.asList(foundProduct1, foundProduct2))
+                .orderProducts(Arrays.asList(orderProduct1, orderProduct2))
                 .address(address)
                 .isCompleted(false)
                 .user(user)
                 .build();
         double totalDiscount = 0;
         double totalPrice = 0;
-        for (Product product : order.getProducts()) {
-            totalPrice += product.getPrice();
-            if (product.getDiscount() != null)
-                totalDiscount += product.getPrice() * product.getDiscount().getDiscountPercent() / 100;
+        for (OrderProduct orderProduct : order.getOrderProducts()) {
+            totalPrice += orderProduct.getProduct().getPrice() * orderProduct.getAmount();
+            if (orderProduct.getProduct().getDiscount() != null)
+                totalDiscount += orderProduct.getProduct().getPrice() * orderProduct.getAmount() * orderProduct.getProduct().getDiscount().getDiscountPercent() / 100;
         }
         totalPrice = totalPrice - totalDiscount;
 
@@ -247,6 +271,7 @@ class OrderServiceImplTest {
         verify(productRepository, times(2)).findById(product1IdCaptor.capture());
         verify(productRepository, times(2)).findById(product2IdCaptor.capture());
         verify(orderRepository).save(orderCaptor.capture());
+        verify(orderProductRepository, times(order.getOrderProducts().size())).save(any());
         assertThat(userIdCaptor.getValue()).isEqualTo(userId);
         assertThat(addressCityCaptor.getValue()).isEqualTo(address.getCity());
         assertThat(addressStreetCaptor.getValue()).isEqualTo(address.getStreet());
@@ -259,8 +284,6 @@ class OrderServiceImplTest {
         assertEquals(savedOrder, order);
         assertEquals(savedOrder.getTotalPrice(), totalPrice);
         assertEquals(savedOrder.getTotalDiscount(), totalDiscount);
-        assertEquals(savedOrder.getProducts().get(0).getAmount(), product1Amount - 1);
-        assertEquals(savedOrder.getProducts().get(1).getAmount(), product2Amount - 1);
         assertFalse(savedOrder.isCompleted());
     }
 
@@ -285,6 +308,7 @@ class OrderServiceImplTest {
         verify(addressRepository, never()).save(any());
         verify(productRepository, never()).findById(any());
         verify(orderRepository, never()).save(any());
+        verify(orderProductRepository, never()).save(any());
         assertThat(userIdCaptor.getValue()).isEqualTo(userId);
     }
 
@@ -322,9 +346,14 @@ class OrderServiceImplTest {
                 .email("stev@mail.com")
                 .phoneNumber("345543345")
                 .build();
+        OrderProduct orderProduct1 = OrderProduct.builder()
+                .product(foundProduct1)
+                .amount(10)
+                .build();
+
         Order order = Order.builder()
                 .orderDate(LocalDateTime.now())
-                .products(Arrays.asList(foundProduct1))
+                .orderProducts(Arrays.asList(orderProduct1))
                 .address(foundAddress)
                 .isCompleted(false)
                 .user(user)
@@ -358,6 +387,8 @@ class OrderServiceImplTest {
         );
         verify(addressRepository, never()).save(any());
         verify(productRepository).findById(product1IdCaptor.capture());
+        verify(orderRepository, never()).save(any());
+        verify(orderProductRepository, never()).save(any());
         assertThat(userIdCaptor.getValue()).isEqualTo(userId);
         assertThat(addressCityCaptor.getValue()).isEqualTo(foundAddress.getCity());
         assertThat(addressStreetCaptor.getValue()).isEqualTo(foundAddress.getStreet());
@@ -366,6 +397,97 @@ class OrderServiceImplTest {
         assertThat(product1IdCaptor.getValue()).isEqualTo(foundProduct1.getProductId());
     }
 
+    @Test
+    void saveOrderThrowsExceptionIfAmountOfProductInStockIsLowerThanAmountOfProductInOrder() throws ObjectNotFoundException, InvalidStateException {
+        // given
+        Long userId = 1L;
+        int product1Amount = 5;
+        Category category = Category.builder()
+                .categoryId(1L)
+                .build();
+        Discount discount = Discount.builder()
+                .name("Winter discount")
+                .discountPercent(15)
+                .build();
+        Product foundProduct1 = Product.builder()
+                .name("Orange juice")
+                .price(100)
+                .amount(product1Amount)
+                .description("Orange juice description")
+                .categories(Arrays.asList(category))
+                .discount(discount)
+                .build();
+        Address foundAddress = Address.builder()
+                .country("England")
+                .region("Sth London")
+                .city("London")
+                .street("Johnson Avenue")
+                .number("24")
+                .postalCode("32423")
+                .build();
+        User user = User.builder()
+                .userId(userId)
+                .firstName("Steven")
+                .email("stev@mail.com")
+                .phoneNumber("345543345")
+                .build();
+        OrderProduct orderProduct1 = OrderProduct.builder()
+                .product(foundProduct1)
+                .amount(10)
+                .build();
+        Order order = Order.builder()
+                .orderDate(LocalDateTime.now())
+                .orderProducts(Arrays.asList(orderProduct1))
+                .address(foundAddress)
+                .isCompleted(false)
+                .user(user)
+                .build();
+        double totalDiscount = 0;
+        double totalPrice = 0;
+        for (OrderProduct orderProduct : order.getOrderProducts()) {
+            totalPrice += orderProduct.getProduct().getPrice() * orderProduct.getAmount();
+            if (orderProduct.getProduct().getDiscount() != null)
+                totalDiscount += orderProduct.getProduct().getPrice() * orderProduct.getAmount() * orderProduct.getProduct().getDiscount().getDiscountPercent() / 100;
+        }
+        totalPrice = totalPrice - totalDiscount;
+
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(addressRepository.findDistinctAddressByCityAndStreetAndNumberAndPostalCode(
+                order.getAddress().getCity(),
+                order.getAddress().getStreet(),
+                order.getAddress().getNumber(),
+                order.getAddress().getPostalCode()
+        )).willReturn(Optional.of(foundAddress));
+        given(productRepository.findById(foundProduct1.getProductId())).willReturn(Optional.of(foundProduct1));
+        // when
+        // then
+        ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<String> addressCityCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> addressStreetCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> addressNumberCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> addressPostalCodeCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Long> product1IdCaptor = ArgumentCaptor.forClass(Long.class);
+        assertThatThrownBy(() -> orderService.saveOrder(order, userId))
+                .isInstanceOf(InvalidStateException.class)
+                .hasMessageContaining("Not enough product with id = " + foundProduct1.getProductId() + " in stock");
+        verify(userRepository).findById(userIdCaptor.capture());
+        verify(addressRepository).findDistinctAddressByCityAndStreetAndNumberAndPostalCode(
+                addressCityCaptor.capture(),
+                addressStreetCaptor.capture(),
+                addressNumberCaptor.capture(),
+                addressPostalCodeCaptor.capture()
+        );
+        verify(addressRepository, never()).save(any());
+        verify(productRepository).findById(product1IdCaptor.capture());
+        verify(orderRepository, never()).save(any());
+        verify(orderProductRepository, never()).save(any());
+        assertThat(userIdCaptor.getValue()).isEqualTo(userId);
+        assertThat(addressCityCaptor.getValue()).isEqualTo(foundAddress.getCity());
+        assertThat(addressStreetCaptor.getValue()).isEqualTo(foundAddress.getStreet());
+        assertThat(addressNumberCaptor.getValue()).isEqualTo(foundAddress.getNumber());
+        assertThat(addressPostalCodeCaptor.getValue()).isEqualTo(foundAddress.getPostalCode());
+        assertThat(product1IdCaptor.getValue()).isEqualTo(foundProduct1.getProductId());
+    }
     @Test
     void getOrderByIdReturnsOrder() throws ObjectNotFoundException {
         // given
@@ -427,8 +549,12 @@ class OrderServiceImplTest {
     void getAllOrdersByProductIdReturnsListOfOrders() throws ObjectNotFoundException {
         // given
         Long productId = 1L;
-        Order order1 = Order.builder().orderId(1L).products(Arrays.asList(Product.builder().productId(productId).build())).build();
-        Order order2 = Order.builder().orderId(1L).products(Arrays.asList(Product.builder().productId(productId).build())).build();
+        OrderProduct orderProduct1 = OrderProduct.builder()
+                .product(Product.builder().productId(1L).build())
+                .amount(10)
+                .build();
+        Order order1 = Order.builder().orderId(1L).orderProducts(Arrays.asList(orderProduct1)).build();
+        Order order2 = Order.builder().orderId(1L).orderProducts(Arrays.asList(orderProduct1)).build();
         given(orderRepository.findAllByProductId(productId)).willReturn(Arrays.asList(order1, order2));
         // when
         List<Order> orders = orderService.getAllOrdersByProductId(productId);

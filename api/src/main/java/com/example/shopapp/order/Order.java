@@ -1,6 +1,7 @@
 package com.example.shopapp.order;
 
 import com.example.shopapp.address.Address;
+import com.example.shopapp.orderproduct.OrderProduct;
 import com.example.shopapp.user.User;
 import com.example.shopapp.product.Product;
 import jakarta.persistence.*;
@@ -58,11 +59,15 @@ public class Order {
             referencedColumnName = "addressId"
     )
     private Address address;
-    @ManyToMany
-    @JoinTable(
-            name = "order_product",
-            joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "orderId"),
-            inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "productId", nullable = false)
+//    @ManyToMany
+//    @JoinTable(
+//            name = "order_product",
+//            joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "orderId"),
+//            inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "productId", nullable = false)
+//    )
+//    private List<Product> products;
+    @OneToMany(
+            mappedBy = "order"
     )
-    private List<Product> products;
+    private List<OrderProduct> orderProducts;
 }

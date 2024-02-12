@@ -2,7 +2,10 @@ package com.example.shopapp.order;
 
 import com.example.shopapp.address.Address;
 import com.example.shopapp.address.AddressRepository;
+import com.example.shopapp.exception.InvalidStateException;
 import com.example.shopapp.exception.ObjectNotFoundException;
+import com.example.shopapp.orderproduct.OrderProduct;
+import com.example.shopapp.orderproduct.OrderProductRepository;
 import com.example.shopapp.product.Product;
 import com.example.shopapp.product.ProductRepository;
 import com.example.shopapp.user.User;
@@ -12,7 +15,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,20 +25,23 @@ public class OrderServiceImpl implements OrderService{
     private final ProductRepository productRepository;
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
+    private final OrderProductRepository orderProductRepository;
 
     public OrderServiceImpl(OrderRepository orderRepository,
                             ProductRepository productRepository,
                             AddressRepository addressRepository,
-                            UserRepository userRepository) {
+                            UserRepository userRepository,
+                            OrderProductRepository orderProductRepository) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.addressRepository = addressRepository;
         this.userRepository = userRepository;
+        this.orderProductRepository = orderProductRepository;
     }
 
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public Order saveOrder(Order order, Long userId) throws ObjectNotFoundException {
+    public Order saveOrder(Order order, Long userId) throws ObjectNotFoundException, InvalidStateException {
         User userDB = userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("User with id = " + userId + " not found"));
 
@@ -55,25 +60,33 @@ public class OrderServiceImpl implements OrderService{
             addressRepository.save(order.getAddress());
 
 
-        List<Product> products = new ArrayList<>();
         double totalPrice = 0;
         double totalDiscount = 0;
-        for (Product product : order.getProducts()) {
-            Product productDB = productRepository.findById(product.getProductId())
-                    .orElseThrow(() -> new ObjectNotFoundException("Product with id = " + product.getProductId() + " not found"));
+        for (OrderProduct orderProduct : order.getOrderProducts()) {
+            Product productDB = productRepository.findById(orderProduct.getProduct().getProductId())
+                    .orElseThrow(() -> new ObjectNotFoundException("Product with id = " + orderProduct.getProduct().getProductId() + " not found"));
 
-            productDB.setAmount(productDB.getAmount() - 1);
-            totalPrice += productDB.getPrice();
+            if (productDB.getAmount() - orderProduct.getAmount() < 0)
+                throw new InvalidStateException("Not enough product with id = " + productDB.getProductId() + " in stock");
+
+            productDB.setAmount(productDB.getAmount() - orderProduct.getAmount());
+
+            totalPrice += productDB.getPrice() * orderProduct.getAmount();
             if (productDB.getDiscount() != null)
-                totalDiscount += productDB.getPrice() * productDB.getDiscount().getDiscountPercent() / 100;
-            products.add(productDB);
+                totalDiscount += productDB.getPrice() * orderProduct.getAmount() * productDB.getDiscount().getDiscountPercent() / 100;
         }
 
-        order.setProducts(products);
         order.setTotalPrice(totalPrice - totalDiscount);
         order.setTotalDiscount(totalDiscount);
 
-        return orderRepository.save(order);
+        Order orderDB = orderRepository.save(order);
+
+        for (OrderProduct orderProduct : order.getOrderProducts()) {
+            orderProduct.setOrder(Order.builder().orderId(order.getOrderId()).build());
+            orderProductRepository.save(orderProduct);
+        }
+
+        return orderDB;
     }
 
     @Override

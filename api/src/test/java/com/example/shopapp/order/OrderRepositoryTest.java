@@ -5,6 +5,8 @@ import com.example.shopapp.category.Category;
 import com.example.shopapp.category.CategoryRepository;
 import com.example.shopapp.discount.Discount;
 import com.example.shopapp.discount.DiscountRepository;
+import com.example.shopapp.orderproduct.OrderProduct;
+import com.example.shopapp.orderproduct.OrderProductRepository;
 import com.example.shopapp.product.Product;
 import com.example.shopapp.product.ProductRepository;
 import com.example.shopapp.user.Gender;
@@ -35,6 +37,8 @@ class OrderRepositoryTest {
     private UserRepository userRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private OrderProductRepository orderProductRepository;
     @Autowired
     private OrderRepository orderRepository;
     private List<Order> testOrders = new ArrayList<>();
@@ -111,41 +115,63 @@ class OrderRepositoryTest {
                 .categories(List.of(category))
                 .build());
 
-        List<Product> products1 = new ArrayList<>();
-        products1.add(product1);
-
-        List<Product> products2 = new ArrayList<>();
-        products2.add(product2);
-
-        testOrders.add(orderRepository.save(Order.builder()
+        Order order1 = Order.builder()
                 .orderDate(LocalDateTime.of(2017, 10,15,1,0))
                 .totalPrice(100)
                 .totalDiscount(10)
                 .isCompleted(false)
                 .user(user1)
                 .address(user1.getAddress())
-                .products(products1)
-                .build()));
+                .build();
 
-        testOrders.add(orderRepository.save(Order.builder()
+        Order order2 = Order.builder()
                 .orderDate(LocalDateTime.of(2019, 1,21,1,0))
                 .totalPrice(100)
                 .totalDiscount(10)
                 .isCompleted(true)
                 .user(user1)
                 .address(user1.getAddress())
-                .products(products1)
-                .build()));
+                .build();
 
-        testOrders.add(orderRepository.save(Order.builder()
+        Order order3 = Order.builder()
                 .orderDate(LocalDateTime.of(2020, 1,21,1,0))
                 .totalPrice(100)
                 .totalDiscount(10)
                 .isCompleted(true)
                 .user(user2)
                 .address(user1.getAddress())
-                .products(products2)
+                .build();
+
+        List<OrderProduct> orderProducts1 = new ArrayList<>();
+        orderProducts1.add(orderProductRepository.save(OrderProduct.builder()
+                .product(product1)
+                .order(order1)
+                .amount(5)
                 .build()));
+
+        List<OrderProduct> orderProducts2 = new ArrayList<>();
+        orderProducts2.add(orderProductRepository.save(OrderProduct.builder()
+                .product(product1)
+                .order(order1)
+                .amount(10)
+                .build()));
+
+        List<OrderProduct> orderProducts3 = new ArrayList<>();
+        orderProducts3.add(orderProductRepository.save(OrderProduct.builder()
+                .product(product2)
+                .order(order3)
+                .amount(5)
+                .build()));
+
+        order1.setOrderProducts(orderProducts1);
+        order2.setOrderProducts(orderProducts2);
+        order3.setOrderProducts(orderProducts3);
+
+        testOrders.add(orderRepository.save(order1));
+
+        testOrders.add(orderRepository.save(order2));
+
+        testOrders.add(orderRepository.save(order3));
     }
 
     @AfterEach
@@ -171,14 +197,14 @@ class OrderRepositoryTest {
 
         List<Order> foundWaterOrders = orderRepository.findAllByProductId(product1.getProductId());
         assertEquals(foundWaterOrders.size(), 2);
-        foundWaterOrders.forEach(order -> order.getProducts().forEach(
-                product -> assertEquals(product.getProductId(), product1.getProductId())
+        foundWaterOrders.forEach(order -> order.getOrderProducts().forEach(
+                orderProduct -> assertEquals(orderProduct.getProduct().getProductId(), product1.getProductId())
         ));
 
         List<Order> foundFoodOrders = orderRepository.findAllByProductId(product2.getProductId());
         assertEquals(foundFoodOrders.size(), 1);
-        foundFoodOrders.forEach(order -> order.getProducts().forEach(
-                product -> assertEquals(product.getProductId(), product2.getProductId())
+        foundFoodOrders.forEach(order -> order.getOrderProducts().forEach(
+                orderProduct -> assertEquals(orderProduct.getProduct().getProductId(), product2.getProductId())
         ));
 
         List<Order> notFoundOrders = orderRepository.findAllByProductId(999L);

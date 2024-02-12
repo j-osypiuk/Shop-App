@@ -46,17 +46,6 @@ public class ProductDtoMapper {
         );
     }
 
-    public static OrderProductDto mapProductToOrderProductDto(Product product) {
-        return new OrderProductDto(
-                product.getProductId(),
-                product.getName(),
-                product.getPrice(),
-                product.getDiscount() != null ?
-                        product.getPrice() * ((double) product.getDiscount().getDiscountPercent() / 100) :
-                        0
-        );
-    }
-
     public static List<ResponseProductDto> mapProductListToProductDtoList(List<Product> products) {
         return products.stream()
                 .map(ProductDtoMapper::mapProductToResponseProductDto)

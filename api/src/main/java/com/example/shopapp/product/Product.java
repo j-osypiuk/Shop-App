@@ -3,6 +3,7 @@ package com.example.shopapp.product;
 import com.example.shopapp.category.Category;
 import com.example.shopapp.discount.Discount;
 import com.example.shopapp.order.Order;
+import com.example.shopapp.orderproduct.OrderProduct;
 import com.example.shopapp.productphoto.ProductPhoto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -49,9 +50,13 @@ public class Product {
             referencedColumnName = "discountId"
     )
     private Discount discount;
-    @JsonIgnore
-    @ManyToMany(mappedBy = "products")
-    private List<Order> orders;
+//    @JsonIgnore
+//    @ManyToMany(mappedBy = "products")
+//    private List<Order> orders;
+    @OneToMany(
+            mappedBy = "product"
+    )
+    private List<OrderProduct> orderProducts;
     @ManyToMany
     @JoinTable(
             name = "product_category",
