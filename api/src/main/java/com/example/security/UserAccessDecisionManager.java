@@ -16,13 +16,17 @@ public class UserAccessDecisionManager implements AuthorizationManager<RequestAu
     // Checks if principal (CUSTOMER) is trying to access his own data by comparing request path variable user id with principal id
     @Override
     public AuthorizationDecision check(Supplier<Authentication> authenticationSupplier, RequestAuthorizationContext ctx) {
-        User principal = (User) authenticationSupplier.get().getPrincipal();
+        try {
+            User principal = (User) authenticationSupplier.get().getPrincipal();
 
-        if (principal.getRole() == Role.ADMIN || principal.getRole() == Role.EMPLOYEE)
-            return new AuthorizationDecision(true);
+            if (principal.getRole() == Role.ROLE_ADMIN || principal.getRole() == Role.ROLE_EMPLOYEE)
+                return new AuthorizationDecision(true);
 
-        Long userId = Long.parseLong(ctx.getVariables().get("id"));
+            Long userId = Long.parseLong(ctx.getVariables().get("id"));
 
-        return new AuthorizationDecision(userId.equals(principal.getUserId()));
+            return new AuthorizationDecision(userId.equals(principal.getUserId()));
+        } catch (RuntimeException e) {
+            return  new AuthorizationDecision(false);
+        }
     }
 }

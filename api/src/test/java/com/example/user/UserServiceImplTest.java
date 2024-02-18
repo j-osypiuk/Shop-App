@@ -44,7 +44,7 @@ class UserServiceImplTest {
     @Test
     void saveUserSavesUser() throws DuplicateUniqueValueException {
         // given
-        Role role = Role.EMPLOYEE;
+        Role role = Role.ROLE_EMPLOYEE;
         User user = User.builder()
                 .firstName("Steven")
                 .email("stev@mail.com")
@@ -74,7 +74,7 @@ class UserServiceImplTest {
     @Test
     void saveUserThrowsExceptionIfOtherExistingUserHasTheSameEmail() {
         // given
-        Role role = Role.EMPLOYEE;
+        Role role = Role.ROLE_EMPLOYEE;
         User user = User.builder()
                 .firstName("Steven")
                 .email("stev@mail.com")
@@ -97,7 +97,7 @@ class UserServiceImplTest {
     @Test
     void saveUserThrowsExceptionIfOtherExistingUserHasTheSamePhoneNumber() {
         // given
-        Role role = Role.EMPLOYEE;
+        Role role = Role.ROLE_EMPLOYEE;
         User user = User.builder()
                 .firstName("Steven")
                 .email("stev@mail.com")

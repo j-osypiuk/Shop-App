@@ -24,7 +24,7 @@ public class UserController {
 
     @PostMapping("/customer")
     public ResponseEntity<ResponseUserDto> saveCustomer(@Valid @RequestBody PostUserDto postUser) throws DuplicateUniqueValueException {
-        User customer = userService.saveUser(UserDtoMapper.mapPostUserDtoToUser(postUser), Role.CUSTOMER);
+        User customer = userService.saveUser(UserDtoMapper.mapPostUserDtoToUser(postUser), Role.ROLE_CUSTOMER);
 
         return new ResponseEntity<>(
                 UserDtoMapper.mapUserToResponseUserDto(customer),
@@ -34,7 +34,7 @@ public class UserController {
 
     @PostMapping("/employee")
     public ResponseEntity<ResponseUserDto> saveEmployee(@Valid @RequestBody PostUserDto postUser) throws DuplicateUniqueValueException {
-        User employee = userService.saveUser(UserDtoMapper.mapPostUserDtoToUser(postUser), Role.EMPLOYEE);
+        User employee = userService.saveUser(UserDtoMapper.mapPostUserDtoToUser(postUser), Role.ROLE_EMPLOYEE);
 
         return new ResponseEntity<>(
                 UserDtoMapper.mapUserToResponseUserDto(employee),

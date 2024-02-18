@@ -32,7 +32,7 @@ class UserRepositoryTest {
                 .birthDate(LocalDateTime.now())
                 .gender(Gender.MALE)
                 .phoneNumber("111222333")
-                .role(Role.ADMIN)
+                .role(Role.ROLE_ADMIN)
                 .address(Address.builder()
                         .country("Germany")
                         .region("Bavaria")

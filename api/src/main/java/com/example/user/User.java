@@ -68,7 +68,7 @@ public class User implements UserDetails {
     private String phoneNumber;
     @Column(
             nullable = false,
-            length = 9
+            length = 14
     )
     @Enumerated(
             EnumType.STRING
