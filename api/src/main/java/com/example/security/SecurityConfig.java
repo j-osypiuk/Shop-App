@@ -40,46 +40,46 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     // address
-                    auth.requestMatchers("/address/{id}")
+                    auth.requestMatchers("/api/address/{id}")
                             .hasAnyRole(CUSTOMER_ROLE, EMPLOYEE_ROLE, ADMIN_ROLE);
                     // category, discount, product, product_photo
                     auth.requestMatchers(POST,
-                                    "/category/**",
-                                    "/discounts/**",
-                                    "/products/**",
-                                    "/photos/product/**")
+                                    "/api/category/**",
+                                    "/api/discount/**",
+                                    "/api/product/**",
+                                    "/api/photo/product/**")
                             .hasAnyRole(EMPLOYEE_ROLE, ADMIN_ROLE);
                     auth.requestMatchers(PUT,
-                                    "/category/**",
-                                    "/discounts/**",
-                                    "/products/**")
+                                    "/api/category/**",
+                                    "/api/discount/**",
+                                    "/api/product/**")
                             .hasAnyRole(EMPLOYEE_ROLE, ADMIN_ROLE);
                     auth.requestMatchers(DELETE,
-                                    "/category/**",
-                                    "/discounts/**",
-                                    "/products/**",
-                                    "/photos/product/**")
+                                    "/api/category/**",
+                                    "/api/discount/**",
+                                    "/api/product/**",
+                                    "/api/photo/product/**")
                             .hasAnyRole(EMPLOYEE_ROLE, ADMIN_ROLE);
                     // order
-                    auth.requestMatchers(POST, "/orders/{id}").access(decisionManager);
+                    auth.requestMatchers(POST, "/api/order/{id}").access(decisionManager);
                     auth.requestMatchers(GET,
-                                    "/orders",
-                                    "/orders/{id}",
-                                    "/orders/product/{id}")
+                                    "/api/order",
+                                    "/api/order/{id}",
+                                    "/api/order/product/{id}")
                             .hasAnyRole(EMPLOYEE_ROLE, ADMIN_ROLE);
-                    auth.requestMatchers(GET, "/orders/user/{id}").access(decisionManager);
-                    auth.requestMatchers(PUT, "/orders/{id}")
+                    auth.requestMatchers(GET, "/api/order/user/{id}").access(decisionManager);
+                    auth.requestMatchers(PUT, "/api/order/{id}")
                             .hasAnyRole(EMPLOYEE_ROLE, ADMIN_ROLE);
                     // user
-                    auth.requestMatchers(POST, "/users/employee")
+                    auth.requestMatchers(POST, "/api/user/employee")
                             .hasRole(ADMIN_ROLE);
-                    auth.requestMatchers(GET, "/users")
+                    auth.requestMatchers(GET, "/api/user")
                             .hasAnyRole(EMPLOYEE_ROLE, ADMIN_ROLE);
-                    auth.requestMatchers(GET, "/users/{id}").access(decisionManager);
-                    auth.requestMatchers(DELETE, "/users/**")
+                    auth.requestMatchers(GET, "/api/user/{id}").access(decisionManager);
+                    auth.requestMatchers(DELETE, "/api/user/**")
                             .hasAnyRole(EMPLOYEE_ROLE, ADMIN_ROLE);
-                    auth.requestMatchers(PUT, "/users/{id}").access(decisionManager);
-                    auth.requestMatchers(PATCH, "/users/{id}").access(decisionManager);
+                    auth.requestMatchers(PUT, "/api/user/{id}").access(decisionManager);
+                    auth.requestMatchers(PATCH, "/api/user/{id}").access(decisionManager);
 
                     auth.anyRequest().permitAll();
                     }

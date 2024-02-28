@@ -44,7 +44,7 @@ class CategoryControllerTest {
         given(categoryService.saveCategory(any())).willReturn(createdcategory);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/category")
+                MockMvcRequestBuilders.post("/api/category")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"News\",\"description\":\"News category description\"}")
                         .with(csrf()))
@@ -66,7 +66,7 @@ class CategoryControllerTest {
         given(categoryService.saveCategory(any())).willReturn(createdcategory);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/category")
+                        MockMvcRequestBuilders.post("/api/category")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"name\":\"News\",\"description\":\"News category description\"}")
                                 .with(csrf()))
@@ -81,7 +81,7 @@ class CategoryControllerTest {
     @WithMockUser(roles = {"CUSTOMER"})
     void saveCategoryReturnsForbiddenErrorIfUserIsAuthenticatedAsCustomer() throws Exception {
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/category")
+                        MockMvcRequestBuilders.post("/api/category")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"name\":\"News\",\"description\":\"News category description\"}"))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
@@ -93,7 +93,7 @@ class CategoryControllerTest {
     @WithAnonymousUser
     void saveCategoryReturnsUnauthorizedErrorIfUserIsNotAuthenticated() throws Exception {
         mockMvc.perform(
-                        MockMvcRequestBuilders.post("/category")
+                        MockMvcRequestBuilders.post("/api/category")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"name\":\"News\",\"description\":\"News category description\"}")
                                 .with(csrf()))
@@ -112,7 +112,7 @@ class CategoryControllerTest {
                 .build();
         given(categoryService.getCategoryById(category.getCategoryId())).willReturn(category);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/category/" + category.getCategoryId()))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/category/" + category.getCategoryId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.size()", Matchers.is(3)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(category.getCategoryId()))
@@ -127,7 +127,7 @@ class CategoryControllerTest {
     @Test
     @WithAnonymousUser
     void getCategoryByIdReturnsUnauthorizedErrorIfUserIsNotAuthenticated() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/category/1"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/category/1"))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
 
         verify(categoryService, never()).getCategoryById(any());
@@ -143,7 +143,7 @@ class CategoryControllerTest {
                 .build();
         given(categoryService.getCategoryByName(category.getName())).willReturn(category);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/category?name=" + category.getName()))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/category?name=" + category.getName()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.size()", Matchers.is(3)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(category.getCategoryId()))
@@ -158,7 +158,7 @@ class CategoryControllerTest {
     @Test
     @WithAnonymousUser
     void getCategoryByNameReturnsUnauthorizedErrorIfUserIsNotAuthenticated() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/category?name=Fruits"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/category?name=Fruits"))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
 
         verify(categoryService, never()).getCategoryByName(any());
@@ -179,7 +179,7 @@ class CategoryControllerTest {
                 .build();
         given(categoryService.getAllCategories()).willReturn(List.of(category1, category2));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/category"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/category"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.size()", Matchers.is(2)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(category1.getCategoryId()))
@@ -195,7 +195,7 @@ class CategoryControllerTest {
     @Test
     @WithAnonymousUser
     void getAllCategoriesReturnsUnauthorizedErrorIfUserIsNotAuthenticated() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/category"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/category"))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
 
         verify(categoryService, never()).getAllCategories();
@@ -212,7 +212,7 @@ class CategoryControllerTest {
         given(categoryService.updateCategoryById(any(), any())).willReturn(updatedCategory);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.put("/category/" + updatedCategory.getCategoryId())
+                        MockMvcRequestBuilders.put("/api/category/" + updatedCategory.getCategoryId())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"name\":\"Updated News\",\"description\":\"Updated News category description\"}")
                                 .with(csrf()))
@@ -234,7 +234,7 @@ class CategoryControllerTest {
         given(categoryService.updateCategoryById(any(), any())).willReturn(updatedCategory);
 
         mockMvc.perform(
-                        MockMvcRequestBuilders.put("/category/" + updatedCategory.getCategoryId())
+                        MockMvcRequestBuilders.put("/api/category/" + updatedCategory.getCategoryId())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"name\":\"Updated News\",\"description\":\"Updated News category description\"}")
                                 .with(csrf()))
@@ -249,7 +249,7 @@ class CategoryControllerTest {
     @WithMockUser(roles = {"CUSTOMER"})
     public void updateCategoryByIdReturnsForbiddenErrorIfUserIsAuthenticatedAsCustomer() throws Exception {
         mockMvc.perform(
-                        MockMvcRequestBuilders.put("/category/1")
+                        MockMvcRequestBuilders.put("/api/category/1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"name\":\"Updated News\",\"description\":\"Updated News category description\"}"))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
@@ -261,7 +261,7 @@ class CategoryControllerTest {
     @WithAnonymousUser
     public void updateCategoryByIdReturnsUnauthorizedErrorIfUserIsNotAuthenticated() throws Exception {
         mockMvc.perform(
-                        MockMvcRequestBuilders.put("/category/1")
+                        MockMvcRequestBuilders.put("/api/category/1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"name\":\"Updated News\",\"description\":\"Updated News category description\"}")
                                 .with(csrf()))
@@ -274,7 +274,7 @@ class CategoryControllerTest {
     @WithMockUser(roles = {"ADMIN"})
     public void deleteCategoryByIdReturnsNoContentIfUserIsAuthenticatedAsAdmin() throws Exception {
         mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/category/1")
+                        MockMvcRequestBuilders.delete("/api/category/1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
@@ -286,7 +286,7 @@ class CategoryControllerTest {
     @WithMockUser(roles = {"EMPLOYEE"})
     public void deleteCategoryByIdReturnsNoContentIfUserIsAuthenticatedAsEmployee() throws Exception {
         mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/category/1")
+                        MockMvcRequestBuilders.delete("/api/category/1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
@@ -298,7 +298,7 @@ class CategoryControllerTest {
     @WithMockUser(roles = {"CUSTOMER"})
     public void deleteCategoryByIdReturnsForbiddenErrorIfUserIsAuthenticatedAsCustomer() throws Exception {
         mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/category/1")
+                        MockMvcRequestBuilders.delete("/api/category/1")
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
 
@@ -309,7 +309,7 @@ class CategoryControllerTest {
     @WithAnonymousUser
     public void deleteCategoryByIdReturnsUnauthorizedErrorIfUserIsNotAuthenticated() throws Exception {
         mockMvc.perform(
-                        MockMvcRequestBuilders.delete("/category/1")
+                        MockMvcRequestBuilders.delete("/api/category/1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
