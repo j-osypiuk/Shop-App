@@ -78,6 +78,9 @@ public class ProductServiceImpl implements ProductService{
         Product productDB = productRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Product with id = " + id + " not found"));
 
+        if (productRepository.existsProductByName(product.getName()))
+            throw new DuplicateUniqueValueException("Product with name = " + product.getName() + " already exists");
+
         if (!product.getName().equals(productDB.getName()))
             productDB.setName(product.getName());
         if (!product.getDescription().equals(productDB.getDescription()))
