@@ -1,37 +1,26 @@
 package com.example.user.dto;
 
-
 import com.example.address.dto.AddressDtoMapper;
-import com.example.address.dto.ResponseAddressDto;
 import com.example.user.User;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UserDtoMapper {
 
     public static ResponseUserDto mapUserToResponseUserDto(User user) {
-        return new ResponseUserDto(
-                user.getUserId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getBirthDate(),
-                user.getGender(),
-                user.getPhoneNumber(),
-                new ResponseAddressDto(
-                        user.getAddress().getAddressId(),
-                        user.getAddress().getCountry(),
-                        user.getAddress().getRegion(),
-                        user.getAddress().getCity(),
-                        user.getAddress().getStreet(),
-                        user.getAddress().getNumber(),
-                        user.getAddress().getPostalCode()
-                )
-        );
+        return ResponseUserDto.builder()
+                .id(user.getUserId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .birthDate(user.getBirthDate())
+                .gender(user.getGender())
+                .phoneNumber(user.getPhoneNumber())
+                .address(AddressDtoMapper.mapAddressToResponseAddressDto(user.getAddress()))
+                .build();
     }
 
-    public static User mapPostUserDtoToUser(PostUserDto postUserDto) {
+    public static User mapRequestUserDtoToUser(RequestUserDto postUserDto) {
         return User.builder()
                 .firstName(postUserDto.firstName())
                 .lastName(postUserDto.lastName())
@@ -44,28 +33,18 @@ public class UserDtoMapper {
                 .build();
     }
 
-    public static User mapPutUserDtoToUser(PutUserDto putUserDto) {
-        return User.builder()
-                .firstName(putUserDto.firstName())
-                .lastName(putUserDto.lastName())
-                .birthDate(putUserDto.birthDate())
-                .gender(putUserDto.gender())
-                .phoneNumber(putUserDto.phoneNumber())
-                .build();
-    }
-
     public static OrderUserDto mapUserToOrderUserDto(User user) {
-        return new OrderUserDto(
-                user.getUserId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getPhoneNumber()
-        );
+        return OrderUserDto.builder()
+                .id(user.getUserId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .build();
     }
 
     public static List<ResponseUserDto> mapUserListToUserDtoList(List<User> users) {
         return users.stream()
-                .map(UserDtoMapper::mapUserToResponseUserDto).collect(Collectors.toList());
+                .map(UserDtoMapper::mapUserToResponseUserDto).toList();
     }
 }

@@ -5,15 +5,15 @@ import com.example.address.Address;
 public class AddressDtoMapper {
 
     public static ResponseAddressDto mapAddressToResponseAddressDto(Address address) {
-        return new ResponseAddressDto(
-                address.getAddressId(),
-                address.getCountry(),
-                address.getRegion(),
-                address.getCity(),
-                address.getStreet(),
-                address.getNumber(),
-                address.getPostalCode()
-        );
+        return ResponseAddressDto.builder()
+                .id(address.getAddressId())
+                .country(address.getCountry())
+                .region(address.getRegion())
+                .city(address.getCity())
+                .street(address.getStreet())
+                .number(address.getNumber())
+                .postalCode(address.getPostalCode())
+                .build();
     }
 
     public static Address mapRequestAddressDtoToAddress(RequestAddressDto requestAddressDto){

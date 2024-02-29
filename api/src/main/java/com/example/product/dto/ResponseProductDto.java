@@ -1,11 +1,12 @@
 package com.example.product.dto;
 
-
 import com.example.category.dto.ResponseCategoryDto;
 import com.example.discount.dto.ResponseDiscountDto;
+import lombok.Builder;
 
 import java.util.List;
 
+@Builder
 public record ResponseProductDto(
         Long id,
         String name,

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/order")
@@ -26,11 +27,11 @@ public class OrderController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<ResponseOrderDto> saveOrder(@Valid @RequestBody RequestOrderDto requestOrderDto, @PathVariable("id") Long userId) throws ObjectNotFoundException, InvalidStateException {
-       Order order = OrderDtoMapper.mapRequestOrderDtoToOrder(requestOrderDto);
+    public ResponseEntity<Map<String, Long>> saveOrder(@Valid @RequestBody RequestOrderDto requestOrderDto, @PathVariable("id") Long userId) throws ObjectNotFoundException, InvalidStateException {
+       Order order =  orderService.saveOrder(OrderDtoMapper.mapRequestOrderDtoToOrder(requestOrderDto), userId);
 
         return new ResponseEntity<>(
-                OrderDtoMapper.mapOrderToResponseOrderDto(orderService.saveOrder(order, userId)),
+                Map.of("orderId", order.getOrderId()),
                 HttpStatus.CREATED
         );
     }
@@ -84,9 +85,11 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseOrderDto> completeOrderById(@PathVariable Long id) throws ObjectNotFoundException {
+    public ResponseEntity<Map<String, Long>> completeOrderById(@PathVariable Long id) throws ObjectNotFoundException {
+        Order order = orderService.completeOrderById(id);
+
         return new ResponseEntity<>(
-                OrderDtoMapper.mapOrderToResponseOrderDto(orderService.completeOrderById(id)),
+                Map.of("orderId", order.getOrderId()),
                 HttpStatus.OK
         );
     }

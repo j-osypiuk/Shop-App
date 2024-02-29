@@ -1,7 +1,6 @@
 package com.example.category;
 
 import com.example.category.dto.CategoryDtoMapper;
-import com.example.category.dto.CategoryIdDto;
 import com.example.category.dto.RequestCategoryDto;
 import com.example.category.dto.ResponseCategoryDto;
 import com.example.exception.DuplicateUniqueValueException;
@@ -12,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/category")
@@ -24,11 +24,11 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryIdDto> saveCategory(@Valid @RequestBody RequestCategoryDto requestCategoryDto) throws DuplicateUniqueValueException {
+    public ResponseEntity<Map<String, Long>> saveCategory(@Valid @RequestBody RequestCategoryDto requestCategoryDto) throws DuplicateUniqueValueException {
         Category category = categoryService.saveCategory(CategoryDtoMapper.mapRequestCategoryDtoToCategory(requestCategoryDto));
 
         return new ResponseEntity<>(
-                new CategoryIdDto(category.getCategoryId()),
+                Map.of("categoryId", category.getCategoryId()),
                 HttpStatus.CREATED
         );
     }
@@ -58,14 +58,14 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryIdDto> updateCategoryById(@PathVariable Long id, @Valid @RequestBody RequestCategoryDto requestCategoryDto) throws ObjectNotFoundException, DuplicateUniqueValueException {
+    public ResponseEntity<Map<String, Long>> updateCategoryById(@PathVariable Long id, @Valid @RequestBody RequestCategoryDto requestCategoryDto) throws ObjectNotFoundException, DuplicateUniqueValueException {
         Category category = categoryService.updateCategoryById(
                 id,
                 CategoryDtoMapper.mapRequestCategoryDtoToCategory(requestCategoryDto)
         );
 
         return new ResponseEntity<>(
-                new CategoryIdDto(category.getCategoryId()),
+                Map.of("categoryId", category.getCategoryId()),
                 HttpStatus.OK
         );
     }

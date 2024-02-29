@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -23,21 +24,21 @@ public class UserController {
     }
 
     @PostMapping("/customer")
-    public ResponseEntity<ResponseUserDto> saveCustomer(@Valid @RequestBody PostUserDto postUser) throws DuplicateUniqueValueException {
-        User customer = userService.saveUser(UserDtoMapper.mapPostUserDtoToUser(postUser), Role.ROLE_CUSTOMER);
+    public ResponseEntity<Map<String, Long>> saveCustomer(@Valid @RequestBody RequestUserDto postUser) throws DuplicateUniqueValueException {
+        User customer = userService.saveUser(UserDtoMapper.mapRequestUserDtoToUser(postUser), Role.ROLE_CUSTOMER);
 
         return new ResponseEntity<>(
-                UserDtoMapper.mapUserToResponseUserDto(customer),
+                Map.of("userId", customer.getUserId()),
                 HttpStatus.CREATED
         );
     }
 
     @PostMapping("/employee")
-    public ResponseEntity<ResponseUserDto> saveEmployee(@Valid @RequestBody PostUserDto postUser) throws DuplicateUniqueValueException {
-        User employee = userService.saveUser(UserDtoMapper.mapPostUserDtoToUser(postUser), Role.ROLE_EMPLOYEE);
+    public ResponseEntity<Map<String, Long>> saveEmployee(@Valid @RequestBody RequestUserDto postUser) throws DuplicateUniqueValueException {
+        User employee = userService.saveUser(UserDtoMapper.mapRequestUserDtoToUser(postUser), Role.ROLE_EMPLOYEE);
 
         return new ResponseEntity<>(
-                UserDtoMapper.mapUserToResponseUserDto(employee),
+                Map.of("userId", employee.getUserId()),
                 HttpStatus.CREATED
         );
     }
@@ -75,11 +76,11 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseUserDto> updateUserById(@Valid @RequestBody PutUserDto putUser, @PathVariable("id") Long id) throws ObjectNotFoundException, DuplicateUniqueValueException {
-        User user = userService.updateUserById(id, UserDtoMapper.mapPutUserDtoToUser(putUser));
+    public ResponseEntity<Map<String, Long>> updateUserById(@Valid @RequestBody RequestUserDto putUser, @PathVariable("id") Long id) throws ObjectNotFoundException, DuplicateUniqueValueException {
+        User user = userService.updateUserById(id, UserDtoMapper.mapRequestUserDtoToUser(putUser));
 
         return new ResponseEntity<>(
-                UserDtoMapper.mapUserToResponseUserDto(user),
+                Map.of("userId", user.getUserId()),
                 HttpStatus.OK
         );
     }

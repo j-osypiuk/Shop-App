@@ -7,7 +7,7 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 
-public record PostUserDto(
+public record RequestUserDto(
         @NotBlank(message = "User first name cannot be blank")
         @Size(max = 50, message = "User first name cannot contain more than 50 characters")
         String firstName,

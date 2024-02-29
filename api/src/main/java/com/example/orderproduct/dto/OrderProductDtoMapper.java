@@ -1,6 +1,5 @@
 package com.example.orderproduct.dto;
 
-
 import com.example.orderproduct.OrderProduct;
 import com.example.product.Product;
 
@@ -14,9 +13,9 @@ public class OrderProductDtoMapper {
     }
 
     public static OrderProductDto mapOrderProductToOrderProductDto(OrderProduct orderProduct) {
-        return new OrderProductDto(
-                orderProduct.getProduct().getProductId(),
-                orderProduct.getAmount()
-        );
+        return OrderProductDto.builder()
+                .productId(orderProduct.getProduct().getProductId())
+                .amount(orderProduct.getAmount())
+                .build();
     }
 }

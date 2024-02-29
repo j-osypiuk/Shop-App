@@ -3,18 +3,17 @@ package com.example.discount.dto;
 import com.example.discount.Discount;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DiscountDtoMapper {
 
     public static ResponseDiscountDto mapDiscountToResponseDiscountDto(Discount discount) {
         if (discount != null) {
-            return new ResponseDiscountDto(
-                    discount.getDiscountId(),
-                    discount.getName(),
-                    discount.getDescription(),
-                    discount.getDiscountPercent()
-            );
+            return ResponseDiscountDto.builder()
+                    .id(discount.getDiscountId())
+                    .name(discount.getName())
+                    .description(discount.getDescription())
+                    .discountPercent(discount.getDiscountPercent())
+                    .build();
         }
         return null;
     }
@@ -29,11 +28,7 @@ public class DiscountDtoMapper {
 
     public static List<ResponseDiscountDto> mapDiscountListToResponseDiscountDtoList(List<Discount> discounts) {
         return discounts.stream()
-                .map(discount -> new ResponseDiscountDto(
-                        discount.getDiscountId(),
-                        discount.getName(),
-                        discount.getDescription(),
-                        discount.getDiscountPercent()
-                )).collect(Collectors.toList());
+                .map(DiscountDtoMapper::mapDiscountToResponseDiscountDto)
+                .toList();
     }
 }

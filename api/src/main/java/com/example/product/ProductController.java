@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/product")
@@ -23,11 +24,11 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseProductDto> saveProduct(@Valid @RequestBody RequestProductDto requestProductDto) throws ObjectNotFoundException, DuplicateUniqueValueException {
+    public ResponseEntity<Map<String, Long>> saveProduct(@Valid @RequestBody RequestProductDto requestProductDto) throws ObjectNotFoundException, DuplicateUniqueValueException {
         Product product = productService.saveProduct(ProductDtoMapper.mapRequestProductDtoToProduct(requestProductDto));
 
         return new ResponseEntity<>(
-                ProductDtoMapper.mapProductToResponseProductDto(product),
+                Map.of("productId", product.getProductId()),
                 HttpStatus.CREATED
         );
     }
@@ -57,11 +58,11 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseProductDto> updateProductById(@PathVariable("id") Long id, @Valid @RequestBody RequestProductDto requestProductDto) throws ObjectNotFoundException, DuplicateUniqueValueException {
+    public ResponseEntity<Map<String, Long>> updateProductById(@PathVariable("id") Long id, @Valid @RequestBody RequestProductDto requestProductDto) throws ObjectNotFoundException, DuplicateUniqueValueException {
         Product product = productService.updateProductById(id, ProductDtoMapper.mapRequestProductDtoToProduct(requestProductDto));
 
         return new ResponseEntity<>(
-                ProductDtoMapper.mapProductToResponseProductDto(product),
+                Map.of("productId", product.getProductId()),
                 HttpStatus.OK
         );
     }

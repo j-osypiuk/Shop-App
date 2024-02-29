@@ -7,23 +7,22 @@ import com.example.user.dto.UserDtoMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class OrderDtoMapper {
 
     public static ResponseOrderDto mapOrderToResponseOrderDto(Order order) {
-        return new ResponseOrderDto(
-                order.getOrderId(),
-                order.getOrderDate(),
-                order.getTotalPrice(),
-                order.getTotalDiscount(),
-                order.isCompleted(),
-                UserDtoMapper.mapUserToOrderUserDto(order.getUser()),
-                AddressDtoMapper.mapAddressToResponseAddressDto(order.getAddress()),
-                order.getOrderProducts().stream()
-                        .map(OrderProductDtoMapper::mapOrderProductToOrderProductDto)
-                        .collect(Collectors.toList())
-        );
+        return ResponseOrderDto.builder()
+                .id(order.getOrderId())
+                .orderDate(order.getOrderDate())
+                .totalPrice(order.getTotalPrice())
+                .totalDiscount(order.getTotalDiscount())
+                .isCompleted(order.isCompleted())
+                .user(UserDtoMapper.mapUserToOrderUserDto(order.getUser()))
+                .address(AddressDtoMapper.mapAddressToResponseAddressDto(order.getAddress()))
+                .products(order.getOrderProducts().stream()
+                            .map(OrderProductDtoMapper::mapOrderProductToOrderProductDto)
+                            .toList())
+                .build();
     }
 
     public static Order mapRequestOrderDtoToOrder(RequestOrderDto requestOrderDto){
@@ -33,13 +32,13 @@ public class OrderDtoMapper {
                 .address(AddressDtoMapper.mapRequestAddressDtoToAddress(requestOrderDto.address()))
                 .orderProducts(requestOrderDto.orderProducts().stream()
                         .map(OrderProductDtoMapper::mapOrderProductDtoToOrderProduct)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build();
     }
 
     public static List<ResponseOrderDto> mapOrderListToResponseOrderDtoList(List<Order> orders) {
         return orders.stream()
                 .map(OrderDtoMapper::mapOrderToResponseOrderDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

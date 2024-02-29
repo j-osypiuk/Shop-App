@@ -1,5 +1,8 @@
 package com.example.address.dto;
 
+import lombok.Builder;
+
+@Builder
 public record ResponseAddressDto(
         Long id,
         String country,
