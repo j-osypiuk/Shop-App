@@ -6,75 +6,74 @@ import com.example.exception.InvalidStateException;
 import com.example.exception.ObjectNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.HashMap;
-import java.util.Map;
 @RestControllerAdvice
 public class ApplicationExceptionHandler {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleInvalidArgument(MethodArgumentNotValidException e) {
-        Map<String, String> errorMap = new HashMap<>();
-        e.getBindingResult().getFieldErrors().forEach(
-                error -> errorMap.put(error.getField(), error.getDefaultMessage())
+    public ProblemDetail handleInvalidArgument(MethodArgumentNotValidException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, e.getMessage()
         );
-        return errorMap;
+        problemDetail.setTitle(HttpStatus.BAD_REQUEST.getReasonPhrase());
+        return problemDetail;
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ObjectNotFoundException.class)
-    public Map<String, String> handleObjectNotFound(ObjectNotFoundException e) {
-        Map<String, String> errorMap = new HashMap<>();
-        errorMap.put("Error Message", e.getMessage());
-        return errorMap;
+    public ProblemDetail handleObjectNotFound(ObjectNotFoundException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND, e.getMessage()
+        );
+        problemDetail.setTitle(HttpStatus.NOT_FOUND.getReasonPhrase());
+        return problemDetail;
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public Map<String, String> handleMessageNotReadable(HttpMessageNotReadableException e) {
-        Map<String, String> errorMap = new HashMap<>();
-        if (e.getMessage().contains("[FEMALE, MALE]"))
-            errorMap.put("Error Message", "Gender must match pattern: MALE|FEMALE");
-        else
-            errorMap.put("Error Message", e.getMessage());
-        return errorMap;
+    public ProblemDetail handleMessageNotReadable(HttpMessageNotReadableException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, e.getMessage()
+        );
+        problemDetail.setTitle(HttpStatus.BAD_REQUEST.getReasonPhrase());
+        return problemDetail;
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidStateException.class)
-    public Map<String, String> handleInvalidState(InvalidStateException e) {
-        Map<String, String> errorMap = new HashMap<>();
-        errorMap.put("Error Message", e.getMessage());
-        return errorMap;
+    public ProblemDetail handleInvalidState(InvalidStateException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, e.getMessage()
+        );
+        problemDetail.setTitle(HttpStatus.BAD_REQUEST.getReasonPhrase());
+        return problemDetail;
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidPasswordException.class)
-    public Map<String, String> handleInvalidPassword(InvalidPasswordException e) {
-        Map<String, String> errorMap = new HashMap<>();
-        errorMap.put("Error Message", e.getMessage());
-        return errorMap;
+    public ProblemDetail handleInvalidPassword(InvalidPasswordException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, e.getMessage()
+        );
+        problemDetail.setTitle(HttpStatus.BAD_REQUEST.getReasonPhrase());
+        return problemDetail;
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public Map<String, String> handleDataIntegrityViolation(DataIntegrityViolationException e) {
-        Map<String, String> errorMap = new HashMap<>();
-        errorMap.put("Error Message", e.getMessage());
-        return errorMap;
+    public ProblemDetail handleDataIntegrityViolation(DataIntegrityViolationException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, e.getMessage()
+        );
+        problemDetail.setTitle(HttpStatus.BAD_REQUEST.getReasonPhrase());
+        return problemDetail;
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(DuplicateUniqueValueException.class)
-    public Map<String, String> handleDuplicateValueException(DuplicateUniqueValueException e) {
-        Map<String, String> errorMap = new HashMap<>();
-        errorMap.put("Error Message", e.getMessage());
-        return errorMap;
+    public ProblemDetail handleDuplicateValueException(DuplicateUniqueValueException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, e.getMessage()
+        );
+        problemDetail.setTitle(HttpStatus.BAD_REQUEST.getReasonPhrase());
+        return problemDetail;
     }
 }
