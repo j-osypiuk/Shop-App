@@ -13,10 +13,10 @@
 		<version>3.2.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>shop-app</artifactId>
+	<groupId>com.shop-app</groupId>
+	<artifactId>core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>shop-app</name>
+	<name>core</name>
 	<description>Shop app application</description>
 
 	<properties>
