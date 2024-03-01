@@ -1,8 +1,7 @@
-package com.shopapp.mailmodel;
+package com.shopapp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -10,11 +9,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class MailModel {
+public class MailDetails {
 
-    @Getter
     private String firstName;
-    @Getter
     private String lastName;
     private List<OrderProductDetails> products;
     private OrderAddressDetails address;

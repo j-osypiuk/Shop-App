@@ -4,7 +4,7 @@ import com.shopapp.address.Address;
 import com.shopapp.address.AddressRepository;
 import com.shopapp.category.Category;
 import com.shopapp.discount.Discount;
-import com.shopapp.emailservice.EmailService;
+import com.shopapp.service.EmailService;
 import com.shopapp.exception.InvalidStateException;
 import com.shopapp.exception.ObjectNotFoundException;
 import com.shopapp.orderproduct.OrderProduct;

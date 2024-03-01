@@ -1,6 +1,6 @@
-package com.shopapp.emailservice;
+package com.shopapp.service;
 
-import com.shopapp.mailmodel.MailModel;
+import com.shopapp.model.MailDetails;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -28,7 +28,7 @@ public class EmailService {
         this.config = config;
     }
 
-    public void sendMail(String toEmail, MailModel mailModel) {
+    public void sendMail(String toEmail, MailDetails mailModel) {
         MimeMessage message = javaMailSender.createMimeMessage();
 
         try {

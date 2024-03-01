@@ -1,4 +1,4 @@
-package com.shopapp.mailmodel;
+package com.shopapp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

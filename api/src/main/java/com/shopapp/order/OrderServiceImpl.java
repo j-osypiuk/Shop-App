@@ -2,12 +2,12 @@ package com.shopapp.order;
 
 import com.shopapp.address.Address;
 import com.shopapp.address.AddressRepository;
-import com.shopapp.emailservice.EmailService;
+import com.shopapp.service.EmailService;
 import com.shopapp.exception.InvalidStateException;
 import com.shopapp.exception.ObjectNotFoundException;
-import com.shopapp.mailmodel.MailModel;
-import com.shopapp.mailmodel.OrderAddressDetails;
-import com.shopapp.mailmodel.OrderProductDetails;
+import com.shopapp.model.MailDetails;
+import com.shopapp.model.OrderAddressDetails;
+import com.shopapp.model.OrderProductDetails;
 import com.shopapp.orderproduct.OrderProduct;
 import com.shopapp.orderproduct.OrderProductRepository;
 import com.shopapp.product.Product;
@@ -120,7 +120,7 @@ public class OrderServiceImpl implements OrderService{
             orderProductRepository.save(orderProduct);
         }
 
-        emailService.sendMail(orderDB.getUser().getEmail(), new MailModel(
+        emailService.sendMail(orderDB.getUser().getEmail(), new MailDetails(
                 userDB.getFirstName(),
                 userDB.getLastName(),
                 orderProductsDetails,
