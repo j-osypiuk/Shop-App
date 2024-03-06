@@ -2,7 +2,6 @@ package com.shopapp.order;
 
 import com.shopapp.address.Address;
 import com.shopapp.address.AddressRepository;
-import com.shopapp.service.EmailService;
 import com.shopapp.exception.InvalidStateException;
 import com.shopapp.exception.ObjectNotFoundException;
 import com.shopapp.model.MailDetails;
@@ -12,6 +11,7 @@ import com.shopapp.orderproduct.OrderProduct;
 import com.shopapp.orderproduct.OrderProductRepository;
 import com.shopapp.product.Product;
 import com.shopapp.product.ProductRepository;
+import com.shopapp.service.EmailService;
 import com.shopapp.user.User;
 import com.shopapp.user.UserRepository;
 import org.springframework.context.annotation.Lazy;
@@ -32,20 +32,20 @@ public class OrderServiceImpl implements OrderService{
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
     private final OrderProductRepository orderProductRepository;
-    private final EmailService emailService;
+    private final EmailService emailServiceImpl;
 
     public OrderServiceImpl(OrderRepository orderRepository,
                             ProductRepository productRepository,
                             AddressRepository addressRepository,
                             UserRepository userRepository,
                             OrderProductRepository orderProductRepository,
-                            @Lazy EmailService emailService) {
+                            @Lazy EmailService emailServiceImpl) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.addressRepository = addressRepository;
         this.userRepository = userRepository;
         this.orderProductRepository = orderProductRepository;
-        this.emailService = emailService;
+        this.emailServiceImpl = emailServiceImpl;
     }
 
     @Override
@@ -120,7 +120,7 @@ public class OrderServiceImpl implements OrderService{
             orderProductRepository.save(orderProduct);
         }
 
-        emailService.sendMail(orderDB.getUser().getEmail(), new MailDetails(
+        emailServiceImpl.sendMail(orderDB.getUser().getEmail(), new MailDetails(
                 userDB.getFirstName(),
                 userDB.getLastName(),
                 orderProductsDetails,

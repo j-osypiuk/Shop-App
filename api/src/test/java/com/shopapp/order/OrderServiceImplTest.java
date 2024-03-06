@@ -4,7 +4,7 @@ import com.shopapp.address.Address;
 import com.shopapp.address.AddressRepository;
 import com.shopapp.category.Category;
 import com.shopapp.discount.Discount;
-import com.shopapp.service.EmailService;
+import com.shopapp.service.EmailServiceImpl;
 import com.shopapp.exception.InvalidStateException;
 import com.shopapp.exception.ObjectNotFoundException;
 import com.shopapp.orderproduct.OrderProduct;
@@ -47,7 +47,7 @@ class OrderServiceImplTest {
     private OrderProductRepository orderProductRepository;
     private OrderServiceImpl orderService;
     @Mock
-    private EmailService emailService;
+    private EmailServiceImpl emailServiceImpl;
 
     @BeforeEach
     void setUp() {
@@ -57,7 +57,7 @@ class OrderServiceImplTest {
                 addressRepository,
                 userRepository,
                 orderProductRepository,
-                emailService
+                emailServiceImpl
         );
     }
 
@@ -161,7 +161,7 @@ class OrderServiceImplTest {
         verify(productRepository, times(2)).findById(productsIdCaptor.capture());
         verify(orderRepository).save(orderCaptor.capture());
         verify(orderProductRepository, times(order.getOrderProducts().size())).save(any());
-        verify(emailService).sendMail(any(), any());
+        verify(emailServiceImpl).sendMail(any(), any());
         assertThat(userIdCaptor.getValue()).isEqualTo(userId);
         assertThat(addressCityCaptor.getValue()).isEqualTo(foundAddress.getCity());
         assertThat(addressStreetCaptor.getValue()).isEqualTo(foundAddress.getStreet());
@@ -280,7 +280,7 @@ class OrderServiceImplTest {
         verify(productRepository, times(2)).findById(productsIdCaptor.capture());
         verify(orderRepository).save(orderCaptor.capture());
         verify(orderProductRepository, times(order.getOrderProducts().size())).save(any());
-        verify(emailService).sendMail(any(), any());
+        verify(emailServiceImpl).sendMail(any(), any());
         assertThat(userIdCaptor.getValue()).isEqualTo(userId);
         assertThat(addressCityCaptor.getValue()).isEqualTo(address.getCity());
         assertThat(addressStreetCaptor.getValue()).isEqualTo(address.getStreet());
@@ -318,7 +318,7 @@ class OrderServiceImplTest {
         verify(productRepository, never()).findById(any());
         verify(orderRepository, never()).save(any());
         verify(orderProductRepository, never()).save(any());
-        verify(emailService, never()).sendMail(any(), any());
+        verify(emailServiceImpl, never()).sendMail(any(), any());
         assertThat(userIdCaptor.getValue()).isEqualTo(userId);
     }
 
@@ -399,7 +399,7 @@ class OrderServiceImplTest {
         verify(productRepository).findById(product1IdCaptor.capture());
         verify(orderRepository, never()).save(any());
         verify(orderProductRepository, never()).save(any());
-        verify(emailService, never()).sendMail(any(), any());
+        verify(emailServiceImpl, never()).sendMail(any(), any());
         assertThat(userIdCaptor.getValue()).isEqualTo(userId);
         assertThat(addressCityCaptor.getValue()).isEqualTo(foundAddress.getCity());
         assertThat(addressStreetCaptor.getValue()).isEqualTo(foundAddress.getStreet());
@@ -492,7 +492,7 @@ class OrderServiceImplTest {
         verify(productRepository).findById(product1IdCaptor.capture());
         verify(orderRepository, never()).save(any());
         verify(orderProductRepository, never()).save(any());
-        verify(emailService, never()).sendMail(any(), any());
+        verify(emailServiceImpl, never()).sendMail(any(), any());
         assertThat(userIdCaptor.getValue()).isEqualTo(userId);
         assertThat(addressCityCaptor.getValue()).isEqualTo(foundAddress.getCity());
         assertThat(addressStreetCaptor.getValue()).isEqualTo(foundAddress.getStreet());
